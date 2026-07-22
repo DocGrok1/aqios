@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Island of Stability — Live Collider Feed — AQiOS · DCGP.AI</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#020508;--card:#060a12;--line:#0f1a28;--gold:#fbd975;--cyan:#00d4ff;--green:#4ade80;--red:#ff7f95;--text:#eaf6ff;--dim:rgba(232,237,245,0.45);--muted:#4a6a80;--mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;padding:0}
+.header{text-align:center;padding:24px 16px;border-bottom:1px solid var(--line)}
+.header h1{font-size:clamp(20px,5vw,36px);font-weight:900;background:linear-gradient(135deg,var(--gold),#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:.12em}
+.stats{display:flex;justify-content:center;gap:24px;padding:16px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.stat{text-align:center}
+.stat .n{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--gold)}
+.stat .k{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.live{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--green)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.islands{max-width:1200px;margin:0 auto;padding:16px}
+.island{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:16px;transition:border-color .2s}
+.island:hover{border-color:rgba(0,212,255,0.3)}
+.island.stable{border-left:3px solid var(--green)}
+.island.review{border-left:3px solid var(--gold)}
+.collision-pair{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.coin-tag{font-family:var(--mono);font-size:10px;padding:4px 8px;border-radius:4px;background:rgba(0,212,255,0.08);color:var(--cyan);border:1px solid rgba(0,212,255,0.15)}
+.arrow{color:var(--gold);font-size:16px}
+.island-title{font-size:13px;color:var(--text);margin-top:6px;line-height:1.5}
+.metrics{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.metric{font-family:var(--mono);font-size:11px}
+.metric .label{color:var(--muted);font-size:9px;letter-spacing:.08em}
+.metric .val{font-weight:600}
+.score-high{color:var(--green)}
+.score-mid{color:var(--gold)}
+.score-low{color:var(--red)}
+.verdict{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;letter-spacing:.06em}
+.verdict-mint{background:rgba(74,222,128,0.1);color:var(--green)}
+.verdict-review{background:rgba(251,217,117,0.1);color:var(--gold)}
+.refresh{text-align:center;padding:16px}
+.refresh button{background:var(--cyan);color:#020508;border:none;border-radius:8px;padding:12px 24px;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.08em}
+.exceptional{background:var(--card);border:2px solid var(--gold);border-radius:12px;padding:16px;margin:16px 0}
+.exceptional .tag{font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase}
+.footer{text-align:center;padding:24px;font-family:var(--mono);font-size:9px;color:var(--muted);border-top:1px solid var(--line)}
+.footer a{color:var(--cyan);text-decoration:none}
+canvas{display:block;margin:16px auto;background:var(--card);border-radius:8px;border:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Island of Stability</h1>
+  <div class="sub">MC290 Triple Kernel Particle Collider · Live Feed · DCGP.AI</div>
+  <div class="live" style="margin-top:8px"><span class="live-dot"></span> Collider Active</div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="n" id="sTicks">—</div><div class="k">Total Ticks</div></div>
+  <div class="stat"><div class="n" id="sInventions">—</div><div class="k">Inventions</div></div>
+  <div class="stat"><div class="n" id="sIslands">—</div><div class="k">Stable Islands</div></div>
+  <div class="stat"><div class="n" id="sCollisions">—</div><div class="k">Collisions</div></div>
+  <div class="stat"><div class="n" id="sLedger">—</div><div class="k">Ledger Depth</div></div>
+</div>
+
+<canvas id="islandMap" width="800" height="300"></canvas>
+
+<div class="islands" id="islandList">
+  <div style="text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:12px">Loading collider data...</div>
+</div>
+
+<div class="refresh"><button onclick="loadData()">REFRESH COLLIDER</button></div>
+
+<div class="footer">
+  <strong>AQiOS</strong> · AURA Quantum Intelligence Operating System<br>
+  <a href="https://aqios.ai">aqios.ai</a> · <a href="https://cloud.aura115.ai">cloud.aura115.ai</a> · Joshua L. Lopez · DCGP.AI<br>
+  USPTO 19/555,951 · 19/719,671 · 19/730,900 · Patent Pending
+</div>
+
+<script>
+const API='https://cloud.aura115.ai';
+let allIslands=[];
+
+async function loadData(){
+  try{
+    // Collider run
+    const cr=await fetch(API+'/api/collider-run').then(r=>r.json());
+    if(cr.ok){
+      document.getElementById('sIslands').textContent=cr.stable_islands||0;
+      document.getElementById('sCollisions').textContent=cr.collision_events||0;
+      document.getElementById('sLedger').textContent=(cr.total_ledger||0).toLocaleString();
+      renderIslands(cr);
+    }
+    // Neptune stats
+    const ns=await fetch(API+'/api/neptune-metals-engine').then(r=>r.json());
+    if(ns.ok&&ns.stats){
+      document.getElementById('sTicks').textContent=(ns.stats.total_ticks||0).toLocaleString();
+      document.getElementById('sInventions').textContent=(ns.stats.total_inventions||0).toLocaleString();
+    }
+  }catch(e){
+    document.getElementById('islandList').innerHTML='<div style="text-align:center;padding:40px;color:#ff7f95;font-family:var(--mono);font-size:12px">Collider connection interrupted. Retry.</div>';
+  }
+}
+
+function renderIslands(cr){
+  const el=document.getElementById('islandList');
+  let html='';
+
+  // Exceptional
+  if(cr.top_exceptional&&cr.top_exceptional.length){
+    cr.top_exceptional.forEach(ex=>{
+      html+=`<div class="exceptional">
+        <div class="tag">EXCEPTIONAL · ${(ex.flags||[]).join(' · ')}</div>
+        <div class="island-title" style="margin-top:6px;font-size:15px;color:var(--gold)">${ex.title}</div>
+        <div style="display:flex;gap:16px;margin-top:8px;font-family:var(--mono);font-size:12px">
+          <span>COIN: <span style="color:var(--cyan)">${ex.coin_id}</span></span>
+          <span>Triple: <span style="color:var(--green)">${ex.triple}</span></span>
+          <span>MT14: <span style="color:var(--gold)">${ex.MT14}</span></span>
+          <span class="verdict verdict-review">${ex.verdict}</span>
+        </div>
+      </div>`;
+    });
+  }
+
+  // Collisions / stable islands
+  if(cr.top_collisions&&cr.top_collisions.length){
+    cr.top_collisions.forEach(c=>{
+      const sc=c.island_score>=0.45?'score-high':c.island_score>=0.35?'score-mid':'score-low';
+      const vc=c.second_coin_verdict==='MINT'?'verdict-mint':'verdict-review';
+      html+=`<div class="island ${c.stable?'stable':'review'}">
+        <div>
+          <div class="collision-pair">
+            <span class="coin-tag">${c.stream_a_coin}</span>
+            <span class="arrow">×</span>
+            <span class="coin-tag">${c.stream_b_coin}</span>
+          </div>
+          <div class="island-title">${c.stream_a_title} × ${c.stream_b_title}</div>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span class="label">ISLAND SCORE</span><br><span class="val ${sc}">${c.island_score.toFixed(4)}</span></div>
+          <div class="metric"><span class="label">MT14</span><br><span class="val" style="color:var(--gold)">${c.mt14_combined}</span></div>
+          <span class="verdict ${vc}">${c.second_coin_verdict}</span>
+        </div>
+      </div>`;
+      allIslands.push(c);
+    });
+  }
+
+  el.innerHTML=html||'<div style="text-align:center;padding:40px;color:var(--muted)">No islands in current run.</div>';
+  drawIslandMap();
+}
+
+function drawIslandMap(){
+  const canvas=document.getElementById('islandMap');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Background grid
+  ctx.strokeStyle='rgba(15,26,40,0.8)';
+  ctx.lineWidth=0.5;
+  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+  for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+
+  // Axes
+  ctx.strokeStyle='rgba(74,106,128,0.5)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(60,H-30);ctx.lineTo(W-20,H-30);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(60,10);ctx.lineTo(60,H-30);ctx.stroke();
+  ctx.fillStyle='var(--muted)';ctx.font='9px JetBrains Mono';
+  ctx.fillText('Island Score →',W/2-40,H-10);
+  ctx.save();ctx.translate(15,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('MT14 →',0,0);ctx.restore();
+
+  // Plot islands
+  if(allIslands.length===0){
+    ctx.fillStyle='rgba(74,106,128,0.3)';ctx.font='12px JetBrains Mono';ctx.textAlign='center';
+    ctx.fillText('Stable islands will appear here as the collider produces them',W/2,H/2);
+    return;
+  }
+
+  allIslands.forEach((island,i)=>{
+    const x=60+(island.island_score/1.0)*(W-100);
+    const y=(H-30)-(island.mt14_combined/20)*(H-60);
+    const r=6+island.island_score*10;
+
+    // Glow
+    const g=ctx.createRadialGradient(x,y,0,x,y,r*2);
+    g.addColorStop(0,island.stable?'rgba(74,222,128,0.3)':'rgba(251,217,117,0.3)');
+    g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*2,0,Math.PI*2);ctx.fill();
+
+    // Dot
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=island.stable?'#4ade80':'#fbd975';ctx.fill();
+    ctx.strokeStyle=island.stable?'rgba(74,222,128,0.6)':'rgba(251,217,117,0.6)';
+    ctx.lineWidth=1;ctx.stroke();
+  });
+}
+
+loadData();
+setInterval(loadData,30000); // Auto-refresh every 30s
+</script>
+</body>
+</html>
