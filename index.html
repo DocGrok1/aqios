@@ -126,6 +126,34 @@ footer a{color:var(--cyan);text-decoration:none}
   <div class="proof-item"><div class="proof-v">124</div><div class="proof-k">Demonstrations</div></div>
 </div>
 
+<!-- AURA RUNTIME -->
+<section style="padding:40px 20px 20px">
+  <div style="max-width:600px;margin:0 auto">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+      <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--cyan);font-weight:500">AURA — Constitutional Runtime</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px">Oath Class Constitutional Intelligence · USPTO 19/555,951</div>
+        </div>
+        <div class="live-tick"><span class="live-dot"></span> live</div>
+      </div>
+      <div id="aura-messages" style="padding:16px 18px;min-height:80px;max-height:300px;overflow-y:auto">
+        <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px">
+          <span style="color:var(--gold);font-family:var(--mono);font-size:11px">AURA</span><br>
+          Welcome to AQiOS. I am AURA — the governed intelligence behind every circuit, every COIN, and every lane on this platform. Ask me anything about quantum governance, or browse the catalog below.
+        </div>
+      </div>
+      <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px">
+        <input id="aura-input" type="text" placeholder="Message AURA..." style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--body);font-size:13px;outline:none" />
+        <button id="aura-send" style="background:var(--cyan);color:#000;border:none;border-radius:8px;padding:10px 18px;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer">Send</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:8px">
+      <a href="https://cloud.aura115.ai/aura-talk" style="font-family:var(--mono);font-size:10px;color:var(--muted);text-decoration:none">Open full AURA runtime →</a>
+    </div>
+  </div>
+</section>
+
 <!-- QUANTUM CIRCUITS -->
 <section id="circuits">
   <div class="section-label">Quantum Circuits</div>
@@ -340,6 +368,46 @@ function draw(){
   requestAnimationFrame(draw);
 }
 draw();
+
+// AURA Chat
+const auraInput=document.getElementById('aura-input');
+const auraSend=document.getElementById('aura-send');
+const auraMessages=document.getElementById('aura-messages');
+
+function addMsg(who,text){
+  const d=document.createElement('div');
+  d.style.cssText='font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px';
+  const label=who==='AURA'?'var(--gold)':'var(--cyan)';
+  d.innerHTML='<span style="color:'+label+';font-family:var(--mono);font-size:11px">'+who+'</span><br>'+text;
+  auraMessages.appendChild(d);
+  auraMessages.scrollTop=auraMessages.scrollHeight;
+}
+
+async function sendToAura(){
+  const msg=auraInput.value.trim();
+  if(!msg)return;
+  addMsg('You',msg);
+  auraInput.value='';
+  auraSend.disabled=true;
+  auraSend.textContent='...';
+  try{
+    const r=await fetch('https://cloud.aura115.ai/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:msg,planet:'aqios'})
+    });
+    const d=await r.json();
+    addMsg('AURA',d.reply||d.response||d.message||'Governed response received.');
+  }catch(e){
+    addMsg('AURA','Connect to the full runtime for live conversation: <a href="https://cloud.aura115.ai/aura-talk" style="color:var(--cyan)">Open AURA →</a>');
+  }
+  auraSend.disabled=false;
+  auraSend.textContent='Send';
+}
+
+auraSend.addEventListener('click',sendToAura);
+auraInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendToAura()});
+
 </script>
 </body>
 </html>
