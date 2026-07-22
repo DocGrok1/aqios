@@ -154,6 +154,57 @@ footer a{color:var(--cyan);text-decoration:none}
   </div>
 </section>
 
+
+<!-- QHP — THE LANGUAGE -->
+<section id="qhp">
+  <div class="section-label">The Language</div>
+  <div class="section-title">Quantum HoloProjection Protocol</div>
+  <div class="section-body">
+    <p>QHP is a governed domain-specific language for constitutional quantum-holographic scene programming. It is both a code base language and a media-based language — the same syntax that compiles to Q-assembly gate sequences for quantum hardware also describes holographic scenes with spatial entities, lighting, and projection configurations.</p>
+    <p>A QHP program declares quantum-entangled holographic scenes, binds quantum states to spatial entities, governs when measurement and wavefunction collapse are permitted, and adaptively routes execution to the optimal projection substrate at runtime.</p>
+  </div>
+
+  <div class="gate-display" style="font-size:12px;line-height:2.2">
+    <div class="gate-label">QHP Scene Declaration</div>
+    holo Scene &lt;name&gt; {<br>
+    &nbsp;&nbsp;entity QuantumBit &lt;id&gt; at (x, y, z);<br>
+    &nbsp;&nbsp;quantum state |&psi;&rang; = (|00&rang; + |11&rang;) / &radic;2;<br>
+    &nbsp;&nbsp;bind |&psi;&rang; to (q0, q1);<br>
+    &nbsp;&nbsp;on quantum.measurement(q0) { &lt;handler&gt; }<br>
+    }<br><br>
+    <div class="gate-label">Adaptive Projector</div>
+    projector AdaptiveProjector {<br>
+    &nbsp;&nbsp;if (device.hasQuantumEmitter) { output: QHolo; }<br>
+    &nbsp;&nbsp;else if (device.hasAR) { output: AR3D; }<br>
+    &nbsp;&nbsp;else { output: WebGLFallback; }<br>
+    }<br><br>
+    <div class="gate-label">Execute</div>
+    run Scene on projector AdaptiveProjector;
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--gold);margin-bottom:8px;font-weight:500">Code Base Language</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">Declarative DSL with full grammar. Parses to AST. Compiles through scene graph &rarr; state vector &rarr; gate sequence &rarr; WASM bytecode or Q-assembly. Runs on quantum emitter hardware.</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--gold);margin-bottom:8px;font-weight:500">Media-Based Language</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">Holographic scene programming. Spatial entities, lighting, cameras, projection config. Adaptive runtime across WebGL, ARKit/ARCore, LiDAR, HoloLens, and quantum emitter substrates.</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+    <a href="https://cloud.aura115.ai/qhp" class="prod-card" style="flex:1;min-width:140px;text-align:center"><div class="prod-card-title">QHP Runtime</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
+    <a href="https://cloud.aura115.ai/cirq-qhp-simulation" class="prod-card" style="flex:1;min-width:140px;text-align:center"><div class="prod-card-title">CIRQ QHP</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
+  </div>
+
+  <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:16px;line-height:1.8">
+    USPTO CIP of 19/700,298 &amp; 19/555,951 &middot; Filed June 20, 2026 &middot; Provisional 64/095,091<br>
+    QUIRQ&trade; governance layer enforces constitutional constraints on measurement and projection<br>
+    Every COIN minted through Neptune carries a QHP payload &middot; Every circuit on AQiOS speaks QHP
+  </div>
+</section>
+
 <!-- QUANTUM CIRCUITS -->
 <section id="circuits">
   <div class="section-label">Quantum Circuits</div>
