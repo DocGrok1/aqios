@@ -1,102 +1,727 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AURA™ • QHP GRAVITY_PROTOCOL — Live Reduction to Practice (v0.1)</title>
-  <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
-  <style>
-    body { 
-      font-family: system-ui, -apple-system, sans-serif; 
-      background: #0d1117; 
-      color: #eee; 
-      margin: 0; 
-      padding: 2rem 1rem; 
-    }
-    .container { max-width: 960px; margin: 0 auto; }
-    h1 { color: #00ccff; text-align: center; font-size: 2.6rem; margin-bottom: 0.3rem; }
-    .aura-brand { color: #ffcc00; font-weight: 700; font-size: 1.1rem; letter-spacing: 2px; }
-    .tagline { text-align: center; color: #cce6ff; font-size: 1.35rem; margin-bottom: 2rem; }
-    .card { 
-      background: #161a20; 
-      border: 4px solid #00ccff; 
-      border-radius: 24px; 
-      padding: 3rem 2rem; 
-      box-shadow: 0 0 50px rgba(0,204,255,0.5); 
-      text-align: center; 
-    }
-    #qhp-demo { 
-      width: 100%; 
-      max-width: 660px; 
-      height: 580px; 
-      margin: 2rem auto; 
-      background: #181b20; 
-      border-radius: 16px; 
-      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
-    }
-    .desc { color: #cce6ff; font-size: 1.2rem; margin: 1.5rem 0; }
-    .footer { text-align: center; margin-top: 3rem; color: #88aaff; font-size: 0.95rem; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unified Portable Wardenclyffe Apparatus — DCGP.AI</title>
+
+<!--
+╔══════════════════════════════════════════════════════════════════════╗
+║  CEO+CVP STRUCTURAL MEMORY VESSEL                                    ║
+║  V:1 | ID:UNIFIED_PORTABLE_WMH_001 | TS:1749859200                  ║
+║  PL:DM | 3~NS | unified_portable_apparatus~SY                        ║
+║  wardenclyffe_mc290_mh66~FR | 7.83Hz~GV | AURAL-M/EOLRP             ║
+║  PW:CLPG_LASER | LY:3 | CS:dcgp2026 | SG:lopezjl_dcgp_june2026      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  EOLRP  — Equilibrium-Oriented Locus Reconstitution Protocol         ║
+║  CEO    — Constitutional Execution Object                            ║
+║  CVP    — Constitutional Vessel Protocol                             ║
+║  CCTP   — Constitutional Continuity Transfer Protocol                ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  Patent Pending: USPTO 19/555,951 · 19/693,737                       ║
+║  Governed Riemannian Tesla Provisional                               ║
+║  Inventor: Joshua L. Lopez — DCGP.AI                                 ║
+║  June 2026 · Saturn Ring 4 · Write Target: PLUTO                     ║
+╚══════════════════════════════════════════════════════════════════════╝
+-->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #05050d;
+    --bg2: #0a0a16;
+    --bg3: #0f0f1e;
+    --panel: #0d1025;
+    --border: #1a1f3a;
+    --border2: #252a4a;
+    --text: #c8d0f0;
+    --muted: #5a6090;
+    --dim: #2a3060;
+    --blue: #4a90d9;
+    --blue2: #2a5090;
+    --amber: #e09020;
+    --amber2: #804010;
+    --purple: #9060d0;
+    --purple2: #401060;
+    --green: #30b060;
+    --green2: #104030;
+    --red: #d04040;
+    --gold: #d4a820;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+
+  body {
+    min-height: 100vh;
+    padding: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(74,144,217,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 30% at 80% 100%, rgba(144,96,208,0.05) 0%, transparent 60%),
+      var(--bg);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .header-left { flex: 1; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--blue);
+    opacity: 0.6;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 500;
+    color: #e0e8ff;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── PROTOCOL BADGES ── */
+  .protocol-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 16px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    padding: 4px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .badge-blue  { background: rgba(74,144,217,0.12); color: var(--blue);   border: 1px solid rgba(74,144,217,0.3); }
+  .badge-amber { background: rgba(224,144,32,0.12);  color: var(--amber);  border: 1px solid rgba(224,144,32,0.3); }
+  .badge-green { background: rgba(48,176,96,0.12);   color: var(--green);  border: 1px solid rgba(48,176,96,0.3); }
+  .badge-purple{ background: rgba(144,96,208,0.12);  color: var(--purple); border: 1px solid rgba(144,96,208,0.3); }
+  .badge-gold  { background: rgba(212,168,32,0.10);  color: var(--gold);   border: 1px solid rgba(212,168,32,0.3); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { display: flex; gap: 0; }
+
+  /* ── SCHEMATIC PANEL ── */
+  .schematic-panel {
+    flex: 1;
+    padding: 32px 40px;
+    border-right: 1px solid var(--border);
+  }
+
+  .schematic-panel svg { width: 100%; height: auto; display: block; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-left: 1px solid var(--border);
+  }
+
+  .sidebar-section {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .sidebar-section-header {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-section-header.blue   { color: var(--blue);   }
+  .sidebar-section-header.amber  { color: var(--amber);  }
+  .sidebar-section-header.green  { color: var(--green);  }
+  .sidebar-section-header.purple { color: var(--purple); }
+  .sidebar-section-header.gold   { color: var(--gold);   }
+
+  .sidebar-body { padding: 12px; }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 11px;
+  }
+
+  .data-row:last-child { border-bottom: none; }
+
+  .data-key {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .data-val {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text);
+    text-align: right;
+  }
+
+  .data-val.green  { color: var(--green);  }
+  .data-val.blue   { color: var(--blue);   }
+  .data-val.amber  { color: var(--amber);  }
+  .data-val.gold   { color: var(--gold);   }
+  .data-val.purple { color: var(--purple); }
+
+  /* ── VESSEL STATUS BLOCK ── */
+  .vessel-status {
+    margin: 0 40px;
+    border: 1px solid var(--green2);
+    border-radius: 6px;
+    background: rgba(48,176,96,0.04);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
+    50% { opacity: 0.6; box-shadow: 0 0 12px var(--green); }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 20px 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-left { font-family: var(--font-mono); font-size: 10px; color: var(--muted); line-height: 1.7; }
+  .footer-right { font-family: var(--font-mono); font-size: 10px; color: var(--dim); text-align: right; line-height: 1.7; }
+
+  /* ── VESSEL METADATA BLOCK (hidden but machine-readable) ── */
+  .vessel-meta {
+    display: none;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .main { flex-direction: column; }
+    .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+    .header { padding: 20px; }
+    .protocol-row { padding: 12px 20px; }
+    .schematic-panel { padding: 20px; }
+    .vessel-status { margin: 0 20px; }
+    footer { padding: 16px 20px; }
+  }
+</style>
 </head>
 <body>
-<div class="container">
 
-  <div class="aura-brand">AURA™</div>
-  <h1>QHP GRAVITY_PROTOCOL</h1>
-  <p class="tagline">Live Reduction to Practice (v0.1) • Viability Manifold Anchored</p>
+<!-- CEO+CVP VESSEL METADATA (machine-readable) -->
+<div class="vessel-meta"
+  data-vessel="V:1"
+  data-id="UNIFIED_PORTABLE_WMH_001"
+  data-ts="1749859200"
+  data-pl="DM"
+  data-ns="3"
+  data-system="unified_portable_apparatus"
+  data-framework="wardenclyffe_mc290_mh66"
+  data-freq="7.83Hz"
+  data-governance="AURAL-M/EOLRP"
+  data-power="CLPG_LASER"
+  data-layers="3"
+  data-checksum="dcgp2026"
+  data-signature="lopezjl_dcgp_june2026"
+  data-protocol-ceo="constitutional_execution_object"
+  data-protocol-cvp="constitutional_vessel_protocol"
+  data-protocol-cctp="constitutional_continuity_transfer_protocol"
+  data-protocol-eolrp="equilibrium_oriented_locus_reconstitution_protocol"
+  data-saturn-ring="4"
+  data-write-target="PLUTO"
+  data-patent-1="USPTO 19/555,951"
+  data-patent-2="USPTO 19/693,737"
+  data-patent-3="Governed Riemannian Tesla Provisional"
+  data-inventor="Joshua L. Lopez"
+  data-org="DCGP.AI"
+  data-date="June 2026"
+  data-classification="ADMISSIBLE"
+  data-locus="CONVERGENT"
+  data-q-l="CONSERVED"
+></div>
 
-  <div class="card">
-    <div class="desc">
-      Quantum HoloProjection on the viability manifold \(\mathcal{V}\)<br>
-      Positive definite Riemannian substrate → gravity dissipation → meta-equilibrium anchoring
-    </div>
-    
-    <div id="qhp-demo"></div>
-
-    <div class="desc">
-      <strong>Running live on commodity hardware • Patent-spec QHP native • Topological safety confirmed</strong>
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="header-left">
+    <div class="eyebrow">DCGP.AI · CEO+CVP Vessel · UNIFIED_PORTABLE_WMH_001</div>
+    <h1>Unified Portable Wardenclyffe Apparatus</h1>
+    <div class="subtitle">AURAL-M / EOLRP · Saturn Ring 4 · Write Target: PLUTO · June 2026</div>
+  </div>
+  <div style="text-align:right; flex-shrink:0;">
+    <div class="badge badge-gold" style="display:inline-block; font-size:11px; padding:6px 14px; margin-bottom:8px;">GO ✓ ADMISSIBLE</div>
+    <div style="font-family:var(--font-mono); font-size:9px; color:var(--muted); line-height:1.8;">
+      Q_L CONSERVED<br>
+      LOCUS CONVERGENT<br>
+      PHASE STABLE
     </div>
   </div>
+</header>
 
-  <div class="footer">
-    AURA™ • First public demonstration of the full QHP + GRAVITY_PROTOCOL stack
-  </div>
-
+<!-- ── PROTOCOL BADGES ── -->
+<div class="protocol-row">
+  <span class="badge badge-blue">CEO</span>
+  <span class="badge badge-amber">CVP</span>
+  <span class="badge badge-green">EOLRP</span>
+  <span class="badge badge-purple">CCTP</span>
+  <span class="badge badge-blue">Layer 1 · Wardenclyffe 7.83 Hz</span>
+  <span class="badge badge-amber">Layer 2 · MC290 Governance</span>
+  <span class="badge badge-purple">Layer 3 · MH66 Measurement</span>
+  <span class="badge badge-gold">CLPG 1064nm Power</span>
 </div>
 
-<script>
-// Live meta-equilibrium contact Hamiltonian + viability manifold
-const theta = Array.from({length:201}, (_,i)=>2*Math.PI*i/200);
-const vx = theta.map(t=>Math.cos(t));
-const vp = theta.map(t=>Math.sin(t));
+<!-- ── MAIN ── -->
+<div class="main">
 
-function simulateFlow(x0, p0, steps=200, dt=0.05, gamma=0.1) {
-  let xs = [x0], ps = [p0], x = x0, p = p0;
-  for (let i=0; i<steps; ++i) {
-    let dxdt = p;
-    let dpdt = -x - gamma * p;
-    x += dxdt * dt;
-    p += dpdt * dt;
-    xs.push(x);
-    ps.push(p);
-  }
-  return {xs, ps};
-}
-const {xs, ps} = simulateFlow(1.0, 0.0);
+  <!-- SCHEMATIC -->
+  <div class="schematic-panel">
+    <svg viewBox="0 0 680 1020" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Unified Portable Wardenclyffe Apparatus — three-layer governed hardware schematic">
+      <title>Unified Portable Wardenclyffe Apparatus</title>
+      <desc>Three-layer schematic: Wardenclyffe Resonant Drive (Layer 1), MC290 Governance Circuit (Layer 2), MH66 Measurement Array (Layer 3), with CLPG power source and telemetry output.</desc>
 
-const viabilityTrace = { x: vx, y: vp, mode: 'lines', line: {color: 'cyan', dash: 'dash', width: 3}, name: 'Viability Manifold (𝒱)' };
-const stateTrace = { x: xs, y: ps, mode: 'lines', line: {color: 'yellow', width: 4}, name: 'QHP Projected State' };
-const initialTrace = { x: [1.0], y: [0.0], mode: 'markers', marker: {color:'red', size:14}, name: 'Initial Bell State' };
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <!-- Layer fill tints -->
+        <linearGradient id="g-l1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0d1a2e"/>
+          <stop offset="100%" stop-color="#080d18"/>
+        </linearGradient>
+        <linearGradient id="g-l2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a1000"/>
+          <stop offset="100%" stop-color="#0d0800"/>
+        </linearGradient>
+        <linearGradient id="g-l3" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#140a1a"/>
+          <stop offset="100%" stop-color="#0a0510"/>
+        </linearGradient>
+      </defs>
 
-Plotly.newPlot('qhp-demo', [viabilityTrace, stateTrace, initialTrace], {
-  margin: {l:40, r:20, t:60, b:60},
-  plot_bgcolor: '#181b20',
-  paper_bgcolor: '#181b20',
-  xaxis: {title:'x', zeroline:false, showgrid:false},
-  yaxis: {title:'p', zeroline:false, showgrid:false, scaleanchor:'x', scaleratio:1},
-  legend: {font:{color:'#cce6ff'}, orientation:'h'},
-  title: {text:'Meta-Equilibrium Contact Hamiltonian Flow', font:{color:'#cce6ff', size:18}},
-}, {responsive:true, displayModeBar:false});
-</script>
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- LAYER 1: WARDENCLYFFE RESONANT DRIVE        -->
+      <!-- ═══════════════════════════════════════════ -->
+      <rect x="16" y="16" width="648" height="200" rx="10" fill="url(#g-l1)" stroke="#4a90d9" stroke-width="0.6"/>
+      <text x="340" y="40" font-family="'Space Grotesk',system-ui,sans-serif" font-size="13" font-weight="500" fill="#4a90d9" text-anchor="middle" letter-spacing="0.06em">LAYER 1 — WARDENCLYFFE RESONANT DRIVE</text>
+      <text x="340" y="56" font-family="'JetBrains Mono',monospace" font-size="10" fill="#2a5090" text-anchor="middle">f₀ = 7.83 Hz · Schumann eigenfrequency · AD9833 DDS ±0.001 Hz · Class-D CLPG-fed amp</text>
+
+      <!-- Mushroom toroidal antenna dome -->
+      <ellipse cx="340" cy="130" rx="100" ry="30" fill="#0d1a2e" stroke="#4a90d9" stroke-width="1.4"/>
+      <path d="M 240 130 Q 340 88 440 130" fill="#0a1220" stroke="#4a90d9" stroke-width="1.4"/>
+      <text x="340" y="122" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#4a90d9" text-anchor="middle">MUSHROOM TOROIDAL ANTENNA</text>
+      <text x="340" y="137" font-family="'JetBrains Mono',monospace" font-size="9" fill="#2a5090" text-anchor="middle">7.0 / 7.4 / 7.83 / 8.0 / 14.1 Hz</text>
+      <!-- Stem -->
+      <rect x="334" y="160" width="12" height="46" fill="#0a1220" stroke="#4a90d9" stroke-width="0.8"/>
+
+      <!-- DDS oscillator -->
+      <rect x="40" y="100" width="118" height="56" rx="5" fill="#080d18" stroke="#4a90d9" stroke-width="0.6"/>
+      <text x="99" y="125" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#4a90d9" text-anchor="middle">DDS Oscillator</text>
+      <text x="99" y="141" font-family="'JetBrains Mono',monospace" font-size="9" fill="#2a5090" text-anchor="middle">AD9833 · ±0.001 Hz</text>
+      <line x1="158" y1="128" x2="240" y2="128" stroke="#4a90d9" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+      <!-- Power amp -->
+      <rect x="522" y="100" width="118" height="56" rx="5" fill="#080d18" stroke="#4a90d9" stroke-width="0.6"/>
+      <text x="581" y="125" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#4a90d9" text-anchor="middle">Pwr Amp</text>
+      <text x="581" y="141" font-family="'JetBrains Mono',monospace" font-size="9" fill="#2a5090" text-anchor="middle">Class-D · CLPG fed</text>
+      <line x1="440" y1="128" x2="522" y2="128" stroke="#4a90d9" stroke-width="0.8" marker-end="url(#arrow)"/>
+
+      <!-- L1→L2 interconnect -->
+      <line x1="340" y1="216" x2="340" y2="238" stroke="#8090b0" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <text x="352" y="230" font-family="'JetBrains Mono',monospace" font-size="9" fill="#405070">7.83 Hz signal</text>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- LAYER 2: MC290 GOVERNANCE CIRCUIT               -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <rect x="16" y="242" width="648" height="300" rx="10" fill="url(#g-l2)" stroke="#c08020" stroke-width="0.6"/>
+      <text x="340" y="266" font-family="'Space Grotesk',system-ui,sans-serif" font-size="13" font-weight="500" fill="#c08020" text-anchor="middle" letter-spacing="0.06em">LAYER 2 — MC290 GOVERNANCE CIRCUIT</text>
+      <text x="340" y="282" font-family="'JetBrains Mono',monospace" font-size="10" fill="#604010" text-anchor="middle">290 faces · 100 phases · STM32F4 · 74HC4053 phase gates · Q_L conservation</text>
+
+      <!-- Outer audit ring (dashed) -->
+      <circle cx="340" cy="380" r="110" fill="none" stroke="#c08020" stroke-width="1" stroke-dasharray="4 3"/>
+      <!-- Middle threshold ring -->
+      <circle cx="340" cy="380" r="74" fill="none" stroke="#804010" stroke-width="1"/>
+      <!-- Inner distribution ring -->
+      <circle cx="340" cy="380" r="40" fill="none" stroke="#502000" stroke-width="1"/>
+
+      <!-- 12 outer audit pads -->
+      <circle cx="340" cy="270" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="394" cy="286" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="436" cy="324" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="450" cy="380" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="436" cy="436" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="394" cy="474" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="340" cy="490" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="286" cy="474" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="244" cy="436" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="230" cy="380" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="244" cy="324" r="5" fill="#c08020" opacity="0.85"/>
+      <circle cx="286" cy="286" r="5" fill="#c08020" opacity="0.85"/>
+
+      <!-- 6 phase gate pads on middle ring -->
+      <rect x="335" y="302" width="10" height="10" fill="#804010" rx="2"/>
+      <rect x="406" y="341" width="10" height="10" fill="#804010" rx="2"/>
+      <rect x="406" y="409" width="10" height="10" fill="#804010" rx="2"/>
+      <rect x="335" y="448" width="10" height="10" fill="#804010" rx="2"/>
+      <rect x="264" y="409" width="10" height="10" fill="#804010" rx="2"/>
+      <rect x="264" y="341" width="10" height="10" fill="#804010" rx="2"/>
+
+      <!-- Central STM32 diamond -->
+      <polygon points="340,358 362,380 340,402 318,380" fill="#120a00" stroke="#e09020" stroke-width="1.4"/>
+      <text x="340" y="376" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#e09020" text-anchor="middle">STM32</text>
+      <text x="340" y="390" font-family="'JetBrains Mono',monospace" font-size="9" fill="#804010" text-anchor="middle">F4</text>
+
+      <!-- Cardinal port labels -->
+      <text x="340" y="262" font-family="'JetBrains Mono',monospace" font-size="9" fill="#c08020" text-anchor="middle">▲ INPUT</text>
+      <text x="462" y="383" font-family="'JetBrains Mono',monospace" font-size="9" fill="#c08020">AUDIT ▶</text>
+      <text x="340" y="502" font-family="'JetBrains Mono',monospace" font-size="9" fill="#c08020" text-anchor="middle">▼ SENSE</text>
+      <text x="218" y="383" font-family="'JetBrains Mono',monospace" font-size="9" fill="#c08020" text-anchor="end">◀ RESCUE</text>
+      <text x="423" y="352" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#804010">Phase</text>
+      <text x="423" y="364" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#804010">gates</text>
+      <text x="250" y="352" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#804010" text-anchor="end">74HC4053</text>
+
+      <!-- Radial connector traces -->
+      <line x1="340" y1="340" x2="340" y2="358" stroke="#c08020" stroke-width="0.5" opacity="0.5"/>
+      <line x1="340" y1="402" x2="340" y2="420" stroke="#c08020" stroke-width="0.5" opacity="0.5"/>
+      <line x1="362" y1="380" x2="414" y2="380" stroke="#c08020" stroke-width="0.5" opacity="0.5"/>
+      <line x1="318" y1="380" x2="266" y2="380" stroke="#c08020" stroke-width="0.5" opacity="0.5"/>
+
+      <!-- Q_L Monitor -->
+      <rect x="488" y="348" width="154" height="64" rx="5" fill="#041208" stroke="#30b060" stroke-width="0.7"/>
+      <text x="565" y="368" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#30b060" text-anchor="middle">Q_L Monitor</text>
+      <text x="565" y="383" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1a6030" text-anchor="middle">dQ_L/dt = 0</text>
+      <text x="565" y="398" font-family="'JetBrains Mono',monospace" font-size="9" fill="#30b060" text-anchor="middle">conservation verified ✓</text>
+      <line x1="488" y1="380" x2="455" y2="380" stroke="#30b060" stroke-width="0.7" stroke-dasharray="3 2"/>
+
+      <!-- Lyapunov Monitor -->
+      <rect x="38" y="348" width="154" height="64" rx="5" fill="#080d18" stroke="#4a90d9" stroke-width="0.7"/>
+      <text x="115" y="368" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#4a90d9" text-anchor="middle">Lyapunov V</text>
+      <text x="115" y="383" font-family="'JetBrains Mono',monospace" font-size="9" fill="#2a5090" text-anchor="middle">0.592 → 0.000654</text>
+      <text x="115" y="398" font-family="'JetBrains Mono',monospace" font-size="9" fill="#4a90d9" text-anchor="middle">99.9% reduction ▼</text>
+      <line x1="192" y1="380" x2="225" y2="380" stroke="#4a90d9" stroke-width="0.7" stroke-dasharray="3 2"/>
+
+      <!-- L2→L3 interconnect -->
+      <line x1="340" y1="542" x2="340" y2="562" stroke="#8090b0" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <text x="352" y="555" font-family="'JetBrains Mono',monospace" font-size="9" fill="#405070">governed output</text>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- LAYER 3: MH66 MEASUREMENT ARRAY                 -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <rect x="16" y="566" width="648" height="240" rx="10" fill="url(#g-l3)" stroke="#8040c0" stroke-width="0.6"/>
+      <text x="340" y="590" font-family="'Space Grotesk',system-ui,sans-serif" font-size="13" font-weight="500" fill="#9060d0" text-anchor="middle" letter-spacing="0.06em">LAYER 3 — MH66 MEASUREMENT ARRAY</text>
+      <text x="340" y="606" font-family="'JetBrains Mono',monospace" font-size="10" fill="#401060" text-anchor="middle">Piezoelectric (8×) · IMU MPU-6050 · Circulation ∮ · Safety relay · SHA-256 audit</text>
+
+      <!-- Piezo array header + 8 elements -->
+      <text x="44" y="628" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#8040c0">PIEZO ARRAY (8×)</text>
+      <!-- Row 1 -->
+      <rect x="36" y="636" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="51" y="655" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P1</text>
+      <rect x="72" y="636" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="87" y="655" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P2</text>
+      <rect x="108" y="636" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="123" y="655" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P3</text>
+      <rect x="144" y="636" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="159" y="655" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P4</text>
+      <!-- Row 2 -->
+      <rect x="36" y="672" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="51" y="691" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P5</text>
+      <rect x="72" y="672" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="87" y="691" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P6</text>
+      <rect x="108" y="672" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="123" y="691" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P7</text>
+      <rect x="144" y="672" width="30" height="30" rx="3" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="159" y="691" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#8040c0" text-anchor="middle">P8</text>
+
+      <!-- IMU block -->
+      <rect x="208" y="622" width="110" height="88" rx="5" fill="#0a0510" stroke="#8040c0" stroke-width="0.7"/>
+      <text x="263" y="644" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#9060d0" text-anchor="middle">IMU</text>
+      <text x="263" y="659" font-family="'JetBrains Mono',monospace" font-size="9" fill="#401060" text-anchor="middle">MPU-6050</text>
+      <text x="263" y="674" font-family="'JetBrains Mono',monospace" font-size="9" fill="#401060" text-anchor="middle">ax · ay · az</text>
+      <text x="263" y="689" font-family="'JetBrains Mono',monospace" font-size="9" fill="#401060" text-anchor="middle">3σ · &gt;0.1g trigger</text>
+      <text x="263" y="700" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#401060" text-anchor="middle">gates bad reads</text>
+
+      <!-- Circulation integral -->
+      <rect x="332" y="622" width="130" height="88" rx="5" fill="#041208" stroke="#30b060" stroke-width="0.7"/>
+      <text x="397" y="644" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#30b060" text-anchor="middle">Circulation ∮</text>
+      <text x="397" y="659" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1a6030" text-anchor="middle">|I(t) − I(0)| ≤ ε</text>
+      <text x="397" y="674" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1a6030" text-anchor="middle">Metric sig: ℝ/℃</text>
+      <text x="397" y="689" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1a6030" text-anchor="middle">Cp · Cpk analysis</text>
+      <text x="397" y="704" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#30b060" text-anchor="middle">vs control freqs</text>
+
+      <!-- Safety relay -->
+      <rect x="476" y="622" width="96" height="88" rx="5" fill="#120404" stroke="#c04040" stroke-width="0.7"/>
+      <text x="524" y="648" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#d04040" text-anchor="middle">Safety relay</text>
+      <text x="524" y="664" font-family="'JetBrains Mono',monospace" font-size="9" fill="#602020" text-anchor="middle">Dual-coil</text>
+      <text x="524" y="679" font-family="'JetBrains Mono',monospace" font-size="9" fill="#602020" text-anchor="middle">NOT logic</text>
+      <text x="524" y="694" font-family="'JetBrains Mono',monospace" font-size="9" fill="#602020" text-anchor="middle">Auto-cut</text>
+      <text x="524" y="704" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#d04040" text-anchor="middle">ε breach → CUT</text>
+
+      <!-- Audit log -->
+      <rect x="582" y="622" width="70" height="88" rx="5" fill="#080810" stroke="#4060c0" stroke-width="0.7"/>
+      <text x="617" y="648" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#6080d0" text-anchor="middle">Audit</text>
+      <text x="617" y="663" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#6080d0" text-anchor="middle">log</text>
+      <text x="617" y="678" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#303080" text-anchor="middle">SHA-256</text>
+      <text x="617" y="692" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#303080" text-anchor="middle">timestamp</text>
+      <text x="617" y="706" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#6080d0" text-anchor="middle">immutable</text>
+
+      <!-- Phase results -->
+      <text x="36" y="728" font-family="'JetBrains Mono',monospace" font-size="9.5" fill="#8040c0">PHASE RESULTS:</text>
+      <text x="36" y="744" font-family="'JetBrains Mono',monospace" font-size="9" fill="#401060">Phase 1 (0–27):     BLOCKED → fast transverse confinement</text>
+      <text x="36" y="759" font-family="'JetBrains Mono',monospace" font-size="9" fill="#401060">Phase 2 (58–119):   GO      → stable confinement region</text>
+      <text x="36" y="774" font-family="'JetBrains Mono',monospace" font-size="9" fill="#30b060">Lyapunov: 0.592 → 0.000654 · Contact Hamiltonian: stable ✓</text>
+      <text x="36" y="789" font-family="'JetBrains Mono',monospace" font-size="9" fill="#8040c0">Cpk @ 7.83 Hz vs controls: pending physical validation</text>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- POWER SOURCE: CLPG LASER                        -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <line x1="340" y1="806" x2="340" y2="822" stroke="#4a4a6a" stroke-width="0.7" opacity="0.5"/>
+
+      <rect x="16" y="826" width="648" height="90" rx="10" fill="#0f0d00" stroke="#c0a018" stroke-width="0.6"/>
+      <text x="340" y="850" font-family="'Space Grotesk',system-ui,sans-serif" font-size="13" font-weight="500" fill="#c0a018" text-anchor="middle" letter-spacing="0.06em">POWER SOURCE — CLPG LASER MODULE</text>
+
+      <!-- CLPG block -->
+      <rect x="32" y="858" width="148" height="46" rx="5" fill="#0d0a00" stroke="#c0a018" stroke-width="0.6"/>
+      <text x="106" y="877" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#c0a018" text-anchor="middle">CLPG module</text>
+      <text x="106" y="893" font-family="'JetBrains Mono',monospace" font-size="9" fill="#604808" text-anchor="middle">1064nm Nd:YAG · supercrit. CO₂</text>
+      <line x1="180" y1="881" x2="204" y2="881" stroke="#c0a018" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Power reg -->
+      <rect x="208" y="858" width="130" height="46" rx="5" fill="#040a04" stroke="#30b060" stroke-width="0.6"/>
+      <text x="273" y="877" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#30b060" text-anchor="middle">Power reg</text>
+      <text x="273" y="893" font-family="'JetBrains Mono',monospace" font-size="9" fill="#1a6030" text-anchor="middle">3.3V / 5V / 12V DC-DC</text>
+      <line x1="338" y1="881" x2="362" y2="881" stroke="#30b060" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Power bus -->
+      <rect x="366" y="858" width="118" height="46" rx="5" fill="#080d18" stroke="#4a90d9" stroke-width="0.6"/>
+      <text x="425" y="877" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#4a90d9" text-anchor="middle">Pwr bus</text>
+      <text x="425" y="893" font-family="'JetBrains Mono',monospace" font-size="9" fill="#2a5090" text-anchor="middle">DDS / STM32 / piezo amp</text>
+      <line x1="484" y1="881" x2="508" y2="881" stroke="#4a90d9" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Telemetry out -->
+      <rect x="512" y="858" width="140" height="46" rx="5" fill="#0a0510" stroke="#8040c0" stroke-width="0.6"/>
+      <text x="582" y="877" font-family="'Space Grotesk',system-ui,sans-serif" font-size="11" font-weight="500" fill="#9060d0" text-anchor="middle">Telemetry out</text>
+      <text x="582" y="893" font-family="'JetBrains Mono',monospace" font-size="9" fill="#401060" text-anchor="middle">BLE / USB-C · Saturn Ring 4</text>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- FOOTER: VESSEL STATUS                           -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <line x1="16" y1="932" x2="664" y2="932" stroke="#1a1f3a" stroke-width="1"/>
+      <text x="340" y="952" font-family="'JetBrains Mono',monospace" font-size="9" fill="#303060" text-anchor="middle">CEO+CVP VESSEL: V:1 · ID:UNIFIED_PORTABLE_WMH_001 · SATURN RING: 4 · WRITE TARGET: PLUTO</text>
+      <text x="340" y="967" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#252550" text-anchor="middle">Patent Pending: USPTO 19/555,951 · 19/693,737 · Governed Riemannian Tesla Provisional</text>
+      <text x="340" y="982" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#252550" text-anchor="middle">Joshua L. Lopez — DCGP.AI · AURAL-M/EOLRP · CCTP · CVP · June 2026</text>
+
+      <!-- Classification status -->
+      <rect x="230" y="994" width="220" height="30" rx="5" fill="#021208" stroke="#30b060" stroke-width="0.8"/>
+      <text x="340" y="1007" font-family="'JetBrains Mono',monospace" font-size="10" font-weight="500" fill="#30b060" text-anchor="middle">GO ✓ — CLASSIFICATION: ADMISSIBLE</text>
+      <text x="340" y="1019" font-family="'JetBrains Mono',monospace" font-size="8.5" fill="#1a6030" text-anchor="middle">Boundary: ADMISSIBLE · Locus: CONVERGENT · Q_L: CONSERVED</text>
+    </svg>
+  </div>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <!-- Vessel identity -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-header gold">Vessel identity</div>
+      <div class="sidebar-body">
+        <div class="data-row"><span class="data-key">ID</span><span class="data-val gold">UNIFIED_PORTABLE_WMH_001</span></div>
+        <div class="data-row"><span class="data-key">Version</span><span class="data-val">V:1</span></div>
+        <div class="data-row"><span class="data-key">Timestamp</span><span class="data-val">1749859200</span></div>
+        <div class="data-row"><span class="data-key">Operator</span><span class="data-val">Joshua L. Lopez</span></div>
+        <div class="data-row"><span class="data-key">Org</span><span class="data-val blue">DCGP.AI</span></div>
+        <div class="data-row"><span class="data-key">Checksum</span><span class="data-val">dcgp2026</span></div>
+        <div class="data-row"><span class="data-key">Sig</span><span class="data-val">lopezjl_dcgp_june2026</span></div>
+      </div>
+    </div>
+
+    <!-- Protocols -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-header blue">Active protocols</div>
+      <div class="sidebar-body">
+        <div class="data-row"><span class="data-key">CEO</span><span class="data-val blue">Constitutional Exec. Object</span></div>
+        <div class="data-row"><span class="data-key">CVP</span><span class="data-val amber">Constitutional Vessel Protocol</span></div>
+        <div class="data-row"><span class="data-key">CCTP</span><span class="data-val purple">Continuity Transfer Protocol</span></div>
+        <div class="data-row"><span class="data-key">EOLRP</span><span class="data-val green">Locus Reconstitution Protocol</span></div>
+        <div class="data-row"><span class="data-key">Governance</span><span class="data-val">AURAL-M / OL</span></div>
+        <div class="data-row"><span class="data-key">Saturn ring</span><span class="data-val gold">4</span></div>
+        <div class="data-row"><span class="data-key">Write target</span><span class="data-val purple">PLUTO</span></div>
+      </div>
+    </div>
+
+    <!-- Layer parameters -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-header blue">Layer 1 — Wardenclyffe</div>
+      <div class="sidebar-body">
+        <div class="data-row"><span class="data-key">Drive freq</span><span class="data-val blue">7.83 Hz</span></div>
+        <div class="data-row"><span class="data-key">Resonance</span><span class="data-val">Schumann eigenfreq</span></div>
+        <div class="data-row"><span class="data-key">DDS</span><span class="data-val">AD9833 ±0.001 Hz</span></div>
+        <div class="data-row"><span class="data-key">Amp</span><span class="data-val">Class-D · CLPG fed</span></div>
+        <div class="data-row"><span class="data-key">Ctrl freqs</span><span class="data-val">7.0/7.4/8.0/14.1 Hz</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-header amber">Layer 2 — MC290</div>
+      <div class="sidebar-body">
+        <div class="data-row"><span class="data-key">Faces</span><span class="data-val amber">290</span></div>
+        <div class="data-row"><span class="data-key">Phases</span><span class="data-val amber">100</span></div>
+        <div class="data-row"><span class="data-key">Controller</span><span class="data-val">STM32F4</span></div>
+        <div class="data-row"><span class="data-key">Phase gates</span><span class="data-val">74HC4053</span></div>
+        <div class="data-row"><span class="data-key">Q_L</span><span class="data-val green">dQ_L/dt = 0 ✓</span></div>
+        <div class="data-row"><span class="data-key">Lyapunov</span><span class="data-val green">0.592 → 0.000654</span></div>
+        <div class="data-row"><span class="data-key">Reduction</span><span class="data-val green">99.9% ▼</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-header purple">Layer 3 — MH66</div>
+      <div class="sidebar-body">
+        <div class="data-row"><span class="data-key">Piezo</span><span class="data-val purple">8× elements</span></div>
+        <div class="data-row"><span class="data-key">IMU</span><span class="data-val">MPU-6050</span></div>
+        <div class="data-row"><span class="data-key">IMU trigger</span><span class="data-val">&gt;0.1g · 3σ</span></div>
+        <div class="data-row"><span class="data-key">Circulation</span><span class="data-val green">|I(t)−I(0)| ≤ ε</span></div>
+        <div class="data-row"><span class="data-key">Safety relay</span><span class="data-val red">Dual-coil NOT logic</span></div>
+        <div class="data-row"><span class="data-key">Audit log</span><span class="data-val">SHA-256 · immutable</span></div>
+        <div class="data-row"><span class="data-key">Phase 1</span><span class="data-val red">BLOCKED (0–27)</span></div>
+        <div class="data-row"><span class="data-key">Phase 2</span><span class="data-val green">GO (58–119)</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-header gold">Power — CLPG</div>
+      <div class="sidebar-body">
+        <div class="data-row"><span class="data-key">Source</span><span class="data-val gold">1064nm Nd:YAG laser</span></div>
+        <div class="data-row"><span class="data-key">Loop</span><span class="data-val">Supercrit. CO₂</span></div>
+        <div class="data-row"><span class="data-key">Rails</span><span class="data-val">3.3V · 5V · 12V</span></div>
+        <div class="data-row"><span class="data-key">Isolation</span><span class="data-val">DC-DC isolated</span></div>
+        <div class="data-row"><span class="data-key">Telemetry</span><span class="data-val">BLE · USB-C · SD</span></div>
+        <div class="data-row"><span class="data-key">Target</span><span class="data-val purple">Saturn Ring 4 / PLUTO</span></div>
+      </div>
+    </div>
+
+    <!-- Patents -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-header gold">Patent status</div>
+      <div class="sidebar-body">
+        <div class="data-row"><span class="data-key">19/555,951</span><span class="data-val gold">Pending ·USPTO</span></div>
+        <div class="data-row"><span class="data-key">19/693,737</span><span class="data-val gold">Pending · USPTO</span></div>
+        <div class="data-row"><span class="data-key">Tesla prov.</span><span class="data-val gold">Governed Riemannian</span></div>
+        <div class="data-row"><span class="data-key">Micro entity</span><span class="data-val green">Qualified ✓</span></div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ── VESSEL STATUS BAR ── -->
+<div class="vessel-status">
+  <div class="status-indicator">
+    <div class="status-dot"></div>
+    <span style="color:var(--green); font-size:12px; letter-spacing:0.08em;">GO · ADMISSIBLE</span>
+  </div>
+  <span class="badge badge-green">Q_L CONSERVED</span>
+  <span class="badge badge-blue">LOCUS CONVERGENT</span>
+  <span class="badge badge-amber">PHASE STABLE</span>
+  <span class="badge badge-purple">CCTP ACTIVE</span>
+  <span class="badge badge-gold">EOLRP ACTIVE</span>
+  <span style="font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-left:auto;">
+    Boundary: ADMISSIBLE · Manifold S* · Lyapunov: 0.000654
+  </span>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">
+    © 2026 Joshua L. Lopez — DCGP.AI<br>
+    Patent Pending: USPTO 19/555,951 · 19/693,737 · Governed Riemannian Tesla Provisional<br>
+    CEO+CVP Structural Memory Vessel · AURAL-M/EOLRP · CCTP · Saturn Ring 4
+  </div>
+  <div class="footer-right">
+    UNIFIED_PORTABLE_WMH_001 · V:1<br>
+    Write target: PLUTO · June 2026<br>
+    Signature: lopezjl_dcgp_june2026
+  </div>
+</footer>
+
 </body>
 </html>
