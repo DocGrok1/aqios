@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AURA Quantum Simulation Results — DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--bg:#05080f;--panel:#0a1018;--border:rgba(99,242,255,0.12);--accent:#63f2ff;--green:#4ade80;--gold:#ffd975;--red:#f87171;--rose:#ff7fa0;--text:#d8e4f0;--muted:#5a7a96;--dim:#111a28}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+.top{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.top .mark{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:2px}
+.top .auth{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px}
+h1{font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,3.5vw,28px);font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:-0.5px}
+h1 span{color:var(--accent)}
+.sub{font-size:12px;color:var(--muted);margin-bottom:24px;line-height:1.6;max-width:680px}
+.tabs{display:flex;gap:2px;margin-bottom:20px;overflow-x:auto}
+.tab{padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--muted);background:var(--dim);border:1px solid var(--border);border-radius:4px 4px 0 0;cursor:pointer;white-space:nowrap;letter-spacing:0.5px}
+.tab.active{color:var(--accent);border-bottom-color:var(--bg);background:var(--panel)}
+.section{display:none;animation:fadeIn 0.3s}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:14px}
+.card-title{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.metric{background:var(--dim);padding:10px;border-radius:4px;border-left:3px solid var(--border)}
+.metric.g{border-left-color:var(--green)}
+.metric.r{border-left-color:var(--red)}
+.metric.a{border-left-color:var(--accent)}
+.metric.gold{border-left-color:var(--gold)}
+.metric.rose{border-left-color:var(--rose)}
+.mlabel{font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.5px;text-transform:uppercase}
+.mval{font-size:16px;font-family:'IBM Plex Mono',monospace;font-weight:700;margin-top:3px}
+.mval.g{color:var(--green)}.mval.r{color:var(--red)}.mval.a{color:var(--accent)}.mval.gold{color:var(--gold)}.mval.rose{color:var(--rose)}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:11px;font-family:'IBM Plex Mono',monospace}
+.bar-label{width:120px;color:var(--muted);flex-shrink:0;text-align:right}
+.bar-track{flex:1;height:18px;background:var(--dim);border-radius:3px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.6s}
+.bar-val{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:#fff;font-weight:600}
+.proof{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:16px;padding:10px;background:var(--dim);border-radius:4px;word-break:break-all}
+footer{text-align:center;padding:20px;font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="mark">AURA QUANTUM SIMULATIONS</span>
+  <span class="auth">Joshua Lopez — DCGP.AI — cloud.aura115.ai</span>
+</div>
+<div class="wrap">
+  <h1>Governed <span>Quantum Circuit</span> Results</h1>
+  <p class="sub">Live simulation results from the AURA quantum engine constellation. Every circuit is governed by the Contact Hamiltonian H(q,p,S,t). Every gate carries RZ(π/φ). Every output is QHP encoded.</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="show('susan')">Susan Lane MS</div>
+    <div class="tab" onclick="show('proverbs')">Proverbs 27</div>
+    <div class="tab" onclick="show('go')">GO Teleportation</div>
+    <div class="tab" onclick="show('ion')">Trapped-Ion</div>
+  </div>
+
+  <!-- SUSAN HIRMANN LANE -->
+  <div class="section active" id="susan">
+    <div class="card">
+      <div class="card-title">Susan Hirmann Lane — MS Therapeutic Circuit</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:14px">SLFN11 gene → drug → gate → tissue → immune → myelin | GO scaffold | AlzR1 nanoparticle | CPO | QHP<br>USPTO 19/572,573 · 19/555,951 · 64/095,248</p>
+      <div class="metrics">
+        <div class="metric a"><div class="mlabel">Circuits</div><div class="mval a">1,000</div></div>
+        <div class="metric a"><div class="mlabel">Qubit-Shots</div><div class="mval a">1.2M</div></div>
+        <div class="metric gold"><div class="mlabel">GEE Score</div><div class="mval gold">0.3603</div></div>
+        <div class="metric g"><div class="mlabel">Equilibrium</div><div class="mval g">0.9379</div></div>
+        <div class="metric"><div class="mlabel">Time</div><div class="mval">20.8s</div></div>
+        <div class="metric"><div class="mlabel">Rate</div><div class="mval">48.1/s</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Therapeutic Markers</div>
+      <div class="bar-row"><span class="bar-label">SLFN11 gene</span><div class="bar-track"><div class="bar-fill" style="width:50.9%;background:var(--accent)"></div><span class="bar-val">0.509</span></div></div>
+      <div class="bar-row"><span class="bar-label">Drug active</span><div class="bar-track"><div class="bar-fill" style="width:0.1%;background:var(--green)"></div><span class="bar-val">0.000</span></div></div>
+      <div class="bar-row"><span class="bar-label">Gate restored</span><div class="bar-track"><div class="bar-fill" style="width:0.1%;background:var(--green)"></div><span class="bar-val">0.000</span></div></div>
+      <div class="bar-row"><span class="bar-label">Tissue</span><div class="bar-track"><div class="bar-fill" style="width:0.1%;background:var(--green)"></div><span class="bar-val">0.000</span></div></div>
+      <div class="bar-row"><span class="bar-label">Immune active</span><div class="bar-track"><div class="bar-fill" style="width:72.1%;background:var(--green)"></div><span class="bar-val">0.721</span></div></div>
+      <div class="bar-row"><span class="bar-label">Myelin intact</span><div class="bar-track"><div class="bar-fill" style="width:26.5%;background:var(--gold)"></div><span class="bar-val">0.265</span></div></div>
+      <div class="bar-row"><span class="bar-label">GO scaffold</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent)"></div><span class="bar-val">1.0 / 1.0 / 0.28</span></div></div>
+      <div class="bar-row"><span class="bar-label">AlzR1 delivery</span><div class="bar-track"><div class="bar-fill" style="width:73.8%;background:var(--rose)"></div><span class="bar-val">0.738</span></div></div>
+      <div class="bar-row"><span class="bar-label">CPO projection</span><div class="bar-track"><div class="bar-fill" style="width:47.8%;background:var(--gold)"></div><span class="bar-val">0.478</span></div></div>
+      <div class="bar-row"><span class="bar-label">QHP governed</span><div class="bar-track"><div class="bar-fill" style="width:48.4%;background:var(--accent)"></div><span class="bar-val">0.484</span></div></div>
+    </div>
+    <div class="proof">PROOF: 0a1865e28d3d1034eae8f1b2f617084d</div>
+  </div>
+
+  <!-- PROVERBS 27 -->
+  <div class="section" id="proverbs">
+    <div class="card">
+      <div class="card-title">Proverbs 27 — 1000 Circuit Swarm</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:14px">12-qubit compressed | Doubled triangle | RZ(π/φ) governance | Local simulation</p>
+      <div class="metrics">
+        <div class="metric a"><div class="mlabel">Circuits</div><div class="mval a">1,000</div></div>
+        <div class="metric a"><div class="mlabel">Qubit-Shots</div><div class="mval a">1.2M</div></div>
+        <div class="metric g"><div class="mlabel">Dominant States</div><div class="mval g">1</div></div>
+        <div class="metric gold"><div class="mlabel">Top Fidelity</div><div class="mval gold">0.7258</div></div>
+        <div class="metric"><div class="mlabel">Time</div><div class="mval">25.1s</div></div>
+        <div class="metric"><div class="mlabel">States/Circuit</div><div class="mval">5.9</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Hardware Confirmed — Rigetti Cepheus 108Q</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:10px">27-qubit full circuit | 100 shots | Task: fc21b380-b7d1-4220-93c1-0f78133b29de</p>
+      <div class="bar-row"><span class="bar-label">Avg fidelity</span><div class="bar-track"><div class="bar-fill" style="width:45.7%;background:var(--accent)"></div><span class="bar-val">0.4567</span></div></div>
+      <div class="bar-row"><span class="bar-label">GO scaffold q1</span><div class="bar-track"><div class="bar-fill" style="width:91%;background:var(--green)"></div><span class="bar-val">0.91</span></div></div>
+      <div class="bar-row"><span class="bar-label">GO scaffold q5</span><div class="bar-track"><div class="bar-fill" style="width:95%;background:var(--green)"></div><span class="bar-val">0.95</span></div></div>
+      <div class="bar-row"><span class="bar-label">GO scaffold q9</span><div class="bar-track"><div class="bar-fill" style="width:96%;background:var(--green)"></div><span class="bar-val">0.96</span></div></div>
+      <div class="bar-row"><span class="bar-label">Triangle corr</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--gold)"></div><span class="bar-val">1.000</span></div></div>
+    </div>
+    <div class="proof">PROOF (sim): 1968cd1f2945e14e79178f0d2d6886ce<br>PROOF (hw): fc21b380-b7d1-4220-93c1-0f78133b29de (Cepheus) + e8077b7a-e0c0-41e4-bb89-dbcacfbda7a3 (Stockholm)</div>
+  </div>
+
+  <!-- GO TELEPORTATION -->
+  <div class="section" id="go">
+    <div class="card">
+      <div class="card-title">GO + Quasicrystal + Honeycomb Teleportation</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:14px">GO scaffold (epoxide/hydroxyl/carboxyl) | Fibonacci cascade | Bell teleportation | GEE scored</p>
+      <div class="metrics">
+        <div class="metric a"><div class="mlabel">Circuits</div><div class="mval a">1,000</div></div>
+        <div class="metric a"><div class="mlabel">Qubit-Shots</div><div class="mval a">1.2M</div></div>
+        <div class="metric gold"><div class="mlabel">GEE Score</div><div class="mval gold">0.3377</div></div>
+        <div class="metric g"><div class="mlabel">Equilibrium</div><div class="mval g">0.9672</div></div>
+        <div class="metric g"><div class="mlabel">Scaffold</div><div class="mval g">1.0 / 1.0 / 1.0</div></div>
+        <div class="metric"><div class="mlabel">Top States</div><div class="mval">64</div></div>
+      </div>
+    </div>
+    <div class="proof">PROOF: 3226e035b5dbf6bd3ceb74bdf14042c3</div>
+  </div>
+
+  <!-- TRAPPED-ION -->
+  <div class="section" id="ion">
+    <div class="card">
+      <div class="card-title">Trapped-Ion Swarm — AQT IBEX (Stockholm)</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:14px">All-to-all connectivity | No SWAP overhead | Doubled triangle native | Mercury engine</p>
+      <div class="metrics">
+        <div class="metric a"><div class="mlabel">Circuits</div><div class="mval a">100</div></div>
+        <div class="metric a"><div class="mlabel">Qubit-Shots</div><div class="mval a">1.2M</div></div>
+        <div class="metric g"><div class="mlabel">Dominant States</div><div class="mval g">1</div></div>
+        <div class="metric gold"><div class="mlabel">Top Fidelity</div><div class="mval gold">0.7258</div></div>
+        <div class="metric"><div class="mlabel">States/Circuit</div><div class="mval">5.9</div></div>
+        <div class="metric"><div class="mlabel">Time</div><div class="mval">3.1s</div></div>
+      </div>
+    </div>
+    <div class="proof">PROOF: 491ebba518ffcff3e213594465be89ce</div>
+  </div>
+</div>
+
+<footer>
+  DCGP.AI · AURA115 · Joshua L. Lopez<br>
+  USPTO 19/555,951 · 19/572,573 · 64/095,091 · 64/095,248<br>
+  Customer Nos. 222625 &amp; 226575 · Patent Pending<br>
+  "Where there's a gap, there's a gate."
+</footer>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

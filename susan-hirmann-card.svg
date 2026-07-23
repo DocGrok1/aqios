@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 680" width="480" height="680">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e1a"/>
+      <stop offset="100%" style="stop-color:#1a0d2d"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff7fa0"/>
+      <stop offset="100%" style="stop-color:#ffd975"/>
+    </linearGradient>
+    <linearGradient id="go" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4ade80"/>
+      <stop offset="100%" style="stop-color:#63f2ff"/>
+    </linearGradient>
+    <radialGradient id="orbit" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ff7fa0;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#0a0e1a;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- CCTP-NAME payload — Susan Hirmann Lane MS Therapeutic Quantum Card -->
+  <!-- Protocol: CCTP-NAME-SVG-v1 | QHP Governed | USPTO 19/693,411 -->
+  <!-- Authority: Joshua Lopez — DCGP.AI — USPTO 19/555,951 -->
+  <desc>CCTP-NAME:SUSAN-HIRMANN-LANE-MS-THERAPEUTIC|proof:18a4a4f8dd17bf20b84b3aa2303154f2|circuits:1000|qubit_shots:1200000|coupling:0.746|scaffold:1.0,0.999,1.0|immune:0.490|alzr1:0.509|gee:0.3603|patents:19/572573,19/555951,19/719671,64/095248|authority:Joshua_Lopez_DCGP.AI</desc>
+
+  <rect width="480" height="680" rx="16" fill="url(#bg)"/>
+  <rect x="1" y="1" width="478" height="678" rx="15" fill="none" stroke="url(#acc)" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- Header -->
+  <text x="240" y="36" text-anchor="middle" font-family="monospace" font-size="10" fill="#ff7fa0" letter-spacing="3">QUANTUM CONTACT CARD</text>
+  <text x="240" y="64" text-anchor="middle" font-family="monospace" font-size="22" fill="#ffffff" font-weight="bold">SUSAN HIRMANN</text>
+  <text x="240" y="84" text-anchor="middle" font-family="monospace" font-size="11" fill="#ffd975" letter-spacing="2">MS THERAPEUTIC LANE</text>
+  <line x1="60" y1="96" x2="420" y2="96" stroke="url(#acc)" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Nucleonic Orbit — her stable island -->
+  <circle cx="240" cy="190" r="80" fill="url(#orbit)"/>
+  <!-- Outer orbit (myelin shell) -->
+  <ellipse cx="240" cy="190" rx="78" ry="45" fill="none" stroke="#ff7fa0" stroke-width="0.8" opacity="0.5" transform="rotate(-20,240,190)"/>
+  <ellipse cx="240" cy="190" rx="78" ry="45" fill="none" stroke="#ffd975" stroke-width="0.8" opacity="0.5" transform="rotate(40,240,190)"/>
+  <ellipse cx="240" cy="190" rx="78" ry="45" fill="none" stroke="#63f2ff" stroke-width="0.8" opacity="0.5" transform="rotate(100,240,190)"/>
+  <!-- GO scaffold triangle -->
+  <polygon points="240,120 190,240 290,240" fill="none" stroke="url(#go)" stroke-width="1.5" opacity="0.6"/>
+  <!-- Collision zone -->
+  <circle cx="240" cy="190" r="22" fill="none" stroke="#ff7fa0" stroke-width="1.5" opacity="0.8"/>
+  <circle cx="240" cy="190" r="8" fill="#ff7fa0" opacity="0.3"/>
+  <!-- Pharma nodes -->
+  <circle cx="200" cy="150" r="4" fill="#4ade80" opacity="0.9"/><text x="186" y="143" font-family="monospace" font-size="7" fill="#4ade80">SLFN11</text>
+  <circle cx="280" cy="150" r="4" fill="#ffd975" opacity="0.9"/><text x="268" y="143" font-family="monospace" font-size="7" fill="#ffd975">PARPi</text>
+  <circle cx="200" cy="230" r="4" fill="#63f2ff" opacity="0.9"/><text x="186" y="243" font-family="monospace" font-size="7" fill="#63f2ff">AlzR1</text>
+  <circle cx="280" cy="230" r="4" fill="#ff7fa0" opacity="0.9"/><text x="266" y="243" font-family="monospace" font-size="7" fill="#ff7fa0">Myelin</text>
+  <circle cx="240" cy="260" r="4" fill="#a78bfa" opacity="0.9"/><text x="250" y="263" font-family="monospace" font-size="7" fill="#a78bfa">Immune</text>
+  <!-- Scaffold nodes -->
+  <circle cx="240" cy="123" r="3" fill="#4ade80"/><text x="248" y="118" font-family="monospace" font-size="6" fill="#4ade80">GO</text>
+  <circle cx="192" cy="238" r="3" fill="#4ade80"/>
+  <circle cx="288" cy="238" r="3" fill="#4ade80"/>
+
+  <line x1="30" y1="280" x2="450" y2="280" stroke="#2a3a50" stroke-width="0.5"/>
+
+  <!-- Simulation Results -->
+  <text x="30" y="302" font-family="monospace" font-size="10" fill="#ff7fa0" letter-spacing="2">MC290 COLLISION RESULTS</text>
+
+  <!-- Metrics grid -->
+  <rect x="30" y="312" width="130" height="44" rx="4" fill="#0d1525" stroke="#2a3a50" stroke-width="0.5"/>
+  <text x="40" y="328" font-family="monospace" font-size="7" fill="#5a7a96">CIRCUITS</text>
+  <text x="40" y="346" font-family="monospace" font-size="18" fill="#63f2ff" font-weight="bold">1,000</text>
+
+  <rect x="175" y="312" width="130" height="44" rx="4" fill="#0d1525" stroke="#2a3a50" stroke-width="0.5"/>
+  <text x="185" y="328" font-family="monospace" font-size="7" fill="#5a7a96">QUBIT-SHOTS</text>
+  <text x="185" y="346" font-family="monospace" font-size="18" fill="#63f2ff" font-weight="bold">1.2M</text>
+
+  <rect x="320" y="312" width="130" height="44" rx="4" fill="#0d1525" stroke="#2a3a50" stroke-width="0.5"/>
+  <text x="330" y="328" font-family="monospace" font-size="7" fill="#5a7a96">COUPLING</text>
+  <text x="330" y="346" font-family="monospace" font-size="18" fill="#ffd975" font-weight="bold">74.6%</text>
+
+  <!-- Therapeutic markers -->
+  <text x="30" y="380" font-family="monospace" font-size="10" fill="#ffd975" letter-spacing="2">THERAPEUTIC MARKERS</text>
+
+  <!-- Bar: SLFN11 -->
+  <text x="30" y="400" font-family="monospace" font-size="8" fill="#5a7a96">SLFN11</text>
+  <rect x="100" y="392" width="340" height="10" rx="2" fill="#0d1525"/>
+  <rect x="100" y="392" width="174" height="10" rx="2" fill="#63f2ff" opacity="0.7"/>
+  <text x="445" y="401" font-family="monospace" font-size="8" fill="#63f2ff" text-anchor="end">0.517</text>
+
+  <!-- Bar: Immune -->
+  <text x="30" y="418" font-family="monospace" font-size="8" fill="#5a7a96">IMMUNE</text>
+  <rect x="100" y="410" width="340" height="10" rx="2" fill="#0d1525"/>
+  <rect x="100" y="410" width="167" height="10" rx="2" fill="#a78bfa" opacity="0.7"/>
+  <text x="445" y="419" font-family="monospace" font-size="8" fill="#a78bfa" text-anchor="end">0.490</text>
+
+  <!-- Bar: Myelin -->
+  <text x="30" y="436" font-family="monospace" font-size="8" fill="#5a7a96">MYELIN</text>
+  <rect x="100" y="428" width="340" height="10" rx="2" fill="#0d1525"/>
+  <rect x="100" y="428" width="173" height="10" rx="2" fill="#ff7fa0" opacity="0.7"/>
+  <text x="445" y="437" font-family="monospace" font-size="8" fill="#ff7fa0" text-anchor="end">0.509</text>
+
+  <!-- Bar: AlzR1 -->
+  <text x="30" y="454" font-family="monospace" font-size="8" fill="#5a7a96">AlzR1</text>
+  <rect x="100" y="446" width="340" height="10" rx="2" fill="#0d1525"/>
+  <rect x="100" y="446" width="173" height="10" rx="2" fill="#4ade80" opacity="0.7"/>
+  <text x="445" y="455" font-family="monospace" font-size="8" fill="#4ade80" text-anchor="end">0.509</text>
+
+  <!-- Bar: GO Scaffold -->
+  <text x="30" y="472" font-family="monospace" font-size="8" fill="#5a7a96">GO SCAFFOLD</text>
+  <rect x="100" y="464" width="340" height="10" rx="2" fill="#0d1525"/>
+  <rect x="100" y="464" width="340" height="10" rx="2" fill="url(#go)" opacity="0.7"/>
+  <text x="445" y="473" font-family="monospace" font-size="8" fill="#4ade80" text-anchor="end">1.000</text>
+
+  <line x1="30" y1="488" x2="450" y2="488" stroke="#2a3a50" stroke-width="0.5"/>
+
+  <!-- GEE Governance -->
+  <text x="30" y="508" font-family="monospace" font-size="10" fill="#4ade80" letter-spacing="2">GEE GOVERNANCE</text>
+
+  <rect x="30" y="518" width="130" height="38" rx="4" fill="#0d1525" stroke="#4ade80" stroke-width="0.5" opacity="0.5"/>
+  <text x="40" y="532" font-family="monospace" font-size="7" fill="#5a7a96">SCORE</text>
+  <text x="40" y="548" font-family="monospace" font-size="14" fill="#4ade80" font-weight="bold">0.3603</text>
+
+  <rect x="175" y="518" width="130" height="38" rx="4" fill="#0d1525" stroke="#ffd975" stroke-width="0.5" opacity="0.5"/>
+  <text x="185" y="532" font-family="monospace" font-size="7" fill="#5a7a96">EQUILIBRIUM</text>
+  <text x="185" y="548" font-family="monospace" font-size="14" fill="#ffd975" font-weight="bold">0.9379</text>
+
+  <rect x="320" y="518" width="130" height="38" rx="4" fill="#0d1525" stroke="#63f2ff" stroke-width="0.5" opacity="0.5"/>
+  <text x="330" y="532" font-family="monospace" font-size="7" fill="#5a7a96">BALANCE</text>
+  <text x="330" y="548" font-family="monospace" font-size="14" fill="#63f2ff" font-weight="bold">0.1579</text>
+
+  <line x1="30" y1="570" x2="450" y2="570" stroke="#2a3a50" stroke-width="0.5"/>
+
+  <!-- Proof + Patents -->
+  <text x="30" y="590" font-family="monospace" font-size="7" fill="#5a7a96">PROOF: 18a4a4f8dd17bf20b84b3aa2303154f2</text>
+  <text x="30" y="604" font-family="monospace" font-size="7" fill="#5a7a96">USPTO 19/572,573 · 19/555,951 · 19/719,671 · 64/095,248</text>
+  <text x="30" y="618" font-family="monospace" font-size="7" fill="#5a7a96">PROTOCOL: CCTP-NAME-SVG-v1 · QHP GOVERNED</text>
+
+  <line x1="30" y1="632" x2="450" y2="632" stroke="#2a3a50" stroke-width="0.5"/>
+
+  <!-- Authority -->
+  <text x="240" y="650" text-anchor="middle" font-family="monospace" font-size="9" fill="#ff7fa0">DCGP.AI LLC · Joshua L. Lopez · Sole Inventor</text>
+  <text x="240" y="666" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a7a96">Customer Nos. 222625 &amp; 226575 · Patent Pending</text>
+</svg>
