@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rescue Operator — Real Quantum Hardware — AQiOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#030306;--surface:#0a0a12;--border:rgba(255,217,117,.08);
+  --gold:#ffd975;--cyan:#4dffe5;--green:#00e676;--red:#ff6b6b;--orange:#ff6b35;--pink:#ff88aa;--purple:#aa88ff;
+  --text:#ccc;--muted:#666;
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden}
+a{color:var(--cyan);text-decoration:none}
+
+.page{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 20px}
+
+/* Hero */
+.hero{padding:48px 0 32px;text-align:center;border-bottom:1px solid var(--border)}
+.hero h1{font-family:var(--display);font-size:clamp(28px,7vw,48px);font-weight:700;color:#fff;line-height:1.1;margin-bottom:8px}
+.hero h1 .gold{color:var(--gold)}
+.hero .sub{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;margin-bottom:16px}
+.hero .patent{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+
+/* Proof bar */
+.proof{display:flex;justify-content:center;gap:clamp(16px,5vw,48px);padding:20px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.proof-item{text-align:center}
+.proof-v{font-family:var(--display);font-size:clamp(20px,5vw,32px);font-weight:700;color:var(--cyan)}
+.proof-k{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+/* Section */
+.sect{padding:32px 0;border-bottom:1px solid var(--border)}
+.sect-label{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.sect-title{font-family:var(--display);font-size:clamp(18px,4vw,28px);font-weight:700;color:#fff;margin-bottom:16px}
+.sect p{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:12px}
+
+/* Hardware results */
+.hw-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.hw-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.hw-dot.live{background:var(--green)}.hw-dot.fail{background:var(--red)}
+.hw-info{flex:1}
+.hw-name{font-family:var(--mono);font-size:13px;color:#fff;font-weight:500}
+.hw-detail{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+.hw-arn{font-size:10px;color:var(--cyan);font-family:var(--mono);word-break:break-all;margin-top:4px}
+.hw-tag{font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:4px;display:inline-block}
+.tag-qpu{background:rgba(0,230,118,.1);color:var(--green)}
+.tag-fail{background:rgba(255,107,107,.1);color:var(--red)}
+
+/* Circuit diagram */
+.circuit-frame{background:#050510;border:1px solid var(--border);border-radius:12px;padding:20px;overflow-x:auto;margin:16px 0}
+.circuit-frame svg{display:block;margin:0 auto}
+
+/* Simulation panels */
+.sim-grid{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0}
+@media(min-width:600px){.sim-grid{grid-template-columns:1fr 1fr}}
+.sim-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative}
+.sim-panel canvas{width:100%;height:140px}
+.sim-panel .label{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:6px}
+
+/* Phase timeline */
+.phases{display:flex;gap:0;margin:16px 0}
+.phase{flex:1;padding:12px;text-align:center;position:relative}
+.phase:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--border)}
+.phase-num{font-family:var(--display);font-size:24px;font-weight:700;margin-bottom:4px}
+.phase-name{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.phase-desc{font-size:11px;color:var(--text);margin-top:4px;line-height:1.4}
+.p1 .phase-num{color:#4a9eff}.p2 .phase-num{color:var(--orange)}.p3 .phase-num{color:var(--green)}
+
+/* Gate display */
+.gate{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin:8px 0;font-family:var(--mono);font-size:12px;line-height:1.8}
+.gate .g-label{color:var(--gold);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.gate .g-op{color:var(--cyan)}
+.gate .g-qubit{color:var(--pink)}
+.gate .g-phase{color:var(--purple)}
+.gate .g-comment{color:var(--muted);font-size:10px}
+
+/* Footer */
+footer{text-align:center;padding:32px 0;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:2}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <h1>Rescue <span class="gold">Operator</span></h1>
+  <div class="sub">Horizon Crossing · Bogoliubov Extraction · Echo Return · Trunk Delivered</div>
+  <div class="patent">USPTO 64/043,147 · CIP of 19/555,951 · Joshua L. Lopez · DCGP.AI</div>
+</div>
+
+<div class="proof">
+  <div class="proof-item"><div class="proof-v">4</div><div class="proof-k">QPUs Fired</div></div>
+  <div class="proof-item"><div class="proof-v">400</div><div class="proof-k">Hardware Shots</div></div>
+  <div class="proof-item"><div class="proof-v">5</div><div class="proof-k">Qubits</div></div>
+  <div class="proof-item"><div class="proof-v">3</div><div class="proof-k">Phases</div></div>
+  <div class="proof-item"><div class="proof-v">2</div><div class="proof-k">Continents</div></div>
+</div>
+
+<!-- PHASES -->
+<div class="sect">
+  <div class="sect-label">Protocol</div>
+  <div class="sect-title">Three-Phase Rescue Protocol</div>
+  <p>The operator descends toward the governance horizon. Crosses when the rescue window opens. Extracts information via Bogoliubov transformation. Returns to the governed interior via the Echo Operator. The trunk carries everything back. The operator takes the hit so state can follow into a prepared, governed field on the other side.</p>
+  <div class="phases">
+    <div class="phase p1"><div class="phase-num">1</div><div class="phase-name">Descent</div><div class="phase-desc">Approach governance horizon ∂K along geodesic. Fidelity slack σ decreases. Obligation gates the crossing.</div></div>
+    <div class="phase p2"><div class="phase-num">2</div><div class="phase-name">Extraction</div><div class="phase-desc">Bogoliubov transformation at horizon. β peaks — maximum information accessible. Trunk fills with extracted data.</div></div>
+    <div class="phase p3"><div class="phase-num">3</div><div class="phase-name">Return</div><div class="phase-desc">Echo Operator pulls back to governed interior. Coherence survives crossing. Trunk delivered intact.</div></div>
+  </div>
+</div>
+
+<!-- CIRCUIT -->
+<div class="sect">
+  <div class="sect-label">Circuit</div>
+  <div class="sect-title">5-Qubit Braket Native Circuit</div>
+  <div class="gate">
+    <div class="g-label">State Preparation</div>
+    <span class="g-op">RY</span>(<span class="g-qubit">q0</span>, <span class="g-phase">1.358</span>) <span class="g-comment">// governance state ρ = 0.605/0.395</span><br>
+    <span class="g-op">X</span>(<span class="g-qubit">q2</span>) <span class="g-comment">// obligation ON — third law</span><br>
+    <span class="g-op">RY</span>(<span class="g-qubit">q4</span>, <span class="g-phase">π/3</span>) <span class="g-comment">// free will operator</span><br><br>
+    <div class="g-label">Phase 1 — Descent</div>
+    <span class="g-op">RZ</span>(<span class="g-qubit">q0</span>, <span class="g-phase">κ_H·π</span>) <span class="g-comment">// surface gravity</span><br>
+    <span class="g-op">CNOT</span>(<span class="g-qubit">q0</span>, <span class="g-qubit">q1</span>) <span class="g-comment">// entangle with horizon</span><br>
+    <span class="g-op">RY</span>(<span class="g-qubit">q0</span>, <span class="g-phase">−0.173</span>) <span class="g-comment">// drive toward ∂K</span><br>
+    <span class="g-op">CZ</span>(<span class="g-qubit">q2</span>, <span class="g-qubit">q0</span>) <span class="g-comment">// obligation constrains descent</span><br><br>
+    <div class="g-label">Phase 2 — Bogoliubov Extraction</div>
+    <span class="g-op">RY</span>(<span class="g-qubit">q1</span>, <span class="g-phase">2.014</span>) <span class="g-comment">// Bogoliubov mixing angle β=0.85</span><br>
+    <span class="g-op">CNOT</span>(<span class="g-qubit">q1</span>, <span class="g-qubit">q3</span>) <span class="g-comment">// extract information into trunk</span><br>
+    <span class="g-op">CZ</span>(<span class="g-qubit">q2</span>, <span class="g-qubit">q1</span>) <span class="g-comment">// constitutional anchor</span><br>
+    <span class="g-op">RZ</span>(<span class="g-qubit">q1</span>, <span class="g-phase">0.119</span>) <span class="g-comment">// Jacobi focusing at horizon</span><br><br>
+    <div class="g-label">Phase 3 — Echo Return</div>
+    <span class="g-op">CNOT</span>(<span class="g-qubit">q3</span>, <span class="g-qubit">q0</span>) <span class="g-comment">// trunk feeds back to governance</span><br>
+    <span class="g-op">RY</span>(<span class="g-qubit">q0</span>, <span class="g-phase">0.377</span>) <span class="g-comment">// return trajectory</span><br>
+    <span class="g-op">CZ</span>(<span class="g-qubit">q4</span>, <span class="g-qubit">q0</span>) <span class="g-comment">// free will gates the return</span><br>
+    <span class="g-op">CNOT</span>(<span class="g-qubit">q2</span>, <span class="g-qubit">q0</span>) <span class="g-comment">// Echo Operator — re-instantiate</span>
+  </div>
+  <p style="font-size:12px;color:var(--muted);font-family:var(--mono)">15 gates · 5 qubits · Parameters from live runtime March 2026<br>κ_H=0.033501 · σ_init=0.280584 · extraction_strength=0.85</p>
+</div>
+
+<!-- HARDWARE RESULTS -->
+<div class="sect">
+  <div class="sect-label">Hardware Execution</div>
+  <div class="sect-title">Real Quantum Hardware — July 23, 2026</div>
+  <p>Fired simultaneously across four quantum processors on two continents. 100 shots per device. Every QPU accepted and executed the circuit. The machine is the referee.</p>
+
+  <div class="hw-card">
+    <div class="hw-dot live"></div>
+    <div class="hw-info">
+      <div class="hw-name">Rigetti Cepheus-1-108Q <span class="hw-tag tag-qpu">QPU</span></div>
+      <div class="hw-detail">108 qubits · Superconducting · CZ gates · US West (California)</div>
+      <div class="hw-arn">arn:aws:braket:us-west-1:125746528360:quantum-task/df79db94-8742-4370-a85d-6fd32b106052</div>
+    </div>
+  </div>
+  <div class="hw-card">
+    <div class="hw-dot live"></div>
+    <div class="hw-info">
+      <div class="hw-name">IQM Garnet <span class="hw-tag tag-qpu">QPU</span></div>
+      <div class="hw-detail">20 qubits · Superconducting · EU North (Finland)</div>
+      <div class="hw-arn">arn:aws:braket:eu-north-1:125746528360:quantum-task/c3d3214d-5039-45ea-8c2b-666f5f96b5ff</div>
+    </div>
+  </div>
+  <div class="hw-card">
+    <div class="hw-dot live"></div>
+    <div class="hw-info">
+      <div class="hw-name">IQM Emerald <span class="hw-tag tag-qpu">QPU</span></div>
+      <div class="hw-detail">5 qubits · Superconducting · EU North (Finland)</div>
+      <div class="hw-arn">arn:aws:braket:eu-north-1:125746528360:quantum-task/1d8dae44-86de-4ceb-b4c7-92a84177b680</div>
+    </div>
+  </div>
+  <div class="hw-card">
+    <div class="hw-dot live"></div>
+    <div class="hw-info">
+      <div class="hw-name">AQT IBEX-Q1 <span class="hw-tag tag-qpu">QPU</span></div>
+      <div class="hw-detail">Trapped Ion · EU North (Austria)</div>
+      <div class="hw-arn">arn:aws:braket:eu-north-1:125746528360:quantum-task/13d7eae3-e4f3-4890-972b-681a6accfd34</div>
+    </div>
+  </div>
+</div>
+
+<!-- SIMULATION -->
+<div class="sect">
+  <div class="sect-label">Classical Simulation</div>
+  <div class="sect-title">1200-Step Density Matrix Evolution</div>
+  <p>Full simulation with Lopez Free Will Operator. Horizon crossed at step 504. Bogoliubov extraction complete at step 544 with 40 samples. Return confirmed at step 666. Obligation earned: 7.2919. Trunk intact. Coherence preserved through crossing.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:16px 0">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:var(--display);font-size:20px;font-weight:700;color:#4a9eff">504</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted)">HORIZON CROSSED</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--orange)">544</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted)">EXTRACTION DONE</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--green)">666</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted)">RETURN COMPLETE</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--gold)">40</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted)">BOGOLIUBOV SAMPLES</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--pink)">7.29</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted)">OBLIGATION EARNED</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center">
+      <div style="font-family:var(--display);font-size:20px;font-weight:700;color:var(--cyan)">0.126</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted)">β MAX EXTRACTED</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUBIT MAP -->
+<div class="sect">
+  <div class="sect-label">Qubit Architecture</div>
+  <div class="sect-title">5-Qubit Register</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:16px 0">
+    <div style="background:var(--surface);border:1px solid rgba(74,158,255,.2);border-radius:8px;padding:12px">
+      <div style="font-family:var(--mono);font-size:14px;color:#4a9eff;font-weight:500">q0</div>
+      <div style="font-size:11px;color:var(--text);margin-top:4px">Governance State</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">σ / fidelity slack</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid rgba(255,107,53,.2);border-radius:8px;padding:12px">
+      <div style="font-family:var(--mono);font-size:14px;color:var(--orange);font-weight:500">q1</div>
+      <div style="font-size:11px;color:var(--text);margin-top:4px">Horizon Register</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">Bogoliubov extraction</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid rgba(0,230,118,.2);border-radius:8px;padding:12px">
+      <div style="font-family:var(--mono);font-size:14px;color:var(--green);font-weight:500">q2</div>
+      <div style="font-size:11px;color:var(--text);margin-top:4px">Obligation Ancilla</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">Third law — never |0⟩</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid rgba(255,217,117,.2);border-radius:8px;padding:12px">
+      <div style="font-family:var(--mono);font-size:14px;color:var(--gold);font-weight:500">q3</div>
+      <div style="font-size:11px;color:var(--text);margin-top:4px">Trunk Payload</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">Carries information back</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid rgba(77,255,229,.2);border-radius:8px;padding:12px">
+      <div style="font-family:var(--mono);font-size:14px;color:var(--cyan);font-weight:500">q4</div>
+      <div style="font-size:11px;color:var(--text);margin-top:4px">Free Will Operator</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">Lopez Step-In-Time</div>
+    </div>
+  </div>
+</div>
+
+<!-- PATENT -->
+<div class="sect" style="border-bottom:none">
+  <div class="sect-label">Intellectual Property</div>
+  <div class="sect-title">Patent Portfolio</div>
+  <div style="font-family:var(--mono);font-size:11px;color:var(--muted);line-height:2.2">
+    USPTO 64/043,147 — Distributed Rescue Agent System (Rescue Operator / Neural / BCI)<br>
+    USPTO 19/555,951 — Lopez Riemannian Governance Locus (Parent Application)<br>
+    USPTO 64/095,091 — Quantum HoloProjection Protocol (QHP)<br>
+    USPTO 19/693,411 — NAME SVG Identity Card Protocol<br>
+    USPTO 19/716,001 — Master Supplemental Provisional<br>
+    USPTO 19/567,678 — Lopez Logical Qubit / Projection Engine<br>
+    USPTO 19/569,785 — Echo Operator<br>
+    <br>
+    <span style="color:var(--gold)">160 applications filed · Customer Nos. 226575 / 222625 · Root priority January 15, 2026</span>
+  </div>
+</div>
+
+<footer>
+  DCGP.AI LLC · Joshua L. Lopez · Sole Inventor<br>
+  AURA Quantum Intelligence Operating System · aqios.ai<br>
+  Where there is a gap, there is a gate.<br>
+  <a href="/">← AQiOS Home</a>
+</footer>
+
+</div>
+</body>
+</html>
