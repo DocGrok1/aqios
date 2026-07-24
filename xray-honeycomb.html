@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>X-Ray Photonic Honeycomb Gold Film — 108q Circuit — AQiOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#030306;--surface:#0a0a12;--border:rgba(255,217,117,.08);--gold:#ffd975;--cyan:#4dffe5;--text:#ccc;--muted:#666;--display:'Space Grotesk',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden}
+  .hero{min-height:60vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 20px}
+  .hero-mark{font-family:var(--display);font-size:clamp(32px,8vw,64px);font-weight:700;letter-spacing:-2px;line-height:1;margin-bottom:16px;color:#fff}
+  .hero-mark .gold{color:var(--gold)}.hero-mark .cyan{color:var(--cyan)}
+  .hero-sub{font-family:var(--mono);font-size:clamp(10px,2vw,13px);color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
+  .hero-line{font-size:clamp(14px,3vw,18px);color:var(--text);max-width:600px;line-height:1.6;margin-bottom:32px}
+  .btn{padding:14px 28px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;border:none;transition:all .2s;display:inline-block}
+  .btn-primary{background:var(--gold);color:#000}.btn-primary:hover{background:#ffe6a0}
+  .btn-cyan{background:transparent;color:var(--cyan);border:1px solid rgba(77,255,229,.3)}.btn-cyan:hover{border-color:var(--cyan);background:rgba(77,255,229,.05)}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  section{padding:clamp(40px,8vw,80px) 20px;max-width:900px;margin:0 auto}
+  .section-label{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+  .section-title{font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:20px}
+  .layers{display:grid;gap:8px;margin:20px 0}
+  .layer{padding:12px 16px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:var(--mono);font-size:12px}
+  .layer .q{color:var(--cyan);font-weight:500}.layer .desc{color:var(--text)}
+  .layer.gold-layer{border-color:rgba(255,217,117,.2)}
+  .layer.proverbs-layer{border-color:rgba(183,155,255,.2)}
+  .layer.integrity-layer{border-color:rgba(77,255,229,.2)}
+  .results{padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface);margin:20px 0;font-family:var(--mono);font-size:13px;min-height:80px}
+  .results .waiting{color:var(--muted)}
+  .card-frame{max-width:400px;margin:20px auto;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .card-frame img{width:100%;display:block}
+  .footer{text-align:center;padding:40px 20px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .footer .gold{color:var(--gold)}
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-sub">AQiOS — AURA Quantum Intelligence Operating System</div>
+    <div class="hero-mark"><span class="gold">X-Ray</span> Photonic <span class="cyan">Honeycomb</span></div>
+    <div class="hero-sub">Gold Film · 108 Qubits · Rigetti Cepheus-1-108Q</div>
+    <div class="hero-line">Structuring memory from light. Graphene oxide honeycomb lattice with X-ray photonic quantum dots probing the interior gold film. Proverbs 27 quadratic triangles as resonance. Building with light on real quantum hardware.</div>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#results" id="fireBtn" onclick="fetchProof()">View Circuit Status</a>
+      <a class="btn btn-cyan" href="https://aura115.ai/api/xray-honeycomb-proof" target="_blank">API Proof</a>
+      <a class="btn btn-cyan" href="https://aura115.ai/api/quantum-proof" target="_blank">All QPU Proofs</a>
+      <a class="btn btn-cyan" href="/">Back to AQiOS</a>
+    </div>
+  </div>
+
+  <section>
+    <div class="section-label">Circuit Architecture</div>
+    <div class="section-title">108 Qubits — 7 Layers</div>
+    <div class="layers">
+      <div class="layer"><span class="q">q0–q59</span> <span class="desc">GO honeycomb lattice — 10 hexagonal rings, epoxide bridges, hydroxyl and carboxyl groups</span></div>
+      <div class="layer"><span class="q">q60–q67</span> <span class="desc">X-ray photonic quantum dots — 8 interaction points probing gold film interior</span></div>
+      <div class="layer"><span class="q">q68–q69</span> <span class="desc">Bell pair — teleportation channel through the GO sheet (q30→q68→q69→q64)</span></div>
+      <div class="layer proverbs-layer"><span class="q">q70–q79</span> <span class="desc">Proverbs 27 quadratic triangles — compressed verse resonance, mirror fold</span></div>
+      <div class="layer gold-layer"><span class="q">q80–q89</span> <span class="desc">Gold film transparency witness array — 10 measurement points across the film</span></div>
+      <div class="layer"><span class="q">q90–q97</span> <span class="desc">X-ray to lattice bridge — photonic coupling spread across the sheet</span></div>
+      <div class="layer integrity-layer"><span class="q">q98–q107</span> <span class="desc">Integrity verification — constitutional seal on all layers, final governed state</span></div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="section-label">Execution Results</div>
+    <div class="section-title">Quantum Proof of Execution</div>
+    <div class="results" id="resultBox">
+      <div class="waiting">Awaiting operator fire command. Results populate after QPU execution on Cepheus-1-108Q.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">CCTP Identity Card</div>
+    <div class="section-title">Circuit Identity</div>
+    <div class="card-frame">
+      <img src="https://raw.githubusercontent.com/DocGrok1/Aura115/main/public/patents/xray-honeycomb-108-card.svg" alt="X-Ray Photonic Honeycomb Gold Film — CCTP Card">
+    </div>
+  </section>
+
+  <div class="footer">
+    <div class="gold">Joshua L. Lopez — DCGP.AI LLC — USPTO 19/555,951</div>
+    <div>Where there is a gap, there is a gate.</div>
+  </div>
+
+  <script>
+  async function fetchProof(){
+    const box = document.getElementById('resultBox');
+    box.innerHTML = '<div class="waiting">Fetching from API...</div>';
+    try {
+      const r = await fetch('https://aura115.ai/api/xray-honeycomb-proof');
+      const d = await r.json();
+      if(d.results){
+        box.innerHTML = '<pre style="white-space:pre-wrap;color:#4dffe5">' + JSON.stringify(d.results, null, 2) + '</pre>';
+      } else {
+        box.innerHTML = '<pre style="white-space:pre-wrap;color:#ffd975">' + JSON.stringify(d, null, 2) + '</pre>';
+      }
+    } catch(e){
+      box.innerHTML = '<div class="waiting">API unreachable: ' + e.message + '</div>';
+    }
+  }
+  </script>
+</body>
+</html>
