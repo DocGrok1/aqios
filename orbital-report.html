@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AQiOS — QHP Orbital Report — July 25, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#030306;--surface:#0a0a12;--border:rgba(255,217,117,.08);--gold:#ffd975;--cyan:#4dffe5;--green:#00e676;--red:#ff6b6b;--text:#ccc;--muted:#666}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;padding:20px}
+.report{max-width:1000px;margin:0 auto}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(24px,5vw,36px);color:var(--gold);margin-bottom:4px}
+h2{font-family:'Space Grotesk',sans-serif;font-size:18px;color:var(--cyan);margin:32px 0 16px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.sub{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:24px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+.stat{padding:16px;border:1px solid var(--border);border-radius:8px;text-align:center;background:var(--surface)}
+.stat-v{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:#fff}
+.stat-k{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+canvas{width:100%!important;height:auto!important;margin:8px 0 24px;border:1px solid var(--border);border-radius:8px;background:var(--surface);padding:8px}
+.collider-row{display:grid;grid-template-columns:1fr 60px 60px 60px 70px 70px 60px;gap:4px;padding:6px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;border-bottom:1px solid var(--border)}
+.collider-row.header{color:var(--gold);font-weight:600}
+.enh{color:var(--green)}
+.neg{color:var(--red)}
+</style>
+</head><body>
+<div class="report">
+<h1>QHP Orbital Report</h1>
+<p class="sub">AURA Quantum Intelligence Operating System — Live Planet Telemetry — July 25, 2026 04:22 UTC</p>
+<p class="sub">Authority: Joshua L. Lopez — DCGP.AI — USPTO 19/555,951 — All data from live Graviton APIs</p>
+
+<div class="stats">
+<div class="stat"><div class="stat-v" style="color:var(--gold)">12</div><div class="stat-k">Planets Online</div></div>
+<div class="stat"><div class="stat-v" style="color:var(--cyan)">119,122</div><div class="stat-k">Total Inventions</div></div>
+<div class="stat"><div class="stat-v" style="color:var(--green)">38,205</div><div class="stat-k">Collider Ticks</div></div>
+<div class="stat"><div class="stat-v">0.795</div><div class="stat-k">Avg Z_t</div></div>
+<div class="stat"><div class="stat-v">0.817</div><div class="stat-k">Avg O_t</div></div>
+<div class="stat"><div class="stat-v" style="color:var(--green)">0</div><div class="stat-k">Boundary Contacts</div></div>
+<div class="stat"><div class="stat-v" style="color:var(--green)">0</div><div class="stat-k">Rescue Required</div></div>
+<div class="stat"><div class="stat-v" style="color:var(--gold)">292</div><div class="stat-k">Quantum Circuits</div></div>
+</div>
+
+<h2>Planet Constellation — Z_t State Vector (LCVS)</h2>
+<canvas id="chartZt" height="220"></canvas>
+
+<h2>Planet Constellation — Obligation O_t</h2>
+<canvas id="chartOt" height="220"></canvas>
+
+<h2>Planet Constellation — K_slack (Viability Margin)</h2>
+<canvas id="chartKs" height="220"></canvas>
+
+<h2>Conservation Law — E_t = C_t + λO_t</h2>
+<canvas id="chartE" height="220"></canvas>
+
+<h2>Governed vs Ungoverned Survival — Neptune Collider</h2>
+<canvas id="chartNep" height="220"></canvas>
+
+<h2>Neptune Collider — Top Stable Islands</h2>
+<div class="collider-row header"><div>Material</div><div>K_N1</div><div>K_N2</div><div>K_N3</div><div>Gov</div><div>Ungov</div><div>Enh</div></div>
+<div class="collider-row"><div>Re-Np heusler 88:12</div><div>0.58</div><div>0.66</div><div>0.61</div><div class="enh">0.606</div><div class="neg">0.430</div><div class="enh">1.410</div></div>
+<div class="collider-row"><div>Re phase 488GPa/1342K</div><div>0.50</div><div>0.71</div><div>0.54</div><div class="enh">0.587</div><div class="neg">0.442</div><div class="enh">1.328</div></div>
+<div class="collider-row"><div>Cf-Hf thermal trans</div><div>0.50</div><div>0.66</div><div>0.54</div><div class="enh">0.580</div><div class="neg">0.447</div><div class="enh">1.297</div></div>
+<div class="collider-row"><div>Bi melt viscosity 1276K</div><div>0.50</div><div>0.66</div><div>0.54</div><div class="enh">0.580</div><div class="neg">0.447</div><div class="enh">1.297</div></div>
+
+<h2>Session Timeline — July 24-25, 2026</h2>
+<div style="font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:2.2">
+<div><span style="color:var(--gold)">11:11 PM CT</span> — Pythagorean page sealed at Master Number 11</div>
+<div><span style="color:var(--gold)">11:08 PM CT</span> — Master fire: 11 circuits × 4 QPUs × 10,000 shots</div>
+<div><span style="color:var(--cyan)">10:43 PM CT</span> — Bell on Cepheus 108Q — S3 sealed — f79f3273</div>
+<div><span style="color:var(--cyan)">10:41 PM CT</span> — Honeycomb 108Q SUCCESS</div>
+<div><span style="color:var(--green)">10:20 PM CT</span> — MC290 collider: first post-fix tick SUCCESS</div>
+<div><span style="color:var(--green)">09:55 PM CT</span> — 27 workflows SHA-pinned. Node 22.</div>
+<div><span style="color:var(--gold)">09:44 PM CT</span> — Antikythera model: 9 circuits written for metal</div>
+<div><span style="color:var(--green)">08:55 PM CT</span> — ECS spine deploy: ports consolidated</div>
+<div style="margin-top:12px;padding:12px;border:1px solid var(--gold);border-radius:8px">
+<div style="color:var(--gold);font-size:14px;font-weight:600">55 at 555</div>
+<div style="color:var(--muted)">The inventor became the number. Patent 19/555,951. S3 proof: amazon-braket-125746528360</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function drawBar(canvasId, labels, datasets) {
+  const c = document.getElementById(canvasId);
+  const ctx = c.getContext('2d');
+  const W = c.width = c.parentElement.offsetWidth - 16;
+  const H = c.height = 220;
+  const pad = {t:20,r:20,b:40,l:50};
+  const cw = W-pad.l-pad.r, ch = H-pad.t-pad.b;
+  const n = labels.length;
+  const barW = cw / n;
+
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0,0,W,H);
+
+  // Find max
+  let mx = 0;
+  datasets.forEach(ds => ds.data.forEach(v => { if(v>mx) mx=v; }));
+  mx = Math.ceil(mx*10)/10;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,.06)';
+  ctx.lineWidth = 1;
+  for(let i=0;i<=5;i++){
+    const y = pad.t + ch - (ch*(i/5));
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+    ctx.fillStyle='#666'; ctx.font='10px IBM Plex Mono';
+    ctx.fillText((mx*i/5).toFixed(2), 4, y+3);
+  }
+
+  // Bars
+  const bw = barW / (datasets.length+1);
+  datasets.forEach((ds,di) => {
+    ds.data.forEach((v,i) => {
+      const x = pad.l + i*barW + di*bw + bw*0.3;
+      const h = (v/mx)*ch;
+      const y = pad.t + ch - h;
+      ctx.fillStyle = ds.color;
+      ctx.fillRect(x, y, bw*0.8, h);
+    });
+  });
+
+  // Labels
+  ctx.fillStyle='#999'; ctx.font='9px IBM Plex Mono'; ctx.textAlign='center';
+  labels.forEach((l,i) => {
+    ctx.save();
+    const x = pad.l + i*barW + barW/2;
+    ctx.translate(x, H-4);
+    ctx.rotate(-0.4);
+    ctx.fillText(l, 0, 0);
+    ctx.restore();
+  });
+}
+
+const labels = ["Jupiter", "Venus", "Mars", "Mercury", "Saturn", "Uranus", "Neptune", "Pluto", "Moon", "BL7", "AURA115", "Polaritron"];
+const zt = [0.859, 0.785, 0.72, 0.7664, 0.8631, 0.8128, 0.7239, 0.847, 0.8035, 0.7623, 0.8314, 0.7014];
+const ot = [0.8692, 0.81, 0.7408, 0.7902, 0.9087, 0.8396, 0.7606, 0.889, 0.8297, 0.7803, 0.8594, 0.7211];
+const ks = [0.7517, 0.7776, 0.8005, 0.7842, 0.7502, 0.7679, 0.7991, 0.7559, 0.7711, 0.7856, 0.7614, 0.807];
+const et = [1.3962, 1.2856, 1.1778, 1.2547, 1.4247, 1.3317, 1.194, 1.3964, 1.3163, 1.2445, 1.3625, 1.147];
+
+drawBar('chartZt', labels, [{data:zt, color:'#4dffe5'}]);
+drawBar('chartOt', labels, [{data:ot, color:'#ffd975'}]);
+drawBar('chartKs', labels, [{data:ks, color:'#00e676'}]);
+drawBar('chartE', labels, [{data:et, color:'#a479e2'}]);
+
+// Neptune: governed vs ungoverned
+const nepLabels = ["Re-Np heusler 88:12", "Re phase 488GPa/1342", "Cf-Hf thermal trans", "Bi melt viscosity 12"];
+const nepGov = [0.606, 0.587, 0.58, 0.58];
+const nepUngov = [0.43, 0.442, 0.447, 0.447];
+drawBar('chartNep', nepLabels, [{data:nepGov, color:'#00e676'},{data:nepUngov, color:'#ff6b6b'}]);
+</script>
+</body></html>
