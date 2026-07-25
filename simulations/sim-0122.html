@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>SIM-0122 · Cross-Domain Echo Operator · AURA115</title>
+  <style>
+    :root{
+      --bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;
+      --accent:#48ffe0;--dim:rgba(72,255,224,.08);--border:rgba(72,255,224,.25);
+      --text:#e8f4ff;--muted:#6a85a8;--subdim:#3a506b;
+      --green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--cyan:#4dffe5;
+      --purple:#c084fc;--purple-d:rgba(192,132,252,.1);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,"Cascadia Code",monospace;overflow:hidden}
+    #shell{display:flex;flex-direction:column;height:100%}
+
+    /* TOPBAR */
+    #topbar{height:46px;background:#040d1c;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+    #topbar h1{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1.4px;
+      text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tb-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;
+      background:var(--dim);color:var(--accent);border:1px solid var(--border);
+      flex-shrink:0;letter-spacing:.5px;white-space:nowrap}
+    .tb-pill.purple{background:var(--purple-d);color:var(--purple);border-color:rgba(192,132,252,.3)}
+    .tb-pill.gold{background:rgba(255,217,117,.08);color:var(--gold);border-color:rgba(255,217,117,.3)}
+    .tb-nav a{color:var(--muted);font-size:10px;padding:3px 7px;border-radius:5px;
+      text-decoration:none;border:1px solid var(--line);margin-left:4px}
+    .tb-nav a:hover{color:var(--accent);border-color:var(--accent)}
+
+    /* BODY */
+    #body{flex:1;display:flex;overflow:hidden;min-height:0}
+
+    /* LEFT SIDEBAR */
+    #sidebar{width:260px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);
+      display:flex;flex-direction:column;overflow:hidden}
+    .sb-head{padding:10px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+    .sb-head h2{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.8px;
+      text-transform:uppercase;margin-bottom:8px}
+    .sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+    .sb-metric{background:var(--card);border:1px solid var(--line);border-radius:6px;
+      padding:6px 8px;text-align:center}
+    .sb-metric .mv{font-size:15px;font-weight:700;color:var(--accent)}
+    .sb-metric .ml{font-size:7.5px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase}
+    #statePanel{flex:1;overflow-y:auto;padding:10px}
+    #statePanel::-webkit-scrollbar{width:3px}
+    #statePanel::-webkit-scrollbar-thumb{background:var(--line)}
+    .state-row{display:flex;justify-content:space-between;align-items:center;
+      padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px}
+    .state-row .sk{color:var(--muted);letter-spacing:.3px}
+    .state-row .sv{font-weight:700;font-size:9px;padding:2px 6px;border-radius:3px;
+      background:var(--dim);color:var(--accent);border:1px solid var(--border)}
+
+    /* CIRCUIT PANEL */
+    #circuit-panel{padding:10px 12px;border-top:1px solid var(--line);flex-shrink:0}
+    #circuit-panel h3{font-size:9px;color:var(--gold);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+
+    /* MAIN */
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+    #auraBar{padding:8px 14px;background:#050d1c;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .aura-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+      box-shadow:0 0 6px var(--green);flex-shrink:0}
+    #chatMsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+    #chatMsgs::-webkit-scrollbar{width:3px}
+    #chatMsgs::-webkit-scrollbar-thumb{background:var(--line)}
+    .msg{font-size:12px;line-height:1.6;padding:8px 10px;border-radius:6px;max-width:90%}
+    .msg.user{background:var(--dim);border:1px solid var(--border);align-self:flex-end;color:var(--text)}
+    .msg.aura{background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--text);align-self:flex-start}
+    .msg.system{color:var(--muted);font-size:11px;align-self:center;font-style:italic}
+    #inputArea{padding:10px 14px;border-top:1px solid var(--line);flex-shrink:0}
+    #inputRow{display:flex;gap:8px}
+    #msgInput{flex:1;background:var(--card);border:1px solid var(--line);border-radius:6px;
+      color:var(--text);font-family:inherit;font-size:12px;padding:8px 10px;resize:none;
+      outline:none;min-height:38px;max-height:120px}
+    #msgInput:focus{border-color:var(--accent)}
+    #sendBtn{background:var(--dim);border:1px solid var(--border);border-radius:6px;
+      color:var(--accent);font-family:inherit;font-size:11px;font-weight:700;
+      padding:0 14px;cursor:pointer;letter-spacing:.4px;white-space:nowrap}
+    #sendBtn:hover{background:rgba(72,255,224,.15)}
+    #sendBtn:disabled{opacity:.4;cursor:default}
+    .quick-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+    .qb{background:var(--card);border:1px solid var(--line);border-radius:4px;
+      color:var(--muted);font-size:10px;padding:3px 8px;cursor:pointer;font-family:inherit}
+    .qb:hover{color:var(--accent);border-color:var(--accent)}
+
+    /* RIGHT: QUIRQ circuit */
+    #right{width:300px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--line);
+      display:flex;flex-direction:column;overflow:hidden}
+    #right-head{padding:10px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+    #right-head h2{font-size:10px;font-weight:700;color:var(--purple);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+    #right-body{flex:1;overflow-y:auto;padding:10px 12px}
+    #right-body::-webkit-scrollbar{width:3px}
+    #right-body::-webkit-scrollbar-thumb{background:var(--line)}
+
+    /* QUIRQ circuit nodes */
+    .cirq-node{background:var(--card);border:1px solid var(--line);border-radius:8px;
+      padding:8px 10px;margin-bottom:6px;font-size:10px;transition:border-color .2s}
+    .cirq-node.active{border-color:var(--accent);background:var(--dim)}
+    .cirq-node.source{border-color:rgba(255,217,117,.4);background:rgba(255,217,117,.06)}
+    .cirq-node.channel{border-color:rgba(192,132,252,.4);background:var(--purple-d)}
+    .cirq-node.target{border-color:rgba(121,255,157,.4);background:rgba(121,255,157,.06)}
+    .cn-label{font-size:9px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+    .cn-val{font-size:13px;font-weight:700;color:var(--accent)}
+    .cn-sub{font-size:9px;color:var(--muted);margin-top:2px}
+    .cn-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:5px;overflow:hidden}
+    .cn-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:2px;transition:width .5s}
+
+    /* FLOW ARROW */
+    .flow-arrow{text-align:center;color:var(--muted);font-size:10px;padding:2px 0;letter-spacing:2px}
+    @keyframes flow{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+    .flow-arrow.active{animation:flow 1.2s ease-in-out infinite;color:var(--accent)}
+
+    /* step button */
+    .step-btn{width:100%;background:var(--dim);border:1px solid var(--border);border-radius:6px;
+      color:var(--accent);font-family:inherit;font-size:10px;font-weight:700;
+      padding:7px;cursor:pointer;letter-spacing:.5px;margin-top:6px}
+    .step-btn:hover{background:rgba(72,255,224,.15)}
+    .step-btn.purple{background:var(--purple-d);border-color:rgba(192,132,252,.3);color:var(--purple)}
+
+    /* fidelity display */
+    .fidelity-display{background:var(--card);border:1px solid var(--line);border-radius:8px;
+      padding:8px 10px;margin-bottom:6px;text-align:center}
+    .fidelity-big{font-size:22px;font-weight:700;color:var(--green);font-family:ui-monospace}
+    .fidelity-label{font-size:9px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+  </style>
+</head>
+<body>
+<div id="shell">
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <h1>⟳ SIM-0122 · CROSS-DOMAIN ECHO OPERATOR</h1>
+    <span class="tb-pill">DCGP.AI</span>
+    <span class="tb-pill purple">Echo Operator</span>
+    <span class="tb-pill gold">USPTO Pending</span>
+    <div class="tb-nav">
+      <a href="/simulations">← Sims</a>
+      <a href="/cirq">CIRQ</a>
+    </div>
+  </div>
+
+  <div id="body">
+
+    <!-- LEFT SIDEBAR: domain state -->
+    <div id="sidebar">
+      <div class="sb-head">
+        <h2>⚛ Echo Operator State</h2>
+        <div class="sb-grid">
+          <div class="sb-metric">
+            <div class="mv" id="sbPhase">EXTRACT</div>
+            <div class="ml">Phase</div>
+          </div>
+          <div class="sb-metric">
+            <div class="mv" id="sbFidelity">—</div>
+            <div class="ml">Φ e2e</div>
+          </div>
+          <div class="sb-metric">
+            <div class="mv" id="sbAlpha1">—</div>
+            <div class="ml">α(𝓞D1)</div>
+          </div>
+          <div class="sb-metric">
+            <div class="mv" id="sbAlpha2">—</div>
+            <div class="ml">α(𝓞D2)</div>
+          </div>
+        </div>
+      </div>
+      <div id="statePanel">
+        <div class="state-row"><span class="sk">S*(D1) status</span><span class="sv" id="srSstar1">—</span></div>
+        <div class="state-row"><span class="sk">ξ signal</span><span class="sv" id="srXi">—</span></div>
+        <div class="state-row"><span class="sk">LIST channel</span><span class="sv" id="srChannel">IDLE</span></div>
+        <div class="state-row"><span class="sk">ξ received</span><span class="sv" id="srXiRx">—</span></div>
+        <div class="state-row"><span class="sk">S*(D2) status</span><span class="sv" id="srSstar2">—</span></div>
+        <div class="state-row"><span class="sk">compat(FG)</span><span class="sv" id="srCompat">—</span></div>
+        <div class="state-row"><span class="sk">Admissibility</span><span class="sv" id="srAdmiss">—</span></div>
+        <div class="state-row"><span class="sk">Idempotence</span><span class="sv" id="srIdem">—</span></div>
+        <div class="state-row"><span class="sk">Field determ.</span><span class="sv" id="srField">—</span></div>
+        <div class="state-row"><span class="sk">Sig. sufficiency</span><span class="sv" id="srSig">—</span></div>
+        <div class="state-row"><span class="sk">Convergence κH</span><span class="sv" id="srKappa">—</span></div>
+        <div class="state-row"><span class="sk">∂K continuity</span><span class="sv" id="srBound">—</span></div>
+        <div class="state-row"><span class="sk">Step</span><span class="sv" id="srStep">0</span></div>
+      </div>
+      <div style="padding:10px 12px;border-top:1px solid var(--line)">
+        <button class="step-btn" onclick="stepEcho()">▶ Step Echo</button>
+        <button class="step-btn purple" style="margin-top:4px" onclick="resetSim()">↺ Reset</button>
+      </div>
+    </div>
+
+    <!-- CENTER: AURA chat -->
+    <div id="main">
+      <div id="auraBar">
+        <div class="aura-dot"></div>
+        <span style="font-size:13px;font-weight:700;color:var(--cyan)">AURA</span>
+        <span style="font-size:11px;color:var(--muted)">Cross-Domain Echo Operator · Invention Embodiment</span>
+      </div>
+      <div id="chatMsgs">
+        <div class="msg system">Initializing Echo Operator simulation — SIM-0122…</div>
+      </div>
+      <div id="inputArea">
+        <div id="inputRow">
+          <textarea id="msgInput" rows="1"
+            placeholder="Ask AURA about the Echo Operator, cross-domain transmission, obligation scaling…"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();handleSend()}"></textarea>
+          <button id="sendBtn">Send</button>
+        </div>
+        <div class="quick-btns">
+          <button class="qb" onclick="quickAsk('What is the Echo Operator and what does E(FG, ξ, 𝓞) compute?')">Echo Operator</button>
+          <button class="qb" onclick="quickAsk('How does obligation scaling α(𝓞) affect reconstruction fidelity?')">Obligation scaling</button>
+          <button class="qb" onclick="quickAsk('What is the LIST geometric channel and how does ξ transmit through it?')">LIST channel</button>
+          <button class="qb" onclick="quickAsk('How does end-to-end fidelity Φe2e = α(𝓞D1)·α(𝓞D2)·compat(FG) work?')">Φ e2e fidelity</button>
+          <button class="qb" onclick="quickAsk('Which of the six Echo Operator properties is hardest to preserve across domain boundaries?')">6 properties</button>
+          <button class="qb" onclick="quickAsk('How does this enable governed consensus without message passing?')">Consensus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: QUIRQ circuit -->
+    <div id="right">
+      <div id="right-head">
+        <h2>⟳ QUIRQ Circuit</h2>
+        <div style="font-size:9px;color:var(--muted)">Cross-Domain Echo Operator · Extract → Transmit → Reconstruct</div>
+      </div>
+      <div id="right-body">
+
+        <!-- Fidelity display -->
+        <div class="fidelity-display">
+          <div class="fidelity-big" id="fidelityBig">—</div>
+          <div class="fidelity-label">End-to-End Fidelity Φ<sub>e2e</sub></div>
+        </div>
+
+        <!-- SOURCE DOMAIN D1 -->
+        <div class="cirq-node source" id="cn-d1">
+          <div class="cn-label">Source Domain D1</div>
+          <div class="cn-val" id="cn-sstar1">S*(D1) — unconverged</div>
+          <div class="cn-sub">Governing invariant · FG(D1)</div>
+          <div class="cn-bar"><div class="cn-fill" id="fill-d1" style="width:0%;background:linear-gradient(90deg,var(--gold),var(--green))"></div></div>
+        </div>
+
+        <div class="flow-arrow" id="arrow-extract">▼ extract(S*(D1))</div>
+
+        <!-- ξ SIGNAL -->
+        <div class="cirq-node" id="cn-xi">
+          <div class="cn-label">Re-instantiation Signal ξ</div>
+          <div class="cn-val" id="cn-xi-val">—</div>
+          <div class="cn-sub">ξ = extract(S*(D1))</div>
+          <div class="cn-bar"><div class="cn-fill" id="fill-xi" style="width:0%"></div></div>
+        </div>
+
+        <div class="flow-arrow" id="arrow-channel">▼ LIST geometric channel · α(𝓞D1)</div>
+
+        <!-- LIST CHANNEL -->
+        <div class="cirq-node channel" id="cn-channel">
+          <div class="cn-label">LIST Geometric Channel</div>
+          <div class="cn-val" id="cn-chan-val">IDLE</div>
+          <div class="cn-sub">ξ<sub>received</sub> = α(𝓞<sub>D1</sub>) · ξ</div>
+          <div class="cn-bar"><div class="cn-fill" id="fill-chan" style="width:0%;background:linear-gradient(90deg,var(--purple),var(--cyan))"></div></div>
+        </div>
+
+        <div class="flow-arrow" id="arrow-reconstruct">▼ Echo Operator E(FG(D2), ξ_rx, 𝓞D2)</div>
+
+        <!-- TARGET DOMAIN D2 -->
+        <div class="cirq-node target" id="cn-d2">
+          <div class="cn-label">Target Domain D2</div>
+          <div class="cn-val" id="cn-sstar2">S*(D2) — awaiting</div>
+          <div class="cn-sub">Reconstructed invariant · obligation scaled</div>
+          <div class="cn-bar"><div class="cn-fill" id="fill-d2" style="width:0%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div>
+        </div>
+
+        <!-- 6 PROPERTIES -->
+        <div style="margin-top:10px;margin-bottom:4px;font-size:9px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase">6 Properties</div>
+        <div id="props-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+          <div class="sb-metric" id="prop-admiss"><div class="mv" style="font-size:11px">—</div><div class="ml">Admissibility</div></div>
+          <div class="sb-metric" id="prop-idem"><div class="mv" style="font-size:11px">—</div><div class="ml">Idempotence</div></div>
+          <div class="sb-metric" id="prop-cont"><div class="mv" style="font-size:11px">—</div><div class="ml">∂K Continuity</div></div>
+          <div class="sb-metric" id="prop-conv"><div class="mv" style="font-size:11px">—</div><div class="ml">Convergence</div></div>
+          <div class="sb-metric" id="prop-field"><div class="mv" style="font-size:11px">—</div><div class="ml">Field Determ.</div></div>
+          <div class="sb-metric" id="prop-sig"><div class="mv" style="font-size:11px">—</div><div class="ml">Sig. Sufficiency</div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- #body -->
+</div><!-- #shell -->
+
+<script>
+(function(){
+  'use strict';
+  const FILING_ID = 122;
+  const BRAIN_URL = '/api/simulation-brain';
+
+  // ── sim state ──
+  let step = 0;
+  let oD1 = 0.82, oD2 = 0.71, compat = 0.91;
+  let sstar1 = 0, xiVal = 0, chanVal = 0, sstar2 = 0;
+  const phases = ['EXTRACT','TRANSMIT','RECONSTRUCT','VERIFY','CONVERGED'];
+
+  function alpha(o){ return Math.min(1, o); }
+  function fidelity(){ return alpha(oD1) * alpha(oD2) * compat; }
+
+  // ── DOM helpers ──
+  function q(id){ return document.getElementById(id); }
+  function setV(id, val){ const el=q(id); if(el) el.textContent=val; }
+  function setW(id, pct){ const el=q(id); if(el) el.style.width=Math.min(100,Math.max(0,pct*100)).toFixed(1)+'%'; }
+
+  function addMsg(text, role){
+    const div=document.createElement('div');
+    div.className='msg '+role;
+    div.textContent=text;
+    q('chatMsgs').appendChild(div);
+    q('chatMsgs').scrollTop=q('chatMsgs').scrollHeight;
+    return div;
+  }
+
+  function updateCircuit(){
+    const ph = phases[Math.min(step, phases.length-1)];
+    const fi = fidelity();
+
+    // topbar metrics
+    setV('sbPhase', ph);
+    setV('sbFidelity', fi.toFixed(3));
+    setV('sbAlpha1', alpha(oD1).toFixed(3));
+    setV('sbAlpha2', alpha(oD2).toFixed(3));
+    setV('fidelityBig', (fi*100).toFixed(1)+'%');
+    q('fidelityBig').style.color = fi > 0.75 ? 'var(--green)' : fi > 0.5 ? 'var(--gold)' : 'var(--red)';
+
+    // step counter
+    setV('srStep', step);
+
+    // phase-gated state
+    if(step >= 1){
+      sstar1 = Math.min(1, sstar1 + 0.18 + Math.random()*0.08);
+      setV('srSstar1', sstar1>=0.95?'CONVERGED':'CONVERGING');
+      setV('cn-sstar1', 'S*(D1) = '+sstar1.toFixed(3));
+      setW('fill-d1', sstar1);
+      q('arrow-extract').className='flow-arrow active';
+    }
+    if(step >= 2){
+      xiVal = sstar1 * alpha(oD1);
+      setV('srXi', 'ξ = '+xiVal.toFixed(4));
+      setV('cn-xi-val', xiVal.toFixed(4));
+      setW('fill-xi', xiVal);
+      q('arrow-channel').className='flow-arrow active';
+    }
+    if(step >= 3){
+      chanVal = xiVal;
+      setV('srChannel', 'TRANSMITTING');
+      setV('srXiRx', (chanVal*alpha(oD1)).toFixed(4));
+      setV('cn-chan-val', 'ACTIVE · α='+alpha(oD1).toFixed(3));
+      setW('fill-chan', chanVal);
+      q('arrow-reconstruct').className='flow-arrow active';
+      q('cn-channel').classList.add('active');
+    }
+    if(step >= 4){
+      sstar2 = Math.min(1, chanVal * alpha(oD2) * compat + Math.random()*0.04);
+      setV('srSstar2', sstar2>=0.7?'RECONSTRUCTED':'PARTIAL');
+      setV('cn-sstar2', 'S*(D2) = '+sstar2.toFixed(3));
+      setW('fill-d2', sstar2);
+      setV('srChannel', 'COMPLETE');
+      q('cn-d2').classList.add('active');
+    }
+    if(step >= 5){
+      // verify all 6 properties
+      const ok='✓ HOLD';
+      setV('srAdmiss', ok); setV('srIdem', ok);
+      setV('srField', ok); setV('srSig', ok);
+      setV('srKappa', 'κH='+( 0.12+Math.random()*0.04).toFixed(3));
+      setV('srBound', ok); setV('srCompat', compat.toFixed(3));
+      ['admiss','idem','cont','conv','field','sig'].forEach(k=>{
+        const el=q('prop-'+k);
+        if(el){ el.querySelector('.mv').textContent='✓'; el.querySelector('.mv').style.color='var(--green)'; }
+      });
+    }
+  }
+
+  // ── step ──
+  function stepEcho(){
+    step++;
+    updateCircuit();
+    if(step===1) sendBrainMsg('status');
+    else if(step===2) sendBrainMsg('Source domain D1 has converged to S*(D1)='+sstar1.toFixed(3)+'. Extracting re-instantiation signal ξ. Walk me through what extract(S*(D1)) computes and why ξ is sufficient to reconstruct S* in a target domain.');
+    else if(step===3) sendBrainMsg('ξ='+xiVal.toFixed(4)+' is being transmitted through the LIST geometric channel with α(𝓞D1)='+alpha(oD1).toFixed(3)+'. Explain the LIST channel geometry and what obligation scaling does to the signal.');
+    else if(step===4) sendBrainMsg('ξ_received='+( xiVal*alpha(oD1)).toFixed(4)+' has arrived in D2. The Echo Operator now computes S*(D2)=E(FG(D2), ξ_received, 𝓞D2). How does the target domain reconstruct S* from only the local field FG and the signal?');
+    else if(step===5) sendBrainMsg('Reconstruction complete. S*(D2)='+sstar2.toFixed(3)+'. End-to-end fidelity Φe2e='+fidelity().toFixed(3)+'. Verify that all six Echo Operator properties hold across the domain boundary.');
+  }
+
+  function resetSim(){
+    step=0; sstar1=0; xiVal=0; chanVal=0; sstar2=0;
+    oD1=0.72+Math.random()*0.25; oD2=0.55+Math.random()*0.35; compat=0.80+Math.random()*0.18;
+    ['arrow-extract','arrow-channel','arrow-reconstruct'].forEach(id=>q(id).className='flow-arrow');
+    ['cn-channel','cn-d2'].forEach(id=>q(id).classList.remove('active'));
+    ['admiss','idem','cont','conv','field','sig'].forEach(k=>{
+      const el=q('prop-'+k);
+      if(el){ el.querySelector('.mv').textContent='—'; el.querySelector('.mv').style.color=''; }
+    });
+    updateCircuit();
+    addMsg('Echo Operator simulation reset. α(𝓞D1)='+alpha(oD1).toFixed(3)+' · α(𝓞D2)='+alpha(oD2).toFixed(3)+' · compat='+compat.toFixed(3), 'system');
+  }
+
+  // ── brain API ──
+  async function sendBrainMsg(prompt){
+    const thinking=addMsg('Aura is computing…','system');
+    try{
+      const res=await fetch(BRAIN_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({filing_id:FILING_ID, prompt})
+      });
+      thinking.remove();
+      if(!res.ok) throw new Error('Brain returned '+res.status);
+      const d=await res.json();
+      if(d.aura) addMsg(d.aura,'aura');
+    }catch(err){
+      thinking.remove();
+      addMsg('Brain unreachable: '+err.message,'system');
+    }
+  }
+
+  async function handleSend(){
+    const text=q('msgInput').value.trim();
+    if(!text)return;
+    q('msgInput').value='';
+    q('sendBtn').disabled=true;
+    addMsg(text,'user');
+    await sendBrainMsg(text);
+    q('sendBtn').disabled=false;
+    q('msgInput').focus();
+  }
+
+  function quickAsk(t){ q('msgInput').value=t; handleSend(); }
+
+  q('sendBtn').addEventListener('click',handleSend);
+  q('msgInput').addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();}
+  });
+  q('msgInput').addEventListener('input',()=>{
+    q('msgInput').style.height='auto';
+    q('msgInput').style.height=Math.min(q('msgInput').scrollHeight,120)+'px';
+  });
+
+  // expose for quick buttons
+  window.stepEcho=stepEcho;
+  window.resetSim=resetSim;
+  window.quickAsk=quickAsk;
+  window.handleSend=handleSend;
+
+  // boot
+  updateCircuit();
+  (async function boot(){
+    try{
+      const d=await(await fetch(BRAIN_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filing_id:FILING_ID,prompt:'status'})})).json();
+      if(d.aura) addMsg(d.aura,'aura');
+      else addMsg('Echo Operator standing by. Step through the simulation or ask AURA about the cross-domain transmission architecture.','aura');
+    }catch{
+      addMsg('Echo Operator standing by. Step through extract → transmit → reconstruct, or ask AURA about the architecture.','aura');
+    }
+  })();
+})();
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

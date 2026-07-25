@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Holo Projection · Braket Hardware · QHP · DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--bg:#04070c;--panel:#0a1420;--border:rgba(99,212,255,0.15);--cyan:#63d4ff;--gold:#fbd975;--green:#4ade80;--red:#ff7f95;--text:#e2e8f0;--muted:#5a7a96}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;padding:20px}
+.shell{max-width:900px;margin:0 auto}
+header{border-bottom:1px solid var(--gold);padding:14px 0;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap}
+header h1{font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--gold);letter-spacing:2px}
+header .badge{font-size:9px;padding:3px 10px;border:1px solid var(--cyan);color:var(--cyan);border-radius:3px;font-family:'IBM Plex Mono',monospace}
+.controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+select,button{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;border-radius:4px}
+button{background:var(--gold);color:#04070c;font-weight:700;cursor:pointer;letter-spacing:1px}
+.holo-frame{position:relative;width:100%;height:400px;background:#02040a;border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.metric{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px}
+.metric .label{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.metric .value{font-size:24px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin-top:6px;color:var(--cyan)}
+footer{text-align:center;padding:24px 0;border-top:1px solid var(--border);font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+footer a{color:var(--cyan);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><h1>HOLO PROJECTION — BRAKET HARDWARE</h1><div class="badge">QHP · REAL QPU · DCGP.AI</div></header>
+<div class="controls">
+<select id="engineSel">
+<option value="mercury">Mercury — IonQ Aria-1 (QPU)</option>
+<option value="mars">Mars — IonQ Aria-1 (QPU)</option>
+<option value="neptune">Neptune — Rigetti Ankaa-3 (QPU)</option>
+<option value="venus">Venus — QuEra Aquila (QPU)</option>
+<option value="saturn">Saturn — SV1 (managed sim)</option>
+</select>
+<button onclick="runOnce()">PROJECT</button>
+<span id="status" style="font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace"></span>
+</div>
+<div class="holo-frame"><svg width="100%" height="100%" viewBox="0 0 860 400" id="holo"></svg></div>
+<div class="metrics">
+<div class="metric"><div class="label">COHERENCE L</div><div class="value" id="mL">—</div></div>
+<div class="metric"><div class="label">B_K GRACE</div><div class="value" id="mB">—</div></div>
+<div class="metric"><div class="label">VERDICT</div><div class="value" id="mV">—</div></div>
+</div>
+<footer>DCGP.AI LLC · Joshua Lopez · Sole Inventor · USPTO 19/555,951<br>Real Braket hardware execution · QHP governed · <a href="/qhp/">← QHP Index</a></footer>
+</div>
+<script>
+const NS='http://www.w3.org/2000/svg';
+function grid(svg){for(let x=0;x<=860;x+=40){const l=document.createElementNS(NS,'line');l.setAttribute('x1',x);l.setAttribute('y1',0);l.setAttribute('x2',x);l.setAttribute('y2',400);l.setAttribute('stroke','#1a3a4a');l.setAttribute('stroke-width','0.5');svg.appendChild(l);}for(let y=0;y<=400;y+=40){const l=document.createElementNS(NS,'line');l.setAttribute('x1',0);l.setAttribute('y1',y);l.setAttribute('x2',860);l.setAttribute('y2',y);l.setAttribute('stroke','#1a3a4a');l.setAttribute('stroke-width','0.5');svg.appendChild(l);}}
+function projectBars(svg,counts){const keys=Object.keys(counts);const max=Math.max(...Object.values(counts),1);const w=120,gap=40,startX=(860-(keys.length*(w+gap)-gap))/2;keys.forEach((k,i)=>{const val=counts[k];const h=(val/max)*260;const x=startX+i*(w+gap);const y=330-h;const bar=document.createElementNS(NS,'rect');bar.setAttribute('x',x);bar.setAttribute('y',y);bar.setAttribute('width',w);bar.setAttribute('height',h);bar.setAttribute('fill','#2a78d6');bar.setAttribute('opacity','0.25');svg.appendChild(bar);const line=document.createElementNS(NS,'rect');line.setAttribute('x',x);line.setAttribute('y',y);line.setAttribute('width',w);line.setAttribute('height',2);line.setAttribute('fill','#63d4ff');svg.appendChild(line);const lbl=document.createElementNS(NS,'text');lbl.setAttribute('x',x+w/2);lbl.setAttribute('y',355);lbl.setAttribute('text-anchor','middle');lbl.setAttribute('fill','#7fd4ff');lbl.setAttribute('font-size','14px');lbl.setAttribute('font-family','monospace');lbl.textContent='|'+k+'\u27e9';svg.appendChild(lbl);const vlbl=document.createElementNS(NS,'text');vlbl.setAttribute('x',x+w/2);vlbl.setAttribute('y',y-10);vlbl.setAttribute('text-anchor','middle');vlbl.setAttribute('fill','#c8f0ff');vlbl.setAttribute('font-size','13px');vlbl.setAttribute('font-family','monospace');vlbl.textContent=val;svg.appendChild(vlbl);});}
+async function runOnce(){const engine=document.getElementById('engineSel').value;document.getElementById('status').textContent='submitting to '+engine+'...';const svg=document.getElementById('holo');svg.innerHTML='';grid(svg);try{const r=await fetch('/api/braket-run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({engine,shots:100})});const d=await r.json();if(!d.ok){document.getElementById('status').textContent='error: '+(d.error||'unknown');return;}projectBars(svg,d.counts||{});document.getElementById('mL').textContent=(d.physics?.L??0).toFixed(3);document.getElementById('mB').textContent=(d.truth?.B_K??0).toFixed(3);document.getElementById('mV').textContent=d.admitted?'ADMIT':'HELD';document.getElementById('status').textContent=d.device?.vendor+' \u00b7 '+d.device?.type;}catch(e){document.getElementById('status').textContent='error: '+e.message;}}
+grid(document.getElementById('holo'));
+</script>
+</body>
+</html>

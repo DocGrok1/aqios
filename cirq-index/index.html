@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QUIRQ™ Intake Gateway</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background: #040812;
+        color: #e8efff;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.7rem;
+      }
+      .sub {
+        margin: 0 0 16px;
+        color: #a7b8e6;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 14px;
+      }
+      .card {
+        border: 1px solid #243463;
+        background: #0d162d;
+        border-radius: 10px;
+        padding: 14px;
+      }
+      label {
+        display: block;
+        font-size: 0.82rem;
+        color: #afc2f6;
+        margin-bottom: 6px;
+      }
+      input,
+      textarea,
+      select,
+      button {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #2c3f73;
+        background: #081127;
+        color: #e7edff;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+      button {
+        background: #1d4de0;
+        border-color: #3462f6;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .muted {
+        color: #90a3d8;
+        font-size: 0.86rem;
+      }
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.78rem;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>QUIRQ™ Intake Gateway</h1>
+      <p class="sub">
+        Single public entrypoint for intake routing. Business, hospital, and other channels pass through
+        QUIRQ™ policy/authority checks before handoff to downstream modules.
+      </p>
+
+      <div class="grid">
+        <section class="card">
+          <h2>Intake request</h2>
+          <label for="domain">Domain/source</label>
+          <input id="domain" placeholder="example: aura115.ai" />
+
+          <label for="channel">Channel</label>
+          <input id="channel" value="public-web" />
+
+          <label for="requestType">Request type</label>
+          <select id="requestType">
+            <option value="business">business</option>
+            <option value="hospital">hospital</option>
+            <option value="other" selected>other</option>
+          </select>
+
+          <label for="intent">Intent</label>
+          <input id="intent" value="intake_message" />
+
+          <label for="message">Message payload</label>
+          <textarea id="message">Route this through QUIRQ™ intake.</textarea>
+
+          <label for="operatorKey">Operator key (required for protected paths; optional otherwise)</label>
+          <input id="operatorKey" placeholder="x-aura-operator-key" />
+
+          <div class="actions">
+            <button id="submit">Run intake router</button>
+            <button id="status">Load status</button>
+          </div>
+          <p class="muted">
+            Tip: add <code>forward: true</code> by checking "Forward to downstream API".
+          </p>
+          <label><input id="forward" type="checkbox" /> Forward to downstream API</label>
+        </section>
+
+        <section class="card">
+          <h2>Router response</h2>
+          <pre id="response">Waiting for request…</pre>
+        </section>
+
+        <section class="card">
+          <h2>Intake contract</h2>
+          <pre id="contract">Loading contract…</pre>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const responseEl = document.getElementById("response");
+      const contractEl = document.getElementById("contract");
+
+      const domainEl = document.getElementById("domain");
+      if (!domainEl.value) {
+        domainEl.value = window.location.host || "";
+      }
+
+      async function fetchStatus() {
+        const res = await fetch("/api/cirq-intake-router");
+        const data = await res.json();
+        contractEl.textContent = JSON.stringify(data.contract || data.intakeContract || data, null, 2);
+        responseEl.textContent = JSON.stringify(data, null, 2);
+      }
+
+      async function submit() {
+        const payload = {
+          domain: document.getElementById("domain").value,
+          channel: document.getElementById("channel").value,
+          requestType: document.getElementById("requestType").value,
+          intent: document.getElementById("intent").value,
+          message: document.getElementById("message").value,
+          forward: document.getElementById("forward").checked
+        };
+
+        const operatorKey = document.getElementById("operatorKey").value.trim();
+        const headers = { "Content-Type": "application/json" };
+        if (operatorKey) headers["x-aura-operator-key"] = operatorKey;
+
+        const res = await fetch("/api/cirq-intake-router", {
+          method: "POST",
+          headers,
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+      }
+
+      document.getElementById("submit").addEventListener("click", submit);
+      document.getElementById("status").addEventListener("click", fetchStatus);
+      fetchStatus().catch((error) => {
+        responseEl.textContent = JSON.stringify(
+          {
+            ok: false,
+            error: "Failed to load intake contract status",
+            details: String(error && error.message ? error.message : error)
+          },
+          null,
+          2
+        );
+      });
+    </script>
+    <script src="/aura-embodiment-bootstrap.js"></script>
+  </body>
+</html>

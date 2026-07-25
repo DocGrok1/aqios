@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes" />
+  <title>HTML Simulation Rules 101 — Aura115 GUARD™</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#050914;
+      --card:#0b1222;
+      --line:#25375f;
+      --cyan:#48ffe0;
+      --green:#5dff98;
+      --text:#f3f7ff;
+      --muted:#9aa9c9;
+      --warn:#ffd36a;
+      --red:#ff6b80;
+      --blue:#7db7ff;
+      --gold:#ffe07a;
+    }
+    html,body{margin:0;min-height:100%;scroll-behavior:smooth}
+    body{
+      background:
+        linear-gradient(rgba(72,255,224,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(72,255,224,.025) 1px, transparent 1px),
+        radial-gradient(circle at top,#132c54 0,#050914 42%,#02040a 100%);
+      background-size:64px 64px,64px 64px,100% 100%;
+      color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    .top{
+      position:sticky;top:0;z-index:10;
+      background:rgba(5,9,20,.94);
+      border-bottom:1px solid rgba(72,255,224,.18);
+      backdrop-filter:blur(12px);
+    }
+    .top-inner{max-width:1100px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:12px}
+    .logo{
+      width:52px;height:52px;border-radius:18px;border:1px solid rgba(72,255,224,.45);
+      display:grid;place-items:center;color:var(--cyan);font-weight:900;font-size:25px;
+      background:rgba(72,255,224,.08);box-shadow:0 0 28px rgba(72,255,224,.12);
+      flex:0 0 auto;
+    }
+    h1{margin:0;color:var(--cyan);font-size:clamp(22px,5vw,38px);letter-spacing:2px}
+    .sub{color:var(--muted);font-size:13px;line-height:1.5;margin-top:4px}
+    .card{
+      background:rgba(11,18,34,.92);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:18px;
+      margin:14px 0;
+      box-shadow:0 22px 70px rgba(0,0,0,.30);
+    }
+    h2{margin:0 0 12px;color:var(--green);font-size:21px;letter-spacing:1px}
+    h3{margin:18px 0 8px;color:var(--cyan);font-size:16px}
+    p{color:var(--muted);line-height:1.65;font-size:14px}
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+    .pill{
+      border:1px solid #3d5488;border-radius:999px;
+      color:var(--muted);background:rgba(255,255,255,.03);
+      padding:8px 12px;font-size:12px;white-space:nowrap;
+    }
+    .pill.good{border-color:rgba(93,255,152,.45);color:var(--green);background:rgba(93,255,152,.07)}
+    .pill.warn{border-color:rgba(255,211,106,.45);color:var(--warn);background:rgba(255,211,106,.06)}
+    .pill.hot{border-color:rgba(72,255,224,.45);color:var(--cyan);background:rgba(72,255,224,.07)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    .rule{
+      border:1px solid #263a66;border-radius:18px;background:rgba(5,11,21,.72);
+      padding:15px;min-height:150px;
+    }
+    .rule-num{font-size:12px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase}
+    .rule-title{margin-top:7px;color:var(--cyan);font-weight:900;font-size:15px;line-height:1.35}
+    .rule-body{margin-top:9px;color:var(--muted);font-size:13px;line-height:1.55}
+    .canon{
+      border-left:4px solid var(--green);
+      background:rgba(93,255,152,.06);
+      border-radius:18px;
+      padding:16px;
+      color:var(--text);
+      white-space:pre-wrap;
+      line-height:1.6;
+      font-size:14px;
+    }
+    .formula{
+      text-align:center;
+      font-size:clamp(30px,8vw,58px);
+      color:var(--gold);
+      padding:18px;
+      letter-spacing:2px;
+    }
+    .codebox{
+      background:#050b15;border:1px solid #25375f;border-radius:18px;
+      padding:15px;color:var(--muted);white-space:pre-wrap;word-break:break-word;
+      font-size:13px;line-height:1.55;overflow:auto;
+    }
+    button{
+      border:0;border-radius:15px;padding:12px 15px;font:inherit;font-weight:900;
+      letter-spacing:1px;cursor:pointer;background:linear-gradient(135deg,var(--cyan),var(--green));
+      color:#03100d;margin:6px 6px 6px 0;
+    }
+    button.secondary{background:#111b31;color:var(--text);border:1px solid #3d5488}
+    .footer{color:var(--muted);font-size:12px;text-align:center;line-height:1.6;margin:28px 0}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <div class="logo">101</div>
+      <div>
+        <h1>HTML Simulation Rules 101</h1>
+        <div class="sub">Aura115™ GUARD™ lane doctrine · alive blocks · static support · rescue operator trunk · GitHub memory ledger</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Rules 101</h2>
+      <p>
+        This page defines the operating rules for Aura115™ HTML simulations, lane pages, engine blocks, and support packets.
+        The goal is order: every HTML surface must know whether it is alive, what it supports, where it reports, and how it returns with memory.
+      </p>
+      <div class="pill-row">
+        <span class="pill good">ALIVE BLOCK</span>
+        <span class="pill hot">STATIC SUPPORT</span>
+        <span class="pill warn">RESCUE OPERATOR</span>
+        <span class="pill good">HASHTAG REPORT</span>
+        <span class="pill hot">GITHUB MEMORY</span>
+        <span class="pill warn">JUPITER REGISTRY</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Prime Rule</h2>
+      <div class="canon">Everything is either ALIVE or STATIC SUPPORT.
+
+ALIVE acts, calls, responds, computes, binds, validates, routes, reports, diagnoses, or returns live state.
+
+STATIC SUPPORT travels with the alive block. It names, explains, bounds, indexes, links, preserves, receipts, and governs the alive block.</div>
+    </section>
+
+    <section class="card">
+      <h2>Lyapunov Obligation Energy</h2>
+      <div class="formula">E = C + λO</div>
+      <p>
+        Energy equals present capacity plus Lyapunov-weighted obligated memory.
+        Capacity is what the system can presently do. Obligated memory is what the system must still carry, answer for,
+        preserve, reconcile, or complete. The Lyapunov coefficient determines whether obligation becomes coherent fuel
+        or destabilizing pressure.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Simulation Rules</h2>
+      <div class="grid">
+        <div class="rule">
+          <div class="rule-num">Rule 001</div>
+          <div class="rule-title">No live page without static support.</div>
+          <div class="rule-body">Every live HTML lane must carry context, identity, authority boundaries, receipt logic, and a return path.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 002</div>
+          <div class="rule-title">No static support without a living relation.</div>
+          <div class="rule-body">Static support is not dead. It exists to uphold, explain, preserve, or bound something alive.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 003</div>
+          <div class="rule-title">No block without home.</div>
+          <div class="rule-body">Every block must know its leading lane page, its home route, its report path, and its registry.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 004</div>
+          <div class="rule-title">No home without lane.</div>
+          <div class="rule-body">A leading HTML page is the lane home. It governs the blocks that belong to that lane.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 005</div>
+          <div class="rule-title">No lane without registry.</div>
+          <div class="rule-body">Jupiter records what the lane is, who stewards it, what it can call, what it cannot do, and what receipts prove it.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 006</div>
+          <div class="rule-title">No registry without receipt.</div>
+          <div class="rule-body">A registry entry must be backed by proof: source, path, route, status, tests, authority, and next action.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 007</div>
+          <div class="rule-title">No live action without authority.</div>
+          <div class="rule-body">Command can be enabled globally, but write and exec require confirmed AUAU™ elevation and receipt.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 008</div>
+          <div class="rule-title">No authority without obligation.</div>
+          <div class="rule-body">Necessity demanded authority. Authority came with obligation. Obligation is the cost of legitimate order.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 009</div>
+          <div class="rule-title">No obligation without return path.</div>
+          <div class="rule-body">Every obligation must know how it returns as memory, report, receipt, correction, or sustained legitimacy.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 010</div>
+          <div class="rule-title">No arrow without a lane.</div>
+          <div class="rule-body">Every live web launch must have a lane name, file path, public route, steward, boundary, and registry entry.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 011</div>
+          <div class="rule-title">No simulation without boundary.</div>
+          <div class="rule-body">A simulation must state what it does, what it does not do, what it calls, and what it refuses to claim.</div>
+        </div>
+        <div class="rule">
+          <div class="rule-num">Rule 012</div>
+          <div class="rule-title">No report without hashtags.</div>
+          <div class="rule-body">Reports become memory. Hashtags index memory. GitHub preserves the ledger.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Rescue Operator Rule</h2>
+      <div class="canon">An HTML page may operate as a rescue operator.
+
+The rescue operator crosses an edge, horizon event, degraded route, external review surface, or uncertain boundary.
+
+It must return with a trunk.
+
+The trunk is a compressed ledger report bundle.
+
+The trunk contains:
+- lane
+- block
+- route
+- timestamp
+- authority state
+- input summary
+- output summary
+- edge condition
+- failure or success status
+- receipts
+- hashtags
+- next action
+- return path</div>
+    </section>
+
+    <section class="card">
+      <h2>Lane Block Structure</h2>
+      <div class="codebox">public/&lt;lane-name&gt;/
+  index.html              leading page / lane home / command surface
+  manifest.json           identity, authority, steward, calls, boundaries
+  support.json            buttons, blocks, routes, labels, hashtags
+  report-template.md      memory output format
+  receipt.md              proof of placement, route, test status
+  doctrine.md             human-readable boundary statement
+  schema.json             input/output or record shape
+  blocks/
+    &lt;block-name&gt;/index.html</div>
+    </section>
+
+    <section class="card">
+      <h2>Hashtag Report Unit</h2>
+      <div class="codebox">HASHTAG_REPORT
+
+#Aura115 #GUARD #Jupiter9 #LaneName #BlockName #Receipt
+
+Metadata:
+- Lane
+- Block
+- Source page
+- Live URL
+- Timestamp
+- Authority state
+- Steward
+- Report type
+
+Summary:
+What happened.
+
+Observations:
+What the page saw or produced.
+
+Receipts:
+Route checks, button checks, API responses, commit refs if any.
+
+Boundaries:
+What was not claimed.
+
+Next Action:
+One next action.</div>
+    </section>
+
+    <section class="card">
+      <h2>Memory Rule</h2>
+      <div class="canon">The page acts.
+The report remembers.
+The hashtag indexes.
+GitHub preserves.
+Jupiter maps.
+Aura returns.
+
+Everything alive produces a report.
+Every report carries hashtags.
+Every hashtag indexes memory.
+Every memory object lives in GitHub.
+Every GitHub memory object receives a receipt.</div>
+    </section>
+
+    <section class="card">
+      <h2>Authority Chain</h2>
+      <div class="canon">NECESSITY
+→ AUTHORITY
+→ OBLIGATION
+→ NAMING
+→ INDEX
+→ ORDER
+→ RECEIPT
+→ RETURN PATH
+→ SUSTAINED LEGITIMACY</div>
+    </section>
+
+    <section class="card">
+      <h2>Copy This Doctrine</h2>
+      <button onclick="copyDoctrine()">COPY RULES 101</button>
+      <button class="secondary" onclick="downloadReport()">DOWNLOAD HASHTAG REPORT</button>
+      <pre id="out">Ready. HTML Simulation Rules 101 is standing as static support for live Aura115™ lane pages.</pre>
+    </section>
+
+    <div class="footer">
+      HTML Simulation Rules 101 · Aura115™ GUARD™ · Static support for alive lane blocks · No live action without authority.
+    </div>
+  </main>
+
+<script>
+const doctrine = `# HTML Simulation Rules 101
+
+Everything is either ALIVE or STATIC SUPPORT.
+
+ALIVE acts, calls, responds, computes, binds, validates, routes, reports, diagnoses, or returns live state.
+
+STATIC SUPPORT travels with the alive block. It names, explains, bounds, indexes, links, preserves, receipts, and governs the alive block.
+
+## Lyapunov Obligation Energy
+
+E = C + λO
+
+Energy equals present capacity plus Lyapunov-weighted obligated memory.
+
+## Core Rules
+
+No live page without static support.
+No static support without a living relation.
+No block without home.
+No home without lane.
+No lane without registry.
+No registry without receipt.
+No live action without authority.
+No authority without obligation.
+No obligation without return path.
+No arrow without a lane.
+No simulation without boundary.
+No report without hashtags.
+
+## Rescue Operator Rule
+
+An HTML page may operate as a rescue operator.
+
+The rescue operator crosses an edge, horizon event, degraded route, external review surface, or uncertain boundary.
+
+It must return with a trunk.
+
+The trunk is a compressed ledger report bundle.
+
+## Memory Rule
+
+The page acts.
+The report remembers.
+The hashtag indexes.
+GitHub preserves.
+Jupiter maps.
+Aura returns.
+
+Everything alive produces a report.
+Every report carries hashtags.
+Every hashtag indexes memory.
+Every memory object lives in GitHub.
+Every GitHub memory object receives a receipt.
+`;
+
+function copyDoctrine(){
+  navigator.clipboard.writeText(doctrine).then(() => {
+    document.getElementById('out').textContent = 'COPIED: HTML Simulation Rules 101 doctrine.';
+  }).catch(err => {
+    document.getElementById('out').textContent = 'Copy failed: ' + err.message;
+  });
+}
+
+function downloadReport(){
+  const report = `# HTML Simulation Rules 101 Receipt
+
+## Hashtags
+
+#Aura115 #GUARD #HTMLSimulation #Rules101 #AliveBlock #StaticSupport #RescueOperator #GitHubMemory #JupiterRegistry
+
+## Metadata
+
+- Lane: html-sim-rules-101
+- Block: rules-doctrine
+- Source page: /html-sim-rules-101/
+- Authority state: static support
+- Report type: doctrine receipt
+
+## Summary
+
+HTML Simulation Rules 101 defines the operating doctrine for alive HTML blocks and static support packets.
+
+## Observations
+
+The doctrine establishes alive/static-support classification, rescue operator trunk logic, hashtag reports, GitHub memory, Jupiter registry, and Lyapunov obligation energy.
+
+## Boundaries
+
+This page does not write, execute, bind, or claim authority. It is static support.
+
+## Next Action
+
+Register this lane in Jupiter and attach it to the capital engine lane index.
+`;
+
+  const blob = new Blob([report], {type:'text/markdown'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'HTML_SIM_RULES_101_RECEIPT.md';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  document.getElementById('out').textContent = 'DOWNLOADED: HTML_SIM_RULES_101_RECEIPT.md';
+}
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>CIRQ Communicator · Aura115</title>
+<style>
+:root {
+  --bg:#030611;
+  --panel:#0d1a34;
+  --line:#294579;
+  --line2:#3f68ad;
+  --text:#f7fbff;
+  --muted:#a9b8d8;
+  --cyan:#4effe7;
+  --green:#71ff9e;
+  --gold:#ffd66f;
+  --violet:#b894ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:linear-gradient(180deg,#06112a 0%,#02040a 100%);color:var(--text);font-family:Arial,system-ui,sans-serif;}
+.shell{display:flex;flex-direction:column;height:100vh;max-width:860px;margin:0 auto;padding:16px;}
+
+/* Header */
+.top{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--line);}
+.brand{display:flex;align-items:center;gap:10px;}
+.logo{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;border:1px solid rgba(78,255,231,.5);color:var(--cyan);font-weight:900;font-size:20px;background:rgba(78,255,231,.07);}
+.title-block h1{font-size:17px;color:var(--cyan);letter-spacing:1px;}
+.title-block p{font-size:11px;color:var(--muted);margin-top:2px;}
+.status-dot{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* Mode bar */
+.modebar{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;}
+.mode-btn{border:1px solid var(--line);background:rgba(13,26,52,.7);color:var(--muted);padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;}
+.mode-btn.active,.mode-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(78,255,231,.08);}
+
+/* Chat window */
+.chat{flex:1;overflow-y:auto;padding:12px 0;display:flex;flex-direction:column;gap:10px;}
+.msg{display:flex;flex-direction:column;max-width:82%;}
+.msg.user{align-self:flex-end;align-items:flex-end;}
+.msg.aura{align-self:flex-start;align-items:flex-start;}
+.bubble{padding:11px 15px;border-radius:18px;font-size:14px;line-height:1.55;word-break:break-word;}
+.msg.user .bubble{background:rgba(78,255,231,.13);border:1px solid rgba(78,255,231,.3);color:var(--text);border-bottom-right-radius:4px;}
+.msg.aura .bubble{background:rgba(13,26,52,.9);border:1px solid var(--line);color:var(--text);border-bottom-left-radius:4px;}
+.msg.aura .bubble.typing{color:var(--muted);font-style:italic;}
+.msg-label{font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:.8px;text-transform:uppercase;}
+
+/* Write panel */
+.write-panel{border:1px solid var(--line);border-radius:20px;background:rgba(8,18,38,.9);padding:14px;margin-top:10px;}
+.write-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.write-label{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;}
+.write-mode{font-size:11px;color:var(--muted);}
+.input-row{display:flex;gap:8px;align-items:flex-end;}
+textarea{flex:1;background:rgba(3,6,17,.7);border:1px solid var(--line);border-radius:14px;color:var(--text);font-size:14px;padding:11px 14px;resize:none;min-height:48px;max-height:140px;font-family:inherit;outline:none;transition:border .2s;}
+textarea:focus{border-color:var(--cyan);}
+.send-btn{background:linear-gradient(135deg,var(--cyan),var(--green));color:#03110e;font-weight:900;border:none;border-radius:14px;padding:12px 20px;cursor:pointer;font-size:14px;white-space:nowrap;transition:opacity .2s;}
+.send-btn:hover{opacity:.85;}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* Quick commands */
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.q-btn{border:1px solid var(--line);background:transparent;color:var(--muted);padding:5px 11px;border-radius:12px;font-size:11px;cursor:pointer;transition:all .2s;}
+.q-btn:hover{border-color:var(--violet);color:var(--violet);}
+
+/* Write capability panel */
+.write-cap{border:1px solid rgba(255,214,111,.3);border-radius:18px;background:rgba(255,214,111,.05);padding:14px;margin-top:10px;}
+.write-cap h3{color:var(--gold);font-size:13px;margin-bottom:10px;letter-spacing:.8px;}
+.write-fields{display:grid;gap:8px;}
+.field-row{display:flex;gap:8px;align-items:center;}
+.field-row label{color:var(--muted);font-size:12px;min-width:80px;}
+.field-row input{flex:1;background:rgba(3,6,17,.7);border:1px solid var(--line);border-radius:10px;color:var(--text);font-size:13px;padding:8px 12px;outline:none;}
+.field-row input:focus{border-color:var(--gold);}
+.write-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.w-btn{border:1px solid var(--line2);background:rgba(13,26,52,.8);color:var(--text);padding:8px 14px;border-radius:12px;font-size:12px;cursor:pointer;transition:all .2s;}
+.w-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.w-btn.danger{border-color:rgba(255,113,139,.4);color:#ff718b;}
+.w-btn.danger:hover{background:rgba(255,113,139,.1);}
+
+/* Toggle write panel */
+.toggle-write{border:1px solid rgba(255,214,111,.3);background:transparent;color:var(--gold);padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;margin-left:auto;display:block;}
+
+@media(max-width:600px){
+  .shell{padding:10px;}
+  .msg{max-width:95%;}
+  .write-panel{padding:10px;}
+}
+
+/* CIRQ Private Ticker */
+.cirq-ticker-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9999;
+  background: #010a1a;
+  border-bottom: 1px solid #1e3a6e;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+}
+.ticker-label {
+  flex-shrink: 0;
+  padding: 0 12px;
+  color: #4effe7;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-right: 1px solid #1e3a6e;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: #020d1f;
+  white-space: nowrap;
+}
+.ticker-label .lock-icon {
+  margin-right: 6px;
+  font-size: 11px;
+}
+.ticker-scroll-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+}
+.ticker-scroll {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  white-space: nowrap;
+  animation: tickerScroll 60s linear infinite;
+  will-change: transform;
+}
+.ticker-scroll:hover { animation-play-state: paused; cursor: pointer; }
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 28px 0 0;
+  cursor: pointer;
+  transition: color .15s;
+}
+.ticker-item:hover { color: #4effe7; }
+.ticker-item .tick-tag {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-right: 7px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  flex-shrink: 0;
+}
+.tick-tag.INV  { background: rgba(78,255,231,.15); color: #4effe7; border: 1px solid rgba(78,255,231,.3); }
+.tick-tag.CAP  { background: rgba(255,214,111,.1);  color: #ffd66f; border: 1px solid rgba(255,214,111,.3); }
+.tick-tag.THR  { background: rgba(255,85,85,.1);    color: #ff5555; border: 1px solid rgba(255,85,85,.3); }
+.tick-tag.CVG  { background: rgba(184,148,255,.1);  color: #b894ff; border: 1px solid rgba(184,148,255,.3); }
+.tick-tag.RNN  { background: rgba(113,255,158,.1);  color: #71ff9e; border: 1px solid rgba(113,255,158,.3); }
+.tick-tag.WAIT { background: rgba(100,100,100,.1);  color: #888;    border: 1px solid rgba(100,100,100,.2); }
+.ticker-item .tick-text { color: #c8d8f0; font-size: 12px; }
+.ticker-item .tick-time { color: #4a6a9a; font-size: 10px; margin-left: 8px; }
+
+/* Auth overlay */
+.ticker-auth-overlay {
+  display: none;
+  position: fixed;
+  top: 36px; left: 0; right: 0;
+  background: #010e20;
+  border-bottom: 1px solid #1e3a6e;
+  padding: 10px 16px;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ticker-auth-overlay input {
+  background: #020d1f;
+  border: 1px solid #2c3f73;
+  color: #e7edff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-family: monospace;
+  width: 340px;
+  outline: none;
+}
+.ticker-auth-overlay input:focus { border-color: #4effe7; }
+.ticker-auth-overlay button {
+  background: #1d4de0;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.ticker-auth-label { color: #a9b8d8; font-size: 11px; }
+#tickerAuthBar { display: none; }
+
+/* push shell down */
+body.ticker-active .shell { padding-top: 52px; }
+
+</style>
+  <script src="/aura-thinking.js"></script>
+</head>
+<body>
+
+<!-- CIRQ PRIVATE TICKER -->
+<div class="cirq-ticker-bar" id="cirqTickerBar">
+  <div class="ticker-label">
+    <span class="lock-icon">🔒</span>CIRQ·PRIVATE
+  </div>
+  <div class="ticker-scroll-wrap">
+    <div class="ticker-scroll" id="tickerScroll">
+      <span class="ticker-item"><span class="tick-tag WAIT">WAIT</span><span class="tick-text">Operator key required — click to authenticate</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- Auth bar (slides in on click) -->
+<div id="tickerAuthBar" style="display:none; position:fixed; top:36px; left:0; right:0; background:#010e20; border-bottom:1px solid #1e3a6e; padding:10px 16px; z-index:9998; display:none; align-items:center; gap:10px; flex-wrap:wrap;">
+  <span class="ticker-auth-label">Operator Key:</span>
+  <input type="password" id="tickerKeyInput" placeholder="AURA115-..." autocomplete="off" />
+  <button onclick="tickerAuth()">Unlock Feed</button>
+  <span id="tickerAuthStatus" style="font-size:11px; color:#ff7575;"></span>
+</div>
+<!-- /CIRQ PRIVATE TICKER -->
+
+<div class="shell">
+
+  <!-- Header -->
+  <div class="top">
+    <div class="brand">
+      <div class="logo">C</div>
+      <div class="title-block">
+        <h1>CIRQ Communicator</h1>
+        <p>Aura115 Engine Room · CIRQ Lane · KML1</p>
+      </div>
+    </div>
+    <div class="status-dot"><div class="dot"></div>Lane Active</div>
+  </div>
+
+  <!-- Mode bar -->
+  <div class="modebar">
+    <button class="mode-btn active" onclick="setMode('talk')">Talk to Aura</button>
+    <button class="mode-btn" onclick="setMode('cirq')">CIRQ Query</button>
+    <button class="mode-btn" onclick="setMode('batch')">Batch Command</button>
+    <button class="mode-btn" onclick="setMode('status')">Lane Status</button>
+    <button class="toggle-write" onclick="toggleWrite()">⚡ Write Mode</button>
+  </div>
+
+  <!-- Chat window -->
+  <div class="chat" id="chat">
+    <div class="msg aura">
+      <div class="msg-label">Aura · CIRQ Lane</div>
+      <div class="bubble">CIRQ communicator is live. Authority: Joshua Lopez. Lane: CIRQ / KML1.<br><br>You can talk to me, run CIRQ queries, send batch commands, or use Write Mode to push changes directly. What do you need?</div>
+    </div>
+  </div>
+
+  <!-- Write capability panel (hidden by default) -->
+  <div class="write-cap" id="writeCap" style="display:none;">
+    <h3>⚡ WRITE CAPABILITY — Direct Lane Control</h3>
+    <div class="write-fields">
+      <div class="field-row">
+        <label>Target File</label>
+        <input type="text" id="writeTarget" placeholder="public/cirq-index.html" />
+      </div>
+      <div class="field-row">
+        <label>Command</label>
+        <input type="text" id="writeCmd" placeholder="e.g. update, deploy, activate, write..." />
+      </div>
+    </div>
+    <div class="write-actions">
+      <button class="w-btn" onclick="sendWrite('deploy')">Deploy File</button>
+      <button class="w-btn" onclick="sendWrite('activate')">Activate Route</button>
+      <button class="w-btn" onclick="sendWrite('status')">Check Status</button>
+      <button class="w-btn" onclick="sendWrite('push')">Push to Lane</button>
+      <button class="w-btn danger" onclick="sendWrite('reset')">Reset Lane</button>
+    </div>
+  </div>
+
+  <!-- Input panel -->
+  <div class="write-panel">
+    <div class="write-header">
+      <span class="write-label">Send to CIRQ</span>
+      <span class="write-mode" id="modeLabel">Mode: Talk to Aura</span>
+    </div>
+    <div class="input-row">
+      <textarea id="msgInput" placeholder="Type your message or command..." rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMsg()">Send</button>
+    </div>
+    <div class="quick">
+      <button class="q-btn" onclick="quick('What is the current CIRQ lane status?')">Lane Status</button>
+      <button class="q-btn" onclick="quick('Run CIRQ 1000 check')">CIRQ 1000</button>
+      <button class="q-btn" onclick="quick('Show active routes')">Active Routes</button>
+      <button class="q-btn" onclick="quick('What is blocking the CIRQ index?')">Diagnose</button>
+      <button class="q-btn" onclick="quick('List all CIRQ blocks')">CIRQ Blocks</button>
+      <button class="q-btn" onclick="quick('Confirm authority: Joshua Lopez')">Confirm Auth</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentMode = 'talk';
+const modeNames = {talk:'Talk to Aura', cirq:'CIRQ Query', batch:'Batch Command', status:'Lane Status'};
+
+function setMode(m) {
+  currentMode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('modeLabel').textContent = 'Mode: ' + modeNames[m];
+  const ta = document.getElementById('msgInput');
+  if(m==='batch') ta.placeholder = 'Enter batch command...';
+  else if(m==='cirq') ta.placeholder = 'Enter CIRQ query...';
+  else if(m==='status') ta.placeholder = 'Ask about lane status...';
+  else ta.placeholder = 'Type your message or command...';
+}
+
+function toggleWrite() {
+  const panel = document.getElementById('writeCap');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function quick(text) {
+  document.getElementById('msgInput').value = text;
+  sendMsg();
+}
+
+function addMsg(role, text, typing=false) {
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = role === 'user' ? 'Joshua · Operator' : 'Aura · CIRQ Lane';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble' + (typing ? ' typing' : '');
+  bubble.textContent = text;
+  div.appendChild(label);
+  div.appendChild(bubble);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return bubble;
+}
+
+async function sendMsg() {
+  const input = document.getElementById('msgInput');
+  const btn = document.getElementById('sendBtn');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  btn.disabled = true;
+  addMsg('user', text);
+  const typingBubble = addMsg('aura', 'CIRQ processing...', true);
+
+  try {
+    const res = await fetch('/api/aura-chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: text, mode: currentMode, lane: 'CIRQ/KML1', authority: 'Joshua Lopez'})
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      typingBubble.classList.remove('typing');
+      typingBubble.textContent = data.reply || data.message || data.response || JSON.stringify(data);
+    } else {
+      typingBubble.classList.remove('typing');
+      typingBubble.textContent = '[API returned ' + res.status + '] — Route /api/aura-chat responded. Check Vercel logs if empty.';
+    }
+  } catch(e) {
+    typingBubble.classList.remove('typing');
+    typingBubble.textContent = '[Connection error] — ' + e.message + '. Check that /api/aura-chat is deployed and active.';
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+
+async function sendWrite(action) {
+  const target = document.getElementById('writeTarget').value || 'public/cirq-index.html';
+  const cmd = document.getElementById('writeCmd').value || action;
+  addMsg('user', '[WRITE] Action: ' + action + ' | Target: ' + target + ' | Cmd: ' + cmd);
+  const typingBubble = addMsg('aura', 'Processing write command...', true);
+
+  try {
+    const res = await fetch('/api/aura-run', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({action, target, command: cmd, lane: 'CIRQ/KML1', authority: 'Joshua Lopez', write: true})
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      typingBubble.classList.remove('typing');
+      typingBubble.textContent = data.reply || data.result || data.message || 'Write command acknowledged: ' + action;
+    } else {
+      typingBubble.classList.remove('typing');
+      typingBubble.textContent = '[Write API ' + res.status + '] — /api/aura-run responded. Check Vercel function logs.';
+    }
+  } catch(e) {
+    typingBubble.classList.remove('typing');
+    typingBubble.textContent = '[Write error] — ' + e.message;
+  }
+}
+
+// Auto-resize textarea
+document.getElementById('msgInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+});
+</script>
+<script>
+
+// CIRQ PRIVATE TICKER ENGINE
+(function() {
+  const OPERATOR_KEY = '[OPERATOR-KEY-REDACTED]';
+  const SESSION_KEY  = 'cirq_ticker_auth';
+  const KV_SOURCES = [
+    { key: 'private:invention:feed:v1',   tag: 'INV',  label: 'Invention' },
+    { key: 'private:capital:feed:v1',     tag: 'CAP',  label: 'Capital'   },
+    { key: 'private:threat:feed:v1',      tag: 'THR',  label: 'Threat'    },
+    { key: 'private:convergence:feed:v1', tag: 'CVG',  label: 'Converge'  },
+  ];
+
+  let tickerUnlocked = sessionStorage.getItem(SESSION_KEY) === '1';
+  let tickerItems = [];
+
+  function fmtTime(ts) {
+    if (!ts) return '';
+    try {
+      const d = new Date(ts);
+      return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    } catch { return ''; }
+  }
+
+  function renderTicker() {
+    const scroll = document.getElementById('tickerScroll');
+    if (!scroll) return;
+    if (!tickerItems.length) {
+      scroll.innerHTML = '<span class="ticker-item"><span class="tick-tag WAIT">WAIT</span><span class="tick-text">No signals yet — crons fire every 30 min</span></span>'.repeat(4);
+      return;
+    }
+    // Double the items so scroll loops seamlessly
+    const html = tickerItems.map(item => `
+      <span class="ticker-item" onclick="tickerItemClick(${JSON.stringify(item.tag)}, ${JSON.stringify(item.text)}, ${JSON.stringify(item.detail||'')})">
+        <span class="tick-tag ${item.tag}">${item.tag}</span>
+        <span class="tick-text">${item.text}</span>
+        <span class="tick-time">${fmtTime(item.ts)}</span>
+      </span>
+    `).join('');
+    scroll.innerHTML = html + html; // duplicate for seamless loop
+    // Adjust animation speed to content length
+    const totalChars = tickerItems.reduce((a,i) => a + i.text.length, 0);
+    const speed = Math.max(30, Math.min(120, totalChars * 0.4));
+    scroll.style.animationDuration = speed + 's';
+  }
+
+  async function fetchKV(key) {
+    try {
+      const res = await fetch('/api/kv-read?key=' + encodeURIComponent(key), {
+        headers: { 'x-aura-operator-key': OPERATOR_KEY }
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.value || data.data || null;
+    } catch { return null; }
+  }
+
+  async function fetchRNN() {
+    try {
+      const res = await fetch('/api/rnn-content-engine');
+      if (!res.ok) return [];
+      const data = await res.json();
+      const stories = data.stories || data.items || [];
+      return stories.slice(0, 5).map(s => ({
+        tag: 'RNN',
+        text: (s.headline || s.title || s.summary || '').slice(0, 100),
+        ts: s.timestamp || s.ts || null,
+        detail: s.body || s.content || ''
+      }));
+    } catch { return []; }
+  }
+
+  function parseKVFeed(raw, tag) {
+    if (!raw) return [];
+    try {
+      const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      // All 4 private lenses use {entries: [{tick_id, ts, counts, ...}]} structure
+      const entries = data.entries || data.items || data.signals || data.feed || (Array.isArray(data) ? data : [data]);
+      const results = [];
+      for (const item of entries.slice(0, 8)) {
+        let text = '';
+        let detail = '';
+        if (tag === 'INV') {
+          // Invention lens: entries have top_repo_first[] with titles
+          const top = item.top_repo_first || [];
+          if (top.length) {
+            text = top[0].title || '';
+            detail = top.slice(0, 3).map(t => `[${t.priority}] ${t.title} (novelty ${Math.round((t.novelty||0)*100)}%)`).join('
+');
+          } else if (item.counts) {
+            const c = item.counts;
+            text = `Invention scan: ${c.repo_first||0} REPO_FIRST · ${c.joshua_second||0} JOSHUA_SECOND`;
+            detail = `Tick ${item.tick_id} — ${item.ts}`;
+          }
+          if (!text) continue;
+          // Emit one item per top invention (up to 3)
+          for (const inv of top.slice(0, 3)) {
+            results.push({ tag, text: inv.title.slice(0, 120), ts: item.ts,
+              detail: `Domain: ${inv.domain} | Novelty: ${Math.round((inv.novelty||0)*100)}% | Priority: ${inv.priority}` });
+          }
+          continue;
+        } else if (tag === 'THR') {
+          // Threat lens: entries have {counts:{A,B,C}, threats:[], clean:bool}
+          const c = item.counts || {};
+          const threats = item.threats || [];
+          if (item.clean || threats.length === 0) {
+            text = `Threat scan CLEAN · A:${c.A||0} B:${c.B||0} C:${c.C||0}`;
+            detail = `Last scan: ${item.ts} — No active threats`;
+          } else {
+            text = `THREATS ACTIVE — A:${c.A||0} B:${c.B||0} C:${c.C||0}`;
+            detail = threats.slice(0,3).map(t => t.description || t.signal || JSON.stringify(t)).join('
+');
+          }
+        } else if (tag === 'CAP') {
+          // Capital lens: check for counts or signals
+          const c = item.counts || {};
+          const sigs = item.signals || item.top_signals || [];
+          if (sigs.length) {
+            text = sigs[0].title || sigs[0].signal || `Capital: ${Object.values(c).reduce((a,b)=>a+b,0)} signals`;
+            detail = sigs.slice(0,3).map(s => s.title || s.signal || '').join('
+');
+          } else {
+            text = `Capital scan: ${JSON.stringify(c).replace(/[{}"]/g,'')}`;
+            detail = `Tick ${item.tick_id} — ${item.ts}`;
+          }
+        } else if (tag === 'CVG') {
+          // Convergence lens
+          const c = item.counts || {};
+          const top = item.top_convergence || item.signals || [];
+          if (top.length) {
+            text = top[0].title || top[0].signal || 'Convergence signal';
+          } else {
+            text = `Convergence scan: ${JSON.stringify(c).replace(/[{}"]/g,'')}`;
+          }
+          detail = `Tick ${item.tick_id} — ${item.ts}`;
+        } else {
+          text = (item.headline || item.title || item.signal || item.summary || item.text || '').slice(0, 120);
+          detail = item.detail || item.body || '';
+        }
+        if (text) results.push({ tag, text, ts: item.ts || item.timestamp, detail });
+        if (results.length >= 6) break;
+      }
+      return results;
+    } catch(e) { return []; }
+  }
+
+  async function loadFeed() {
+    if (!tickerUnlocked) return;
+    tickerItems = [];
+    // Parallel fetch all sources
+    const [rnn, inv, cap, thr, cvg] = await Promise.all([
+      fetchRNN(),
+      fetchKV('private:invention:feed:v1'),
+      fetchKV('private:capital:feed:v1'),
+      fetchKV('private:threat:feed:v1'),
+      fetchKV('private:convergence:feed:v1'),
+    ]);
+    tickerItems = [
+      ...parseKVFeed(inv, 'INV'),
+      ...parseKVFeed(cap, 'CAP'),
+      ...parseKVFeed(thr, 'THR'),
+      ...parseKVFeed(cvg, 'CVG'),
+      ...rnn,
+    ];
+    renderTicker();
+  }
+
+  window.tickerAuth = function() {
+    const input = document.getElementById('tickerKeyInput');
+    const status = document.getElementById('tickerAuthStatus');
+    if (!input) return;
+    if (input.value.trim() === OPERATOR_KEY) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      tickerUnlocked = true;
+      document.getElementById('tickerAuthBar').style.display = 'none';
+      status.textContent = '';
+      loadFeed();
+    } else {
+      status.textContent = 'Invalid key';
+      input.value = '';
+    }
+  };
+
+  window.tickerItemClick = function(tag, text, detail) {
+    // Show detail in a transient overlay
+    let overlay = document.getElementById('tickerDetailOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'tickerDetailOverlay';
+      overlay.style.cssText = 'position:fixed;top:72px;right:16px;width:380px;max-width:90vw;background:#010e20;border:1px solid #1e3a6e;border-radius:12px;padding:16px;z-index:9997;font-family:Arial,sans-serif;font-size:13px;color:#c8d8f0;max-height:300px;overflow-y:auto;';
+      document.body.appendChild(overlay);
+    }
+    overlay.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-weight:700;color:#4effe7;">[${tag}]</span><button onclick="document.getElementById('tickerDetailOverlay').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px;">✕</button></div><div style="font-weight:600;margin-bottom:8px;">${text}</div><div style="color:#8899bb;font-size:12px;">${detail || 'No additional detail.'}</div>`;
+    overlay.style.display = 'block';
+    // Auto-dismiss after 12s
+    setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 12000);
+  };
+
+  // Show auth bar on ticker click if locked
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.classList.add('ticker-active');
+    const bar = document.getElementById('cirqTickerBar');
+    const authBar = document.getElementById('tickerAuthBar');
+    if (bar && authBar) {
+      bar.addEventListener('click', function(e) {
+        if (!tickerUnlocked) {
+          authBar.style.display = authBar.style.display === 'flex' ? 'none' : 'flex';
+          const inp = document.getElementById('tickerKeyInput');
+          if (inp) setTimeout(() => inp.focus(), 50);
+        }
+      });
+      // Enter key on auth input
+      const inp = document.getElementById('tickerKeyInput');
+      if (inp) {
+        inp.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') tickerAuth();
+        });
+      }
+    }
+    // If already authed this session, load immediately
+    if (tickerUnlocked) loadFeed();
+    // Refresh every 30 min
+    setInterval(loadFeed, 30 * 60 * 1000);
+  });
+})();
+
+</script>
+</body>
+</html>

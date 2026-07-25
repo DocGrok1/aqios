@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QHP GRAVITY_PROTOCOL — Live Demo (v0.1)</title>
+  <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #161a20; color: #eee; margin:0; padding:20px; }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { color: #00ccff; text-align: center; }
+    .card { background:#1e2228; border:2px solid #00ccff; border-radius:16px; padding:2rem; margin:2rem 0; box-shadow:0 0 30px rgba(0,204,255,0.3); }
+    #qhp-demo { width:100%; height:520px; background:#181b20; border-radius:12px; }
+    .desc { text-align:center; color:#cce6ff; margin-bottom:1rem; }
+    pre { background:#0d1117; padding:1rem; border-radius:8px; overflow-x:auto; font-size:0.9rem; }
+    .tab { display:flex; gap:10px; margin-bottom:1rem; }
+    button { padding:8px 16px; background:#00ccff; color:#000; border:none; border-radius:6px; cursor:pointer; }
+    .protocol { line-height:1.6; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>🚀 QHP GRAVITY_PROTOCOL — Live Reduction to Practice (v0.1)</h1>
+  <p style="text-align:center; color:#cce6ff; font-size:1.2rem;">
+    Quantum HoloProjection on the viability manifold \(\mathcal{V}\)<br>
+    Positive definite Riemannian substrate → gravity dissipation → meta-equilibrium anchoring
+  </p>
+
+  <div class="card">
+    <div class="desc">
+      <b>Live Interactive Demo</b> • Runs on commodity hardware • Patent-spec QHP native
+    </div>
+    <div id="qhp-demo"></div>
+  </div>
+
+  <div class="card">
+    <h2 style="color:#ffcc00;">📄 Full Python Engine (copy-paste ready)</h2>
+    <pre><code id="python-code"># Quantum HoloProjection Protocol (QHP) GRAVITY_PROTOCOL Demo
+import numpy as np
+import matplotlib.pyplot as plt
+
+def contact_hamiltonian_flow(x, p, gamma=0.1):
+    dxdt = p
+    dpdt = -x - gamma * p
+    return dxdt, dpdt
+
+def simulate_flow(x0, p0, steps=200, dt=0.05, gamma=0.1):
+    xs, ps = [x0], [p0]
+    x, p = x0, p0
+    for _ in range(steps):
+        dxdt, dpdt = contact_hamiltonian_flow(x, p, gamma)
+        x += dxdt * dt
+        p += dpdt * dt
+        xs.append(x)
+        ps.append(p)
+    return np.array(xs), np.array(ps)
+
+x0, p0 = 1.0, 0.0
+xs, ps = simulate_flow(x0, p0)
+
+theta = np.linspace(0, 2 * np.pi, 200)
+vx, vp = np.cos(theta), np.sin(theta)
+
+plt.figure(figsize=(6, 6))
+plt.plot(vx, vp, 'c--', label='Viability Manifold ($\\mathcal{V}$)')
+plt.plot(xs, ps, 'y-', linewidth=2, label='QHP Projected State')
+plt.scatter([x0], [p0], color='red', label='Initial (Bell)')
+plt.xlabel('x'); plt.ylabel('p')
+plt.axis('equal')
+plt.title('QHP Gravity Protocol: Meta-Equilibrium Contact Flow')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()</code></pre>
+  </div>
+
+  <div class="card">
+    <h2 style="color:#ffcc00;">📜 QHP as Native Projection Language on the Viability Manifold</h2>
+    <div class="protocol">
+      The Quantum HoloProjection Protocol (QHP) is the authorized authoring and runtime layer for all projections on \(\mathcal{V}\).<br><br>
+      • Quantum-native types and operations compose directly with
+<script src="/aura-embodiment-bootstrap.js"></script>

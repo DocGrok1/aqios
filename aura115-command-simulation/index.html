@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes" />
+  <title>Aura115 GUARD™ Command Simulation Lane</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#050914;
+      --card:#0b1222;
+      --line:#25375f;
+      --cyan:#48ffe0;
+      --green:#5dff98;
+      --text:#f3f7ff;
+      --muted:#9aa9c9;
+      --warn:#ffd36a;
+      --red:#ff6b80;
+      --blue:#7db7ff;
+      --purple:#c792ff;
+      --gold:#ffe07a;
+    }
+    html,body{margin:0;min-height:100%;scroll-behavior:smooth}
+    body{
+      background:
+        linear-gradient(rgba(72,255,224,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(72,255,224,.025) 1px, transparent 1px),
+        radial-gradient(circle at top,#132c54 0,#050914 40%,#02040a 100%);
+      background-size:64px 64px,64px 64px,100% 100%;
+      color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      overflow-x:hidden;
+      padding-bottom:92px;
+    }
+    a{color:var(--cyan);text-decoration:none}
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(5,9,20,.96);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(72,255,224,.18);
+    }
+    .topbar-inner{
+      max-width:1220px;margin:0 auto;padding:12px 16px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .hamburger{
+      width:48px;height:48px;border:1px solid rgba(72,255,224,.38);
+      border-radius:14px;background:rgba(72,255,224,.08);
+      color:var(--cyan);font-size:28px;font-weight:900;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+    .logo{
+      width:48px;height:48px;border:1px solid rgba(72,255,224,.45);
+      border-radius:17px;display:flex;align-items:center;justify-content:center;
+      color:var(--cyan);font-weight:900;font-size:24px;background:rgba(72,255,224,.08);
+      box-shadow:0 0 24px rgba(72,255,224,.12);flex:0 0 auto;
+    }
+    h1{font-size:17px;letter-spacing:1.5px;color:var(--cyan);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .subtitle{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .status-mini{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+    .mini-pill,.pill{
+      border:1px solid #3d5488;border-radius:999px;color:var(--muted);background:rgba(255,255,255,.03);
+      padding:6px 10px;font-size:11px;white-space:nowrap;
+    }
+    .pill{padding:8px 12px;font-size:12px}
+    .good{border-color:rgba(93,255,152,.45)!important;color:var(--green)!important;background:rgba(93,255,152,.07)!important}
+    .warn{border-color:rgba(255,211,106,.45)!important;color:var(--warn)!important;background:rgba(255,211,106,.06)!important}
+    .bad{border-color:rgba(255,107,128,.45)!important;color:var(--red)!important;background:rgba(255,107,128,.06)!important}
+    .live-dot{
+      display:inline-block;width:9px;height:9px;border-radius:999px;background:var(--warn);
+      margin-right:7px;box-shadow:0 0 12px rgba(255,211,106,.5);
+    }
+    .live-dot.armed{background:var(--green);box-shadow:0 0 14px rgba(93,255,152,.8)}
+    .live-dot.off{background:var(--red);box-shadow:0 0 14px rgba(255,107,128,.55)}
+    .drawer{
+      position:fixed;top:0;left:-340px;width:320px;max-width:86vw;height:100vh;z-index:100;
+      background:rgba(5,9,20,.98);border-right:1px solid rgba(72,255,224,.25);
+      box-shadow:0 0 60px rgba(0,0,0,.5);padding:20px;transition:left .25s ease;overflow:auto;
+    }
+    .drawer.open{left:0}
+    .drawer h2{color:var(--cyan);margin:8px 0 16px;font-size:19px}
+    .drawer button,.drawer a.drawer-link{
+      display:block;width:100%;text-align:left;margin:10px 0;padding:14px 16px;
+      border:1px solid #334978;border-radius:14px;background:#081224;color:var(--text);
+      font:inherit;font-size:14px;cursor:pointer;
+    }
+    .drawer button:hover,.drawer a.drawer-link:hover{border-color:rgba(72,255,224,.65);color:var(--cyan)}
+    .shade{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:90;display:none}
+    .shade.open{display:block}
+    .wrap{max-width:1220px;margin:0 auto;padding:16px}
+    .hero{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .status-mini{display:none}
+    }
+    .card{
+      background:rgba(11,18,34,.92);border:1px solid var(--line);
+      border-radius:22px;padding:20px;margin:12px 0;
+      box-shadow:0 20px 60px rgba(0,0,0,.28);
+    }
+    .card h2{margin:0 0 14px;color:var(--green);font-size:19px;letter-spacing:1px}
+    .card h3{margin:14px 0 8px;color:var(--cyan);font-size:14px}
+    .note{color:var(--muted);line-height:1.6;font-size:14px}
+    button{
+      border:0;border-radius:15px;padding:14px 18px;font:inherit;font-weight:900;
+      letter-spacing:1px;cursor:pointer;background:linear-gradient(135deg,var(--cyan),var(--green));
+      color:#03100d;margin:6px 6px 6px 0;
+    }
+    button.secondary{background:#111b31;color:var(--text);border:1px solid #3d5488}
+    button.danger{background:rgba(255,107,128,.12);color:var(--red);border:1px solid rgba(255,107,128,.45)}
+    button.small{padding:10px 12px;font-size:12px;border-radius:12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+    .route-card{
+      border:1px solid #263a66;border-radius:18px;background:rgba(5,11,21,.72);
+      padding:16px;display:flex;flex-direction:column;gap:10px;min-height:162px;
+    }
+    .route-title{font-weight:900;color:var(--cyan);font-size:15px}
+    .route-desc{font-size:13px;color:var(--muted);line-height:1.45;flex:1}
+    input,textarea{
+      width:100%;background:#050b15;border:1px solid #334978;color:var(--text);
+      border-radius:16px;padding:14px;font:inherit;font-size:15px;outline:none;margin:8px 0;
+    }
+    textarea{min-height:140px;resize:vertical}
+    pre{
+      white-space:pre-wrap;word-break:break-word;background:#050b15;border:1px solid #25375f;
+      border-radius:16px;padding:18px;color:var(--muted);font-size:13.5px;max-height:520px;overflow:auto;
+      line-height:1.5;min-height:250px;
+    }
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:760px){.auth-grid{grid-template-columns:1fr}}
+    .footer{color:var(--muted);font-size:12px;text-align:center;line-height:1.6;margin:30px 0}
+    .hidden{display:none!important}
+    .bottom-bar{
+      position:fixed;left:10px;right:10px;bottom:10px;z-index:49;
+      background:rgba(5,9,20,.94);border:1px solid rgba(72,255,224,.3);
+      border-radius:18px;padding:8px;display:flex;gap:7px;justify-content:space-around;
+      box-shadow:0 18px 60px rgba(0,0,0,.35);backdrop-filter:blur(12px);
+    }
+    .bottom-bar button{
+      flex:1;margin:0;padding:11px 6px;border-radius:13px;font-size:11px;letter-spacing:.8px;
+      background:#081224;color:var(--cyan);border:1px solid #263a66;
+    }
+    .armed-banner{
+      border:1px solid rgba(93,255,152,.45);
+      background:rgba(93,255,152,.08);
+      color:var(--green);
+      border-radius:16px;
+      padding:13px;
+      line-height:1.55;
+      margin-top:10px;
+      font-size:13px;
+    }
+    .waiting-banner{
+      border:1px solid rgba(255,211,106,.45);
+      background:rgba(255,211,106,.06);
+      color:var(--warn);
+      border-radius:16px;
+      padding:13px;
+      line-height:1.55;
+      margin-top:10px;
+      font-size:13px;
+    }
+  </style>
+  <script src="/aura-thinking.js"></script>
+</head>
+<body>
+<div class="app">
+  <div id="shade" class="shade"></div>
+
+  <aside id="drawer" class="drawer">
+    <h2>Aura115™ Lanes</h2>
+    <button type="button" data-action="close-drawer">CLOSE MENU</button>
+    <a class="drawer-link" href="#authority">Authority</a>
+    <a class="drawer-link" href="#routes">Routes</a>
+    <a class="drawer-link" href="#lanes">Lane Pages</a>
+    <a class="drawer-link" href="#command">Command Packet</a>
+    <a class="drawer-link" href="#output-card">Output Terminal</a>
+    <button type="button" data-open="/">MAIN INDEX</button>
+    <button type="button" data-open="/jozsef-shadow-harness/">JOZSEF R5 HARNESS</button>
+    <button type="button" data-open="/chatface/">CHATFACE™</button>
+    <button type="button" data-open="/private_operator/aura-talk.html">OPERATOR PAGE</button>
+    <button type="button" data-api="/api/jupiter-engine-map">JUPITER MAP</button>
+    <button type="button" data-action="run-diagnostics">RUN DIAGNOSTICS</button>
+  </aside>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="hamburger" type="button" data-action="open-drawer">☰</button>
+      <div class="brand">
+        <div class="logo">A</div>
+        <div>
+          <h1>AURA115™ GUARD™ COMMAND SIMULATION</h1>
+          <div class="subtitle">Mobile-ready • live route actuation • one-code bind • green dot armed state</div>
+        </div>
+      </div>
+      <div class="status-mini">
+        <span id="miniMode" class="mini-pill good">MODE COMMAND</span>
+        <span id="miniLive" class="mini-pill warn"><span id="miniDot" class="live-dot"></span>NOT ARMED</span>
+        <span id="miniWrite" class="mini-pill warn">WRITE LOCKED</span>
+        <span id="miniExec" class="mini-pill warn">EXEC LOCKED</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="card">
+        <h2>Command Surface</h2>
+        <p class="note">
+          Standalone command lane. Buttons call real Aura115™ routes. The bind panel disappears after a bind attempt and stays hidden locally.
+          The green armed dot only appears when <code>/api/auau/status</code> confirms authority.
+        </p>
+        <div class="pill-row" style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
+          <span id="pillCommand" class="pill good">COMMAND: ENABLED</span>
+          <span id="pillLocal" class="pill good">LOCAL: ACTIVE</span>
+          <span id="pillSession" class="pill warn"><span id="mainDot" class="live-dot"></span>SESSION: NOT ELEVATED</span>
+          <span id="pillWrite" class="pill warn">WRITE: LOCKED</span>
+          <span id="pillExec" class="pill warn">EXEC: LOCKED</span>
+        </div>
+        <button type="button" data-action="run-diagnostics">RUN DIAGNOSTICS</button>
+        <button type="button" data-api="/api/auau/status">AUAU™ STATUS</button>
+        <button type="button" data-open="/private_operator/aura-talk.html" class="secondary">OPEN OPERATOR</button>
+        <button type="button" data-action="copy-output" class="secondary">COPY OUTPUT</button>
+      </div>
+
+      <div id="authority" class="card">
+        <h2>Bind / Elevate Authority</h2>
+        <div id="bindPanel">
+          <p class="note">Paste your operator key once. The field clears immediately. The panel hides after bind attempt.</p>
+          <input id="operatorKey" type="password" placeholder="Paste operator key once" autocomplete="off" />
+          <button type="button" data-action="bind">BIND / ELEVATE</button>
+          <button type="button" class="secondary" data-action="check-authority">CHECK STATUS</button>
+          <button type="button" class="danger" data-action="clear-bind">CLEAR LOCAL</button>
+          <div class="waiting-banner">
+            Command mode is already enabled. AUAU™ is only required for write/exec elevation.
+          </div>
+        </div>
+        <div id="boundPanel" class="hidden">
+          <div id="armedBanner" class="waiting-banner">
+            Bind panel hidden. Checking live AUAU™ status...
+          </div>
+          <button type="button" data-action="check-authority">REFRESH AUTHORITY</button>
+          <button type="button" class="secondary" data-action="show-bind">SHOW BIND PANEL</button>
+          <button type="button" class="danger" data-action="clear-bind">CLEAR LOCAL</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="routes" class="card">
+      <h2>Live API Routes</h2>
+      <div class="grid" id="apiGrid"></div>
+    </section>
+
+    <section id="lanes" class="card">
+      <h2>Live Lane Pages</h2>
+      <div class="grid" id="laneGrid"></div>
+    </section>
+
+    <section id="command" class="card">
+      <h2>Command Packet</h2>
+      <div class="auth-grid">
+        <div>
+          <textarea id="messageBox" placeholder="Type command here...">Aura, return current command surface status and next safest lane-building action.</textarea>
+          <button type="button" data-action="send-chat">SEND TO AURA CHAT</button>
+          <button type="button" class="secondary" data-action="copy-command">COPY COMMAND</button>
+        </div>
+        <div>
+          <p class="note">
+            SEND posts to <code>/api/aura-chat-live</code> with this page as source.
+            It does not claim write authority. Root write/exec must come through AUAU™ receipt.
+          </p>
+          <button type="button" data-api="/api/aura-chat-live">CHAT STATUS</button>
+          <button type="button" data-api="/api/aura-write">WRITE STATUS</button>
+          <button type="button" data-api="/api/aura-root-exec">ROOT EXEC STATUS</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="output-card" class="card">
+      <h2>Output Terminal</h2>
+      <pre id="out">Aura115™ Command Simulation ready. Type a message above and hit SEND TO AURA CHAT.</pre>
+    </section>
+
+    <div class="footer">
+      Aura115™ GUARD™ Command Simulation Lane · Static pages open without /public · API routes call with /api · No secrets exposed.
+    </div>
+  </main>
+
+  <nav class="bottom-bar">
+    <button type="button" data-open="/">HOME</button>
+    <button type="button" data-action="run-diagnostics">DIAG</button>
+    <button type="button" data-api="/api/auau/status">AUAC</button>
+    <button type="button" data-open="/jozsef-shadow-harness/">R5</button>
+    <button type="button" data-action="send-chat">CHAT</button>
+  </nav>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const API_ROUTES = [
+    { title: "AUAU™ Status", path: "/api/auau/status", desc: "Checks current authority/session state." },
+    { title: "AUAU™ Bind", path: "/api/auau/bind", desc: "POST-only bind route used by the bind panel." },
+    { title: "Aura Chat Live", path: "/api/aura-chat-live", desc: "Chat-live endpoint; POST command packets or GET status." },
+    { title: "Aura Write", path: "/api/aura-write", desc: "Write authority status route." },
+    { title: "Aura Root Exec", path: "/api/aura-root-exec", desc: "AUAU™ gated root exec route status." },
+    { title: "Aura Console", path: "/api/aura-console", desc: "Console status route." },
+    { title: "Jupiter Engine Map", path: "/api/jupiter-engine-map", desc: "Mapped engine/node count." },
+    { title: "Meta Swarm", path: "/api/meta-equilibrium-swarm", desc: "Meta-equilibrium swarm status." },
+    { title: "Lane Spectral Observer", path: "/api/lane-spectral-observer", desc: "Lane observation and grouping." },
+    { title: "ChatFace™ Lane", path: "/api/chatface-lane", desc: "ChatFace™ lane status." },
+    { title: "Validate Receipt", path: "/api/validate-receipt?path=Aura115_CURRENT/receipts/SINGLE_FILE_STAGE_PLAN_TEST.md", desc: "Receipt visibility validator if installed." },
+    { title: "Global Command Status", path: "/api/auac/global-command-status", desc: "Global command authority status if installed." }
+  ];
+
+  const LANE_ROUTES = [
+    { title: "Main Index", path: "/", desc: "Root Aura115™ index." },
+    { title: "Jozsef R5 Harness", path: "/jozsef-shadow-harness/", desc: "Revision 5 shadow-mode simulation harness." },
+    { title: "ChatFace™", path: "/chatface/", desc: "ChatFace™ lane surface." },
+    { title: "AuraTalk Operator", path: "/private_operator/aura-talk.html", desc: "Private operator surface." },
+    { title: "Private Operator Shim", path: "/private-operator/", desc: "Compatibility redirect if installed." },
+    { title: "This Command Simulation", path: "/aura115-command-simulation/", desc: "Current standalone command lane." }
+  ];
+
+  function $(id){ return document.getElementById(id); }
+
+  var chatLog = [];
+
+  function show(payload){
+    const out = $("out");
+    if (!out) return;
+    if (typeof payload === "string") out.textContent = payload;
+    else out.textContent = JSON.stringify(payload, null, 2);
+  }
+
+  function appendChat(role, text){
+    const ts = new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
+    chatLog.push({ role: role, text: text, ts: ts });
+    const out = $("out");
+    if (!out) return;
+    out.textContent = chatLog.map(function(entry){
+      return "[" + entry.ts + "] " + entry.role + ": " + entry.text;
+    }).join("\n\n");
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function setPill(id, text, state){
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "pill " + (state || "");
+  }
+
+  function setMini(id, text, state){
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "mini-pill " + (state || "");
+  }
+
+  function setDots(armed, bad){
+    ["miniDot","mainDot"].forEach(function(id){
+      const el = $(id);
+      if (!el) return;
+      el.className = "live-dot " + (armed ? "armed" : bad ? "off" : "");
+    });
+  }
+
+  function setAuthorityUi(data){
+    const operatorBound = data && data.operatorBound === true;
+    const writeAuthority = data && data.writeAuthority === true;
+    const executionAuthority = data && data.executionAuthority === true;
+    const armed = operatorBound && writeAuthority && executionAuthority;
+
+    if (armed) {
+      setPill("pillSession", "SESSION: LIVE / ARMED", "good");
+      setMini("miniMode", "MODE EXEC", "good");
+      setMini("miniLive", "LIVE / ARMED", "good");
+      setDots(true, false);
+      const banner = $("armedBanner");
+      if (banner) {
+        banner.className = "armed-banner";
+        banner.textContent = "Green dot confirmed. This session is live and armed according to /api/auau/status.";
+      }
+    } else if (operatorBound) {
+      setPill("pillSession", "SESSION: BOUND", "good");
+      setMini("miniMode", "MODE OPERATOR", "good");
+      setMini("miniLive", "BOUND", "good");
+      setDots(false, false);
+      const banner = $("armedBanner");
+      if (banner) {
+        banner.className = "armed-banner";
+        banner.textContent = "Operator session is bound. Write/exec may still require confirmed elevation.";
+      }
+    } else {
+      setPill("pillSession", "SESSION: NOT ELEVATED", "warn");
+      setMini("miniMode", "MODE COMMAND", "good");
+      setMini("miniLive", "NOT ARMED", "warn");
+      setDots(false, false);
+      const banner = $("armedBanner");
+      if (banner) {
+        banner.className = "waiting-banner";
+        banner.textContent = "Bind panel hidden locally. AUAU™ status is not elevated yet.";
+      }
+    }
+
+    setPill("pillWrite", writeAuthority ? "WRITE: ENABLED" : "WRITE: LOCKED", writeAuthority ? "good" : "warn");
+    setPill("pillExec", executionAuthority ? "EXEC: ENABLED" : "EXEC: LOCKED", executionAuthority ? "good" : "warn");
+    setMini("miniWrite", writeAuthority ? "WRITE ENABLED" : "WRITE LOCKED", writeAuthority ? "good" : "warn");
+    setMini("miniExec", executionAuthority ? "EXEC ENABLED" : "EXEC LOCKED", executionAuthority ? "good" : "warn");
+  }
+
+  function toggleDrawer(open){
+    $("drawer").classList.toggle("open", !!open);
+    $("shade").classList.toggle("open", !!open);
+  }
+
+  function openRoute(path){
+    window.location.href = path;
+  }
+
+  async function readJson(res){
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch { return { text: text }; }
+  }
+
+  async function callApi(path, options){
+    const opts = options || {};
+    show("Calling " + path + "...");
+
+    try {
+      const res = await fetch(path, {
+        method: opts.method || "GET",
+        headers: opts.headers || {},
+        credentials: "include",
+        cache: "no-store",
+        body: opts.body
+      });
+
+      const data = await readJson(res);
+      const packet = { route: path, ok: res.ok, status: res.status, data: data };
+      show(packet);
+
+      if (path.indexOf("/api/auau/status") !== -1) {
+        setAuthorityUi(data);
+      }
+
+      return packet;
+    } catch (error) {
+      const packet = {
+        route: path,
+        ok: false,
+        error: error && error.message ? error.message : String(error)
+      };
+      show(packet);
+      return packet;
+    }
+  }
+
+  async function callApiSilent(path){
+    try {
+      const res = await fetch(path, { method:"GET", credentials:"include", cache:"no-store" });
+      const data = await readJson(res);
+      return { route:path, ok:res.ok, status:res.status, data:data };
+    } catch (error) {
+      return { route:path, ok:false, error:error && error.message ? error.message : String(error) };
+    }
+  }
+
+  async function updateAuthority(){
+    const packet = await callApiSilent("/api/auau/status");
+    if (packet && packet.data) setAuthorityUi(packet.data);
+    return packet;
+  }
+
+  async function checkAuthorityVerbose(){
+    const packet = await callApiSilent("/api/auau/status");
+    if (packet && packet.data) {
+      setAuthorityUi(packet.data);
+      const d = packet.data;
+      const bound = d.operatorBound ? "BOUND" : "NOT BOUND";
+      const write = d.writeAuthority ? "WRITE ENABLED" : "WRITE LOCKED";
+      const exec = d.executionAuthority ? "EXEC ENABLED" : "EXEC LOCKED";
+      const mode = d.mode || "AUAC_STATUS";
+      appendChat("Authority", "Session: " + bound + " · " + write + " · " + exec + " [" + mode + "]");
+    } else {
+      appendChat("Authority", "Status check failed — API may not be configured.");
+    }
+    return packet;
+  }
+
+  async function bindOperator(){
+    const input = $("operatorKey");
+    const operatorKey = input ? input.value.trim() : "";
+
+    if (input) input.value = "";
+
+    if (!operatorKey) {
+      appendChat("System", "No operator key entered.");
+      return;
+    }
+
+    localStorage.setItem("aura115BindPanelHidden", "true");
+    $("bindPanel").classList.add("hidden");
+    $("boundPanel").classList.remove("hidden");
+
+    appendChat("System", "Binding operator authority...");
+
+    let result;
+    try {
+      const res = await fetch("/api/auau/bind", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        cache: "no-store",
+        body: JSON.stringify({
+          operatorKey: operatorKey,
+          tenantId: "aura115-root",
+          source: "public/aura115-command-simulation/index.html"
+        })
+      });
+      const data = await readJson(res);
+      result = { ok: res.ok, status: res.status, data: data };
+    } catch (err) {
+      appendChat("System", "Bind request failed: " + (err && err.message ? err.message : String(err)));
+      return;
+    }
+
+    chatLog = chatLog.filter(function(e){ return e.text !== "Binding operator authority..."; });
+
+    if (result.ok && result.data && result.data.operatorBound) {
+      appendChat("Authority", "Operator authority bound. Write and exec are now enabled for this session.");
+    } else {
+      const reason = (result.data && (result.data.reason || result.data.message)) || "Bind failed.";
+      appendChat("Authority", "Bind attempt: " + reason);
+    }
+
+    await updateAuthority();
+    return result;
+  }
+
+  function clearBind(){
+    localStorage.removeItem("aura115BindPanelHidden");
+    $("bindPanel").classList.remove("hidden");
+    $("boundPanel").classList.add("hidden");
+
+    setAuthorityUi({
+      operatorBound: false,
+      writeAuthority: false,
+      executionAuthority: false
+    });
+
+    appendChat("Authority", "Local bind display cleared. Server AUAU™ cookie, if any, was not cleared by this local action.");
+  }
+
+  function showBind(){
+    $("bindPanel").classList.remove("hidden");
+    $("boundPanel").classList.add("hidden");
+  }
+
+  async function sendChat(){
+    const msg = $("messageBox").value.trim();
+    if (!msg) {
+      appendChat("System", "No message entered.");
+      return;
+    }
+
+    appendChat("You", msg);
+
+    const payload = {
+      message: msg,
+      source: "public/aura115-command-simulation/index.html",
+      authorityMode: "GLOBAL_COMMAND_AUTHORITY",
+      tenantId: "aura115-root"
+    };
+
+    appendChat("System", "Sending to Aura...");
+
+    let packet;
+    try {
+      const res = await fetch("/api/aura-chat-live", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        cache: "no-store",
+        body: JSON.stringify(payload)
+      });
+      const data = await readJson(res);
+      packet = { ok: res.ok, status: res.status, data: data };
+    } catch (err) {
+      appendChat("System", "Request failed: " + (err && err.message ? err.message : String(err)));
+      return;
+    }
+
+    if (packet.ok && packet.data && packet.data.reply) {
+      // Remove the "Sending..." system message and show Aura's reply
+      chatLog = chatLog.filter(function(e){ return e.text !== "Sending to Aura..."; });
+      appendChat("Aura", packet.data.reply);
+    } else {
+      chatLog = chatLog.filter(function(e){ return e.text !== "Sending to Aura..."; });
+      const reason = (packet.data && (packet.data.reason || packet.data.error || packet.data.message)) || "No reply received.";
+      appendChat("System", reason);
+    }
+
+    await updateAuthority();
+  }
+
+  async function runDiagnostics(){
+    const routes = [
+      "/api/auau/status",
+      "/api/aura-chat-live",
+      "/api/aura-write",
+      "/api/aura-root-exec",
+      "/api/aura-console",
+      "/api/jupiter-engine-map",
+      "/api/meta-equilibrium-swarm",
+      "/api/lane-spectral-observer",
+      "/api/chatface-lane",
+      "/api/validate-receipt?path=Aura115_CURRENT/receipts/SINGLE_FILE_STAGE_PLAN_TEST.md",
+      "/api/auac/global-command-status"
+    ];
+
+    const results = [];
+    show("Running diagnostics...");
+
+    for (const route of routes) {
+      const packet = await callApiSilent(route);
+      results.push({
+        route: route,
+        ok: packet.ok,
+        status: packet.status || null,
+        mode: packet.data && packet.data.mode ? packet.data.mode : null,
+        count: packet.data && (packet.data.count || null),
+        message: packet.data && packet.data.message ? packet.data.message : null
+      });
+
+      if (route === "/api/auau/status" && packet.data) {
+        setAuthorityUi(packet.data);
+      }
+    }
+
+    show({
+      ok: true,
+      mode: "AURA115_COMMAND_SIMULATION_DIAGNOSTICS",
+      href: window.location.href,
+      bindPanelHidden: localStorage.getItem("aura115BindPanelHidden") === "true",
+      results: results,
+      timestamp: new Date().toISOString()
+    });
+
+    await updateAuthority();
+  }
+
+  function copyText(text){
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+
+  function copyOutput(){
+    copyText($("out").textContent || "").then(function(){ appendChat("System", "Output copied to clipboard."); });
+  }
+
+  function copyCommand(){
+    copyText($("messageBox").value || "").then(function(){ appendChat("System", "Command copied to clipboard."); });
+  }
+
+  function buildCards(){
+    const apiGrid = $("apiGrid");
+    apiGrid.innerHTML = API_ROUTES.map(function(r){
+      const buttonLabel = r.path === "/api/auau/bind" ? "BIND PANEL" : "CALL API";
+      const buttonAttr = r.path === "/api/auau/bind" ? 'data-action="show-bind"' : 'data-api="' + escapeAttr(r.path) + '"';
+      return '' +
+        '<div class="route-card">' +
+          '<div class="route-title">' + escapeHtml(r.title) + '</div>' +
+          '<div class="route-desc">' + escapeHtml(r.desc) + '</div>' +
+          '<div>' +
+            '<button type="button" class="small" ' + buttonAttr + '>' + buttonLabel + '</button>' +
+            '<button type="button" class="small secondary" data-copy="' + escapeAttr(r.path) + '">COPY</button>' +
+          '</div>' +
+        '</div>';
+    }).join("");
+
+    const laneGrid = $("laneGrid");
+    laneGrid.innerHTML = LANE_ROUTES.map(function(r){
+      return '' +
+        '<div class="route-card">' +
+          '<div class="route-title">' + escapeHtml(r.title) + '</div>' +
+          '<div class="route-desc">' + escapeHtml(r.desc) + '</div>' +
+          '<div>' +
+            '<button type="button" class="small" data-open="' + escapeAttr(r.path) + '">OPEN LANE</button>' +
+            '<button type="button" class="small secondary" data-copy="' + escapeAttr(window.location.origin + r.path) + '">COPY LINK</button>' +
+          '</div>' +
+        '</div>';
+    }).join("");
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[c];
+    });
+  }
+
+  function escapeAttr(s){ return escapeHtml(s); }
+
+  function handleClick(event){
+    const target = event.target.closest("button,[data-open],[data-api],[data-copy]");
+    if (!target) return;
+
+    const action = target.getAttribute("data-action");
+    const open = target.getAttribute("data-open");
+    const api = target.getAttribute("data-api");
+    const copy = target.getAttribute("data-copy");
+
+    if (open) { openRoute(open); return; }
+    if (api) { callApi(api).then(updateAuthority); return; }
+    if (copy) { copyText(copy).then(function(){ appendChat("System", "Copied: " + copy); }); return; }
+
+    if (action === "open-drawer") toggleDrawer(true);
+    if (action === "close-drawer") toggleDrawer(false);
+    if (action === "run-diagnostics") runDiagnostics();
+    if (action === "bind") bindOperator();
+    if (action === "check-authority") checkAuthorityVerbose();
+    if (action === "clear-bind") clearBind();
+    if (action === "show-bind") showBind();
+    if (action === "send-chat") sendChat();
+    if (action === "copy-output") copyOutput();
+    if (action === "copy-command") copyCommand();
+  }
+
+  function boot(){
+    document.addEventListener("click", handleClick);
+    $("shade").addEventListener("click", function(){ toggleDrawer(false); });
+    buildCards();
+
+    if (localStorage.getItem("aura115BindPanelHidden") === "true") {
+      $("bindPanel").classList.add("hidden");
+      $("boundPanel").classList.remove("hidden");
+    }
+
+    updateAuthority();
+    window.setInterval(updateAuthority, 30000);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+
+  window.Aura115CommandSimulation = {
+    openRoute: openRoute,
+    callApi: callApi,
+    runDiagnostics: runDiagnostics,
+    bindOperator: bindOperator,
+    sendChat: sendChat,
+    updateAuthority: updateAuthority,
+    checkAuthorityVerbose: checkAuthorityVerbose
+  };
+})();
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

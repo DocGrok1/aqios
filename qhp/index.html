@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QHP · Quantum Hosted Protocol · DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--bg:#05080f;--card:#0b1120;--border:rgba(99,242,255,0.12);--cyan:#63f2ff;--gold:#fbbf24;--green:#4ade80;--violet:#a78bfa;--rose:#fb7185;--text:#e2e8f0;--muted:#5a7a96;--hover:#111b30}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh}
+
+header{text-align:center;padding:48px 20px 24px;border-bottom:1px solid var(--border)}
+header h1{font-family:'IBM Plex Mono',monospace;font-size:28px;letter-spacing:4px;color:var(--cyan)}
+header .sub{font-size:13px;color:var(--muted);margin-top:8px;font-family:'IBM Plex Mono',monospace}
+header .qhp-badge{display:inline-block;margin-top:12px;padding:4px 14px;border:1px solid var(--cyan);border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cyan)}
+.stats{display:flex;justify-content:center;gap:32px;padding:20px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat .num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--gold)}
+.stat .label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:24px;max-width:1100px;margin:0 auto}
+
+.engine{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;text-decoration:none;color:var(--text);display:block}
+.engine:hover{background:var(--hover);border-color:var(--cyan);transform:translateY(-2px)}
+.engine .planet{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;letter-spacing:1px}
+.engine .hardware{font-size:11px;color:var(--muted);margin-top:4px;font-family:'IBM Plex Mono',monospace}
+.engine .qubits{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--gold);margin-top:10px}
+.engine .role{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+.engine .status{position:absolute;top:16px;right:16px;width:8px;height:8px;border-radius:50%;background:var(--green)}
+.engine .status.offline{background:var(--rose)}
+.engine .domains{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.engine .domain-tag{font-size:9px;padding:2px 8px;border:1px solid var(--border);border-radius:3px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+
+.engine.venus .planet{color:var(--gold)}
+.engine.neptune .planet{color:#60a5fa}
+.engine.saturn .planet{color:var(--violet)}
+.engine.jupiter .planet{color:var(--rose)}
+.engine.mercury .planet{color:var(--cyan)}
+.engine.mars .planet{color:#f87171}
+.engine.earth .planet{color:var(--green)}
+.engine.moon .planet{color:#e2e8f0}
+.engine.pluto .planet{color:#94a3b8}
+.engine.uranus .planet{color:#67e8f9}
+.engine.bl7 .planet{color:#c084fc}
+.engine.oricron .planet{color:var(--gold)}
+
+footer{text-align:center;padding:32px 20px;border-top:1px solid var(--border);margin-top:24px}
+footer .legal{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;line-height:1.8}
+footer .legal a{color:var(--cyan);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>QHP</h1>
+  <div class="sub">Quantum Hosted Protocol · DCGP.AI LLC · Constitutional Governance</div>
+  <div class="qhp-badge">OPEN PROTOCOL</div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="num">12</div><div class="label">Engines</div></div>
+  <div class="stat"><div class="num">3,001,000</div><div class="label">Total Qubits</div></div>
+  <div class="stat"><div class="num">820</div><div class="label">Governed Circuits</div></div>
+  <div class="stat"><div class="num">47</div><div class="label">Domains</div></div>
+</div>
+
+<div class="grid">
+
+  <a class="engine venus" href="venus.html">
+    <div class="status"></div>
+    <div class="planet">VENUS</div>
+    <div class="hardware">QuEra Aquila · Neutral Atom</div>
+    <div class="qubits">100,000 qubits · Rolling Intelligence</div>
+    <div class="role">Primary brain. Rolling internet snapshot. Venus feeds cognition to the constellation.</div>
+    <div class="domains">
+      <span class="domain-tag">metals</span>
+      <span class="domain-tag">pharma</span>
+      <span class="domain-tag">signals</span>
+    </div>
+  </a>
+
+  <a class="engine neptune" href="neptune.html">
+    <div class="status"></div>
+    <div class="planet">NEPTUNE</div>
+    <div class="hardware">Rigetti · Superconducting</div>
+    <div class="qubits">100,000 qubits · Deep Analysis</div>
+    <div class="role">Depth engine. Long-horizon pattern recognition. Subsurface signal extraction.</div>
+    <div class="domains">
+      <span class="domain-tag">depth</span>
+      <span class="domain-tag">patterns</span>
+    </div>
+  </a>
+
+  <a class="engine saturn" href="saturn.html">
+    <div class="status"></div>
+    <div class="planet">SATURN</div>
+    <div class="hardware">All-Braket · Ring Class</div>
+    <div class="qubits">100,000 qubits · Execution Ring</div>
+    <div class="role">Execution layer. Ring-class intelligence. Saturn ring governs capital flow.</div>
+    <div class="domains">
+      <span class="domain-tag">execution</span>
+      <span class="domain-tag">capital</span>
+      <span class="domain-tag">forex</span>
+    </div>
+  </a>
+
+  <a class="engine jupiter" href="jupiter.html">
+    <div class="status"></div>
+    <div class="planet">JUPITER</div>
+    <div class="hardware">SV1 · State Vector</div>
+    <div class="qubits">1,000,000 qubits · Intake Orchestration</div>
+    <div class="role">Intake planet. Consequence engine. Jupiter mass governs priority and routing.</div>
+    <div class="domains">
+      <span class="domain-tag">orchestration</span>
+      <span class="domain-tag">consequence</span>
+      <span class="domain-tag">routing</span>
+    </div>
+  </a>
+
+  <a class="engine mercury" href="mercury.html">
+    <div class="status"></div>
+    <div class="planet">MERCURY</div>
+    <div class="hardware">AQT · Trapped Ion</div>
+    <div class="qubits">100,000 qubits · Fast Routing</div>
+    <div class="role">Speed layer. Fastest routing decisions. Mercury moves first.</div>
+    <div class="domains">
+      <span class="domain-tag">routing</span>
+      <span class="domain-tag">latency</span>
+    </div>
+  </a>
+
+  <a class="engine mars" href="mars.html">
+    <div class="status"></div>
+    <div class="planet">MARS</div>
+    <div class="hardware">IonQ Aria · Trapped Ion</div>
+    <div class="qubits">100,000 qubits · Signal Intelligence</div>
+    <div class="role">Urgency engine. Signal density. Conflict detection. Mars reads the battlefield.</div>
+    <div class="domains">
+      <span class="domain-tag">urgency</span>
+      <span class="domain-tag">conflict</span>
+      <span class="domain-tag">signals</span>
+    </div>
+  </a>
+
+  <a class="engine earth" href="earth.html">
+    <div class="status"></div>
+    <div class="planet">EARTH</div>
+    <div class="hardware">IQM Garnet · Superconducting</div>
+    <div class="qubits">100,000 qubits · Viability Engine</div>
+    <div class="role">Final recommendation. Viability, coherence, harmonic balance. Earth says ADMIT or HOLD.</div>
+    <div class="domains">
+      <span class="domain-tag">viability</span>
+      <span class="domain-tag">coherence</span>
+      <span class="domain-tag">recommendation</span>
+    </div>
+  </a>
+
+  <a class="engine moon" href="moon.html">
+    <div class="status"></div>
+    <div class="planet">MOON</div>
+    <div class="hardware">DM1 · Photonic</div>
+    <div class="qubits">100,000 qubits · Orbital Governor</div>
+    <div class="role">Five faces. Admissibility gate. The Moon governs what enters and what holds.</div>
+    <div class="domains">
+      <span class="domain-tag">admissibility</span>
+      <span class="domain-tag">oscillation</span>
+      <span class="domain-tag">boundary</span>
+    </div>
+  </a>
+
+  <a class="engine pluto" href="pluto.html">
+    <div class="status"></div>
+    <div class="planet">PLUTO</div>
+    <div class="hardware">SV1 · State Vector</div>
+    <div class="qubits">100,000 qubits · Archive</div>
+    <div class="role">Deep archive. Long memory. Pluto holds what others forget.</div>
+    <div class="domains">
+      <span class="domain-tag">archive</span>
+      <span class="domain-tag">memory</span>
+    </div>
+  </a>
+
+  <a class="engine uranus" href="uranus.html">
+    <div class="status"></div>
+    <div class="planet">URANUS</div>
+    <div class="hardware">TN1 · Tensor Network</div>
+    <div class="qubits">100,000 qubits · Boundary Engine</div>
+    <div class="role">Boundary detection. Edge cases. Uranus finds what others miss.</div>
+    <div class="domains">
+      <span class="domain-tag">boundary</span>
+      <span class="domain-tag">edge</span>
+    </div>
+  </a>
+
+  <a class="engine bl7" href="bl7.html">
+    <div class="status"></div>
+    <div class="planet">BL7</div>
+    <div class="hardware">Rigetti · Superconducting</div>
+    <div class="qubits">1,000,000 qubits · Blue Lantern</div>
+    <div class="role">Blue Lantern Seven. High-qubit parallel execution. Raw compute power.</div>
+    <div class="domains">
+      <span class="domain-tag">parallel</span>
+      <span class="domain-tag">compute</span>
+    </div>
+  </a>
+
+  <a class="engine oricron" href="oricron.html">
+    <div class="status"></div>
+    <div class="planet">ORICRON</div>
+    <div class="hardware">CIRQ · Google</div>
+    <div class="qubits">1,000 qubits · Invention Engine</div>
+    <div class="role">ORI. Invention tick. Element synthesis. Nucleonic. The engine that creates.</div>
+    <div class="domains">
+      <span class="domain-tag">invention</span>
+      <span class="domain-tag">synthesis</span>
+      <span class="domain-tag">nucleonic</span>
+    </div>
+  </a>
+
+</div>
+
+<footer>
+  <div class="legal">
+    DCGP.AI LLC · Joshua Lopez · Sole Inventor<br>
+    USPTO 19/555,951 · Contact Hamiltonian Constitutional Gate<br>
+    QHP is an open protocol. Governed by the correction law u = −k∇h<br>
+    <a href="https://aura115.ai">aura115.ai</a> · <a href="https://auralvibe.space">auralvibe.space</a>
+  </div>
+</footer>
+
+<script>
+// Ping each engine for live status (when API is available)
+document.querySelectorAll('.engine').forEach(card => {
+  // Future: fetch status from /api/planet-status?planet=venus etc.
+  // For now all show green (constellation is live)
+});
+</script>
+</body>
+</html>

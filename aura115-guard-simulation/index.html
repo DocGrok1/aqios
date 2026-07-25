@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Guard Simulation · AURA115</title>
+  <style>
+    :root{--bg:#03060f;--panel:#08101e;--line:#1a2f50;--text:#e4f0ff;--muted:#6a8eb0;--cyan:#4dffe5;--green:#39ff9a;--red:#ff4d6a;--gold:#ffd166;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;min-height:100vh;padding:20px;}
+    .header{border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px;}
+    .header h1{font-size:1.2rem;color:var(--cyan);letter-spacing:.2em;}
+    .header p{color:var(--muted);font-size:.75rem;margin-top:4px;}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:16px;}
+    .panel-title{font-size:.7rem;letter-spacing:.15em;color:var(--gold);margin-bottom:12px;}
+    .status-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(26,47,80,.5);font-size:.8rem;}
+    .status-row:last-child{border-bottom:none;}
+    .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;}
+    .dot-green{background:var(--green);box-shadow:0 0 6px var(--green);}
+    .dot-red{background:var(--red);box-shadow:0 0 6px var(--red);}
+    .dot-muted{background:var(--muted);}
+    .badge{font-size:.65rem;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.07);color:var(--muted);}
+    .badge-green{background:rgba(57,255,154,.1);color:var(--green);}
+    .badge-red{background:rgba(255,77,106,.1);color:var(--red);}
+    .log{background:#020408;border:1px solid var(--line);border-radius:4px;padding:12px;height:200px;overflow-y:auto;font-size:.72rem;color:var(--muted);}
+    .log-entry{padding:2px 0;border-bottom:1px solid rgba(26,47,80,.3);}
+    .log-entry.ok{color:var(--green);}
+    .log-entry.err{color:var(--red);}
+    .log-entry.warn{color:var(--gold);}
+    .btn{background:rgba(77,255,229,.08);border:1px solid var(--cyan);color:var(--cyan);padding:8px 16px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:.75rem;letter-spacing:.1em;margin-right:8px;margin-top:8px;}
+    .btn:hover{background:rgba(77,255,229,.15);}
+    .btn-red{border-color:var(--red);color:var(--red);background:rgba(255,77,106,.08);}
+    .key-input{background:#020408;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:4px;font-family:inherit;font-size:.8rem;width:100%;margin-bottom:8px;}
+    .key-input:focus{outline:none;border-color:var(--cyan);}
+    #bind-status{font-size:.75rem;margin-top:8px;color:var(--muted);}
+    #bind-status.ok{color:var(--green);}
+    #bind-status.err{color:var(--red);}
+  </style>
+</head>
+<body>
+<div class="header">
+  <h1>⚔ AURA115 GUARD SIMULATION</h1>
+  <p>Constitutional perimeter defense · DCGP.AI · Joshua Lopez</p>
+</div>
+
+<div class="panel">
+  <div class="panel-title">OPERATOR AUTHORITY</div>
+  <input class="key-input" id="op-key" type="password" placeholder="Paste operator key…"/>
+  <button class="btn" onclick="bindKey()">BIND</button>
+  <button class="btn btn-red" onclick="clearKey()">CLEAR</button>
+  <div id="bind-status">Not bound</div>
+</div>
+
+<div class="panel">
+  <div class="panel-title">GUARD STATUS</div>
+  <div class="status-row">
+    <span><span class="dot dot-muted" id="dot-perimeter"></span>Perimeter</span>
+    <span class="badge" id="badge-perimeter">—</span>
+  </div>
+  <div class="status-row">
+    <span><span class="dot dot-muted" id="dot-icp"></span>ICP Gate</span>
+    <span class="badge" id="badge-icp">—</span>
+  </div>
+  <div class="status-row">
+    <span><span class="dot dot-muted" id="dot-lcvs"></span>LCVS</span>
+    <span class="badge" id="badge-lcvs">—</span>
+  </div>
+  <div class="status-row">
+    <span><span class="dot dot-muted" id="dot-rescue"></span>Rescue Operator</span>
+    <span class="badge" id="badge-rescue">—</span>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title">GUARD LOG</div>
+  <div class="log" id="guard-log">
+    <div class="log-entry">Guard simulation initialized.</div>
+  </div>
+  <button class="btn" onclick="runGuardCheck()" style="margin-top:12px">↻ RUN CHECK</button>
+  <button class="btn" onclick="clearLog()">CLEAR LOG</button>
+</div>
+
+<script>
+  let _key = '';
+
+  function log(msg, cls='') {
+    const el = document.getElementById('guard-log');
+    const d = document.createElement('div');
+    d.className = 'log-entry' + (cls ? ' '+cls : '');
+    d.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+    el.appendChild(d);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function setDot(id, state) {
+    const dot = document.getElementById('dot-' + id);
+    const badge = document.getElementById('badge-' + id);
+    dot.className = 'dot dot-' + (state === 'ok' ? 'green' : state === 'err' ? 'red' : 'muted');
+    badge.className = 'badge' + (state === 'ok' ? ' badge-green' : state === 'err' ? ' badge-red' : '');
+    badge.textContent = state === 'ok' ? 'ACTIVE' : state === 'err' ? 'BREACH' : '—';
+  }
+
+  async function bindKey() {
+    const k = document.getElementById('op-key').value.trim();
+    if (!k) return;
+    const st = document.getElementById('bind-status');
+    st.textContent = 'Binding…'; st.className = '';
+    try {
+      const r = await fetch('/api/auau/bind', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({operatorKey: k})
+      });
+      const d = await r.json();
+      if (d.ok) {
+        _key = k;
+        st.textContent = '✓ Bound — Guard active'; st.className = 'ok';
+        log('Operator key bound. Guard simulation active.', 'ok');
+        runGuardCheck();
+      } else {
+        st.textContent = '✗ ' + (d.reason || 'invalid key'); st.className = 'err';
+        log('Bind failed: ' + (d.reason || 'invalid key'), 'err');
+      }
+    } catch(e) {
+      st.textContent = '✗ Network error'; st.className = 'err';
+      log('Network error: ' + e.message, 'err');
+    }
+  }
+
+  function clearKey() {
+    _key = '';
+    document.getElementById('op-key').value = '';
+    document.getElementById('bind-status').textContent = 'Not bound';
+    document.getElementById('bind-status').className = '';
+    ['perimeter','icp','lcvs','rescue'].forEach(id => setDot(id, 'muted'));
+    log('Operator key cleared.', 'warn');
+  }
+
+  async function runGuardCheck() {
+    if (!_key) { log('No key bound — cannot run guard check.', 'err'); return; }
+    log('Running guard check…');
+    try {
+      const r = await fetch('/api/governance-health', {
+        headers: {'x-aura-operator-key': _key}
+      });
+      const d = await r.json();
+      const ok = d.ok || d.governed;
+      setDot('perimeter', ok ? 'ok' : 'err');
+      setDot('icp', ok ? 'ok' : 'err');
+      setDot('lcvs', d.lcvs_ok !== false ? 'ok' : 'err');
+      setDot('rescue', 'muted');
+      log('Governance health: ' + (ok ? 'ACTIVE' : 'DEGRADED'), ok ? 'ok' : 'err');
+      if (d.model_ready === false) log('Railway brain: model not ready — fallback inference active', 'warn');
+    } catch(e) {
+      ['perimeter','icp','lcvs'].forEach(id => setDot(id, 'err'));
+      log('Guard check failed: ' + e.message, 'err');
+    }
+  }
+
+  function clearLog() {
+    document.getElementById('guard-log').innerHTML = '<div class="log-entry">Log cleared.</div>';
+  }
+</script>
+</body>
+</html>

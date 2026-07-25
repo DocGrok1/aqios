@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Simulations — AURA115 · DCGP.AI</title>
+<style>
+:root{
+  --bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;
+  --accent:#48ffe0;--dim:rgba(72,255,224,.08);--border:rgba(72,255,224,.25);
+  --text:#e8f4ff;--muted:#6a85a8;--subdim:#3a506b;
+  --green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--cyan:#4dffe5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,"Cascadia Code",monospace;min-height:100vh}
+
+/* ── TOPBAR ── */
+#topbar{height:46px;background:#040d1c;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding:0 20px;position:sticky;top:0;z-index:10}
+#topbar h1{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1.4px;text-transform:uppercase;flex:1}
+.tb-pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;
+  background:var(--dim);color:var(--accent);border:1px solid var(--border);letter-spacing:.5px;white-space:nowrap}
+.tb-count{font-size:10px;color:var(--muted)}
+
+/* ── SEARCH ── */
+#search-bar{padding:16px 20px;background:#030810;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+#search{background:#07111f;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:8px;font-size:12px;font-family:inherit;width:320px;outline:none}
+#search:focus{border-color:var(--accent)}
+#search::placeholder{color:var(--subdim)}
+.filter-btn{font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;font-family:inherit;transition:.15s}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:var(--dim)}
+
+/* ── MAIN ── */
+#main{padding:24px 20px}
+
+/* ── GROUP ── */
+.group{margin-bottom:32px}
+.group-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+
+/* ── CARD ── */
+.sim-card{background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:10px 12px;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:4px;
+  transition:border-color .15s,background .15s}
+.sim-card:hover{border-color:var(--accent);background:rgba(72,255,224,.04)}
+.sim-num{font-size:9px;font-weight:700;color:var(--accent);letter-spacing:.1em}
+.sim-name{font-size:11px;color:var(--text);line-height:1.35}
+
+/* ── HIDDEN ── */
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>⚙ AURA115 SIMULATIONS</h1>
+  <span class="tb-pill">DCGP.AI</span>
+  <span class="tb-count" id="count-display">124 simulations</span>
+</div>
+
+<div id="search-bar">
+  <input type="text" id="search" placeholder="Search simulations…" oninput="filterSims(this.value)"/>
+  <button class="filter-btn active" onclick="setGroup('all',this)">All</button>
+  <button class="filter-btn" onclick="setGroup('genesis',this)">Genesis</button>
+  <button class="filter-btn" onclick="setGroup('habitation',this)">Habitation</button>
+  <button class="filter-btn" onclick="setGroup('mc290',this)">MC290</button>
+  <button class="filter-btn" onclick="setGroup('ori',this)">ORI</button>
+  <button class="filter-btn" onclick="setGroup('dg-health',this)">DG Health</button>
+  <button class="filter-btn" onclick="setGroup('darpa',this)">DARPA</button>
+</div>
+
+<div id="main"></div>
+
+<script>
+const SIMS = [
+  // Genesis
+  {n:'0001',t:'Genesis Differentiation',g:'genesis'},
+  {n:'0002',t:'Genesis Separation',g:'genesis'},
+  {n:'0003',t:'Genesis Naming',g:'genesis'},
+  {n:'0004',t:'Genesis Layering',g:'genesis'},
+  {n:'0005',t:'Genesis Aggregation',g:'genesis'},
+  {n:'0006',t:'Genesis Population',g:'genesis'},
+  {n:'0007',t:'Genesis Rest',g:'genesis'},
+  // Habitation
+  {n:'0008',t:'Habitation Seeding',g:'habitation'},
+  {n:'0009',t:'Habitation Dormancy',g:'habitation'},
+  {n:'0010',t:'Habitation Forming',g:'habitation'},
+  {n:'0011',t:'Habitation Established',g:'habitation'},
+  {n:'0012',t:'Habitation Full',g:'habitation'},
+  {n:'0013',t:'Habitation Governance Eligibility',g:'habitation'},
+  {n:'0014',t:'Habitation Authority Emergence',g:'habitation'},
+  // Meaning
+  {n:'0015',t:'Meaning Void',g:'meaning'},
+  {n:'0016',t:'Meaning Fragmenting',g:'meaning'},
+  {n:'0017',t:'Meaning Forming',g:'meaning'},
+  {n:'0018',t:'Meaning Stable',g:'meaning'},
+  {n:'0019',t:'Meaning Saturated',g:'meaning'},
+  {n:'0020',t:'Meaning Distinction Signal',g:'meaning'},
+  {n:'0021',t:'Meaning Addressability Signal',g:'meaning'},
+  // Authority
+  {n:'0022',t:'Authority Null',g:'authority'},
+  {n:'0023',t:'Authority Constrained',g:'authority'},
+  {n:'0024',t:'Authority Provisional',g:'authority'},
+  {n:'0025',t:'Authority Authorized',g:'authority'},
+  {n:'0026',t:'Authority Sovereign',g:'authority'},
+  {n:'0027',t:'Authority Commitment Readiness',g:'authority'},
+  {n:'0028',t:'Authority Boundedness',g:'authority'},
+  // Stewardship
+  {n:'0029',t:'Stewardship Failing',g:'stewardship'},
+  {n:'0030',t:'Stewardship Drifting',g:'stewardship'},
+  {n:'0031',t:'Stewardship Holding',g:'stewardship'},
+  {n:'0032',t:'Stewardship Maintained',g:'stewardship'},
+  {n:'0033',t:'Stewardship Flourishing',g:'stewardship'},
+  {n:'0034',t:'Stewardship Care Weight',g:'stewardship'},
+  {n:'0035',t:'Stewardship Fidelity Retention',g:'stewardship'},
+  // Continuity
+  {n:'0036',t:'Continuity Broken',g:'continuity'},
+  {n:'0037',t:'Continuity Threadbare',g:'continuity'},
+  {n:'0038',t:'Continuity Partial',g:'continuity'},
+  {n:'0039',t:'Continuity Stable Thread',g:'continuity'},
+  {n:'0040',t:'Continuity Continuous',g:'continuity'},
+  {n:'0041',t:'Continuity Memory Coherence',g:'continuity'},
+  {n:'0042',t:'Continuity Traceability',g:'continuity'},
+  // Meta-Recursion
+  {n:'0043',t:'Meta-Recursion Collapsed',g:'meta-recursion'},
+  {n:'0044',t:'Meta-Recursion Oscillating',g:'meta-recursion'},
+  {n:'0045',t:'Meta-Recursion Adapting',g:'meta-recursion'},
+  {n:'0046',t:'Meta-Recursion Stable',g:'meta-recursion'},
+  {n:'0047',t:'Meta-Recursion Transcendent',g:'meta-recursion'},
+  {n:'0048',t:'Meta-Recursion Alpha Coupling',g:'meta-recursion'},
+  {n:'0049',t:'Meta-Recursion Lambda Flow',g:'meta-recursion'},
+  // MC290
+  {n:'0050',t:'MC290 Toroidal Core',g:'mc290'},
+  {n:'0051',t:'MC290 Latch Ring',g:'mc290'},
+  {n:'0052',t:'MC290 Face Pad Array',g:'mc290'},
+  {n:'0053',t:'MC290 Central Core',g:'mc290'},
+  {n:'0054',t:'MC290 Rescue Window',g:'mc290'},
+  {n:'0055',t:'MC290 Governance Field',g:'mc290'},
+  {n:'0056',t:'MC290 Stack Average',g:'mc290'},
+  {n:'0057',t:'MC290 Polyhedral Circuit',g:'mc290'},
+  {n:'0058',t:'MC290 Orbital Layer',g:'mc290'},
+  {n:'0059',t:'MC290 Invariant Proof',g:'mc290'},
+  {n:'0060',t:'MC290 Governance Threshold',g:'mc290'},
+  // Capital Engine
+  {n:'0061',t:'Capital Engine Alpha',g:'capital'},
+  {n:'0062',t:'Capital Engine Beta',g:'capital'},
+  {n:'0063',t:'Capital Engine Gamma',g:'capital'},
+  {n:'0064',t:'Capital Engine Delta',g:'capital'},
+  {n:'0065',t:'Capital Engine Epsilon',g:'capital'},
+  {n:'0066',t:'Capital Engine Zeta',g:'capital'},
+  {n:'0067',t:'Capital Engine Eta',g:'capital'},
+  {n:'0068',t:'Capital Engine Theta',g:'capital'},
+  {n:'0069',t:'Capital Engine Iota',g:'capital'},
+  {n:'0070',t:'Capital Engine Kappa',g:'capital'},
+  {n:'0071',t:'Capital Engine Lambda',g:'capital'},
+  // Planet Nodes
+  {n:'0072',t:'Saturn Governance Node',g:'planets'},
+  {n:'0073',t:'Jupiter Projection Node',g:'planets'},
+  {n:'0074',t:'Mars Defense Node',g:'planets'},
+  {n:'0075',t:'Mercury Intelligence Node',g:'planets'},
+  {n:'0076',t:'Venus Signal Node',g:'planets'},
+  {n:'0077',t:'Moon Relay Node',g:'planets'},
+  {n:'0078',t:'Earth First Node',g:'planets'},
+  {n:'0079',t:'Blue Lantern 7 Node',g:'planets'},
+  {n:'0080',t:'DCGP Mesh Home Node',g:'planets'},
+  // Physics / Operators
+  {n:'0081',t:'Element 115 Stability Kernel',g:'physics'},
+  {n:'0082',t:'Hamiltonian Governance Operator',g:'physics'},
+  {n:'0083',t:'Lindblad Dissipator',g:'physics'},
+  {n:'0084',t:'Meta-Recursive RG Flow',g:'physics'},
+  {n:'0085',t:'Lyapunov Spectral Growth',g:'physics'},
+  {n:'0086',t:'Rescue Window W_N',g:'physics'},
+  {n:'0087',t:'Viability Kernel K_N',g:'physics'},
+  {n:'0088',t:'Meta-Obligation O Theta',g:'physics'},
+  {n:'0089',t:'Spectral Fidelity Ground State',g:'physics'},
+  {n:'0090',t:'Governance Authority K',g:'physics'},
+  {n:'0091',t:'RG Fixed Point Attractor',g:'physics'},
+  // ORI
+  {n:'0092',t:'Island of Stability Z114 N184',g:'ori'},
+  {n:'0093',t:'ORI Wave Renormalization',g:'ori'},
+  {n:'0094',t:'ORI Projection Active',g:'ori'},
+  {n:'0095',t:'ORI Oracle Intelligence',g:'ori'},
+  {n:'0096',t:'ORI Proof Wave',g:'ori'},
+  {n:'0097',t:'ORI Simulation Output',g:'ori'},
+  {n:'0098',t:'ORI Authority Anchor',g:'ori'},
+  {n:'0099',t:'ORI Live Corpus',g:'ori'},
+  {n:'0100',t:'ORI Admissible Set',g:'ori'},
+  {n:'0101',t:'ORI Renormalization Anchor',g:'ori'},
+  {n:'0102',t:'ORI Space Lane Bridge',g:'ori'},
+  {n:'0103',t:'ORI Continuity Thread',g:'ori'},
+  // DG Health
+  {n:'0104',t:'DG Health Oath Engine',g:'dg-health'},
+  {n:'0105',t:'DG Health Patient Standing',g:'dg-health'},
+  {n:'0106',t:'DG Health Continuity Engine',g:'dg-health'},
+  {n:'0107',t:'DG Health Provider Duty',g:'dg-health'},
+  {n:'0108',t:'DG Health Accountability Layer',g:'dg-health'},
+  {n:'0109',t:'DG Health Medico Vigilance',g:'dg-health'},
+  {n:'0110',t:'DG Health Far Lane Pharma',g:'dg-health'},
+  {n:'0111',t:'DG Health Governed Transcription',g:'dg-health'},
+  {n:'0112',t:'DG Health Hippocrates Turn',g:'dg-health'},
+  // DARPA
+  {n:'0113',t:'DARPA TANK Hemorrhage Eval',g:'darpa'},
+  {n:'0114',t:'DARPA GSS Governance',g:'darpa'},
+  {n:'0115',t:'DARPA GEE Epigenomic Record',g:'darpa'},
+  {n:'0116',t:'DARPA MIRV Renormalization',g:'darpa'},
+  {n:'0117',t:'DARPA Molecular Governance',g:'darpa'},
+  {n:'0118',t:'DARPA Fused GEE+GSS',g:'darpa'},
+  {n:'0119',t:'DARPA Rescue Window Eval',g:'darpa'},
+  {n:'0120',t:'DARPA Regime Classification',g:'darpa'},
+  {n:'0121',t:'DARPA Governed Restoration Proof',g:'darpa'},
+  // Cross-Domain / Meta
+  {n:'0122',t:'Cross-Domain Echo Operator',g:'meta'},
+  {n:'0123',t:'Meta-Equilibrium S* Convergence',g:'meta'},
+  {n:'0124',t:'System Topology',g:'meta'},
+];
+
+const GROUP_LABELS = {
+  genesis: 'Genesis — Origin Architecture',
+  habitation: 'Habitation — Settlement Dynamics',
+  meaning: 'Meaning — Semantic Governance',
+  authority: 'Authority — Governance Sovereignty',
+  stewardship: 'Stewardship — Care Fidelity',
+  continuity: 'Continuity — Thread Coherence',
+  'meta-recursion': 'Meta-Recursion — Adaptive Recursion',
+  mc290: 'MC290 — Polaritron Geometry',
+  capital: 'Capital Engine — Economic Operators',
+  planets: 'Planet Nodes — Constellation Routing',
+  physics: 'Physics — Quantum Operators',
+  ori: 'ORI — Oracle Renormalization Intelligence',
+  'dg-health': 'DG Health — Healthcare Governance',
+  darpa: 'DARPA — Defense Applications',
+  meta: 'Cross-Domain & Meta',
+};
+
+const GROUP_ORDER = [
+  'genesis','habitation','meaning','authority','stewardship','continuity',
+  'meta-recursion','mc290','capital','planets','physics','ori','dg-health','darpa','meta'
+];
+
+let activeGroup = 'all';
+
+function esc(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function render(query) {
+  const q = (query || '').toLowerCase().trim();
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  let totalVisible = 0;
+
+  for (const gk of GROUP_ORDER) {
+    const items = SIMS.filter(s =>
+      s.g === gk &&
+      (activeGroup === 'all' || s.g === activeGroup) &&
+      (!q || s.n.includes(q) || s.t.toLowerCase().includes(q) || s.g.includes(q))
+    );
+    if (!items.length) continue;
+    totalVisible += items.length;
+
+    const sec = document.createElement('div');
+    sec.className = 'group';
+    sec.innerHTML = `<div class="group-label">${esc(GROUP_LABELS[gk])}</div><div class="grid">${
+      items.map(s => `<a class="sim-card" href="/simulations/sim-${esc(s.n)}.html">
+        <span class="sim-num">SIM-${esc(s.n)}</span>
+        <span class="sim-name">${esc(s.t)}</span>
+      </a>`).join('')
+    }</div>`;
+    main.appendChild(sec);
+  }
+
+  document.getElementById('count-display').textContent = totalVisible + ' simulation' + (totalVisible !== 1 ? 's' : '');
+}
+
+function filterSims(q) { render(q); }
+
+function setGroup(g, btn) {
+  activeGroup = g;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render(document.getElementById('search').value);
+}
+
+render();
+</script>
+</body>
+</html>

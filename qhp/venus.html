@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VENUS · Metals · 150 Qubits · QHP · DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--bg:#05080f;--panel:#0b1120;--border:rgba(255,191,36,0.15);--accent:#fbbf24;--cyan:#63f2ff;--green:#4ade80;--red:#f87171;--text:#e2e8f0;--muted:#5a7a96;--dim:#1a2540}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh}
+
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
+.top a{color:var(--muted);text-decoration:none;font-size:11px;font-family:'IBM Plex Mono',monospace}
+.top a:hover{color:var(--cyan)}
+.top .title{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:var(--accent);letter-spacing:2px}
+.top .badge{font-size:9px;padding:3px 10px;border:1px solid var(--accent);color:var(--accent);border-radius:3px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px}
+
+.layout{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 50px)}
+@media(max-width:768px){.layout{grid-template-columns:1fr}}
+
+.main{padding:20px;overflow-y:auto}
+.sidebar{border-left:1px solid var(--border);display:flex;flex-direction:column}
+
+/* Engine identity */
+.identity{padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:6px;margin-bottom:16px}
+.identity h2{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--accent);letter-spacing:1px}
+.identity .hw{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:4px}
+.identity .spec{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.identity .spec div{font-size:11px;font-family:'IBM Plex Mono',monospace}
+.identity .spec .val{color:var(--accent);font-weight:700}
+
+/* Simulation area */
+.sim{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px}
+.sim h3{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:1px;margin-bottom:12px}
+.sim canvas{width:100%;height:280px;background:#080d18;border-radius:4px;border:1px solid var(--border)}
+.sim-controls{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.sim-controls select,.sim-controls input{background:var(--dim);border:1px solid var(--border);color:var(--text);padding:5px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;border-radius:3px}
+.sim-controls button{background:var(--accent);color:#05080f;border:none;padding:6px 16px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;border-radius:3px;cursor:pointer;letter-spacing:1px}
+.sim-controls button:disabled{opacity:0.4}
+.sim-controls button.stop{background:var(--red)}
+
+/* Results */
+.results{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px}
+.results h3{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:1px;margin-bottom:10px}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.result-item{background:var(--dim);padding:8px 10px;border-radius:4px;border-left:3px solid var(--border)}
+.result-item .rlabel{font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.5px;text-transform:uppercase}
+.result-item .rval{font-size:14px;font-family:'IBM Plex Mono',monospace;font-weight:700;margin-top:2px}
+.result-item.admit{border-left-color:var(--green)}
+.result-item.admit .rval{color:var(--green)}
+.result-item.hold{border-left-color:var(--red)}
+.result-item.hold .rval{color:var(--red)}
+.result-item.metric .rval{color:var(--cyan)}
+.result-item.gold .rval{color:var(--accent)}
+
+/* Ledger */
+.ledger{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px}
+.ledger h3{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:1px;margin-bottom:10px}
+.ledger-entries{max-height:200px;overflow-y:auto;font-size:11px;font-family:'IBM Plex Mono',monospace}
+.ledger-entry{padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+.ledger-entry .le-time{color:var(--muted)}
+.ledger-entry .le-metal{color:var(--accent)}
+.ledger-entry .le-result{color:var(--green)}
+
+/* Chat sidebar */
+.chat-header{padding:12px 16px;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:1px}
+.chat-messages{flex:1;overflow-y:auto;padding:12px;font-size:12px;line-height:1.6}
+.chat-msg{margin-bottom:10px}
+.chat-msg .role{font-size:9px;letter-spacing:1px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.chat-msg.queen .role{color:var(--accent)}
+.chat-msg .body{margin-top:2px;white-space:pre-wrap;word-break:break-word}
+.chat-input{padding:10px;border-top:1px solid var(--border);display:flex;gap:6px}
+.chat-input input{flex:1;background:var(--dim);border:1px solid var(--border);color:var(--text);padding:8px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;border-radius:4px}
+.chat-input button{background:var(--accent);color:#05080f;border:none;padding:8px 14px;font-weight:700;font-size:11px;border-radius:4px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a href="index.html">← QHP Index</a>
+  <div class="title">VENUS</div>
+  <div class="badge">QHP · 150 QUBITS · METALS</div>
+</div>
+
+<div class="layout">
+<div class="main">
+
+  <div class="identity">
+    <h2>VENUS — QuEra Aquila</h2>
+    <div class="hw">Neutral Atom · Rolling Intelligence · Primary Brain</div>
+    <div class="spec">
+      <div><span class="val">150</span> qubits (demo)</div>
+      <div><span class="val">100,000</span> capacity</div>
+      <div>Hardware: <span class="val">QuEra Aquila</span></div>
+      <div>Substrate: <span class="val">Neutral Atom</span></div>
+    </div>
+  </div>
+
+  <div class="sim">
+    <h3>METAL TRANSITION STATE SIMULATION</h3>
+    <canvas id="simCanvas"></canvas>
+    <div class="sim-controls">
+      <select id="metalA">
+        <option value="Au">Au (Gold)</option>
+        <option value="Pt">Pt (Platinum)</option>
+        <option value="Ag">Ag (Silver)</option>
+        <option value="Cu">Cu (Copper)</option>
+        <option value="Fe">Fe (Iron)</option>
+        <option value="Ti">Ti (Titanium)</option>
+        <option value="W">W (Tungsten)</option>
+        <option value="Ir">Ir (Iridium)</option>
+        <option value="Os">Os (Osmium)</option>
+        <option value="Pd">Pd (Palladium)</option>
+      </select>
+      <select id="metalB">
+        <option value="Pb" selected>Pb (Lead)</option>
+        <option value="Bi">Bi (Bismuth)</option>
+        <option value="Sn">Sn (Tin)</option>
+        <option value="Zn">Zn (Zinc)</option>
+        <option value="Cu">Cu (Copper)</option>
+        <option value="Ni">Ni (Nickel)</option>
+        <option value="Ta">Ta (Tantalum)</option>
+        <option value="Nb">Nb (Niobium)</option>
+        <option value="Mo">Mo (Molybdenum)</option>
+        <option value="Re">Re (Rhenium)</option>
+      </select>
+      <input id="tempK" type="number" value="2225" min="100" max="6000" style="width:80px" title="Temperature (K)">
+      <span style="font-size:10px;color:var(--muted)">K</span>
+      <button id="runBtn" onclick="runSimulation()">RUN CIRCUIT</button>
+      <button id="stopBtn" class="stop" onclick="stopSim()" disabled>STOP</button>
+    </div>
+  </div>
+
+  <div class="results">
+    <h3>GOVERNED RESULTS</h3>
+    <div class="result-grid" id="resultGrid">
+      <div class="result-item metric"><div class="rlabel">Status</div><div class="rval" id="rStatus">IDLE</div></div>
+      <div class="result-item" id="rRecItem"><div class="rlabel">Recommendation</div><div class="rval" id="rRec">—</div></div>
+      <div class="result-item metric"><div class="rlabel">Admissibility</div><div class="rval" id="rAdm">—</div></div>
+      <div class="result-item metric"><div class="rlabel">Coherence</div><div class="rval" id="rCoh">—</div></div>
+      <div class="result-item metric"><div class="rlabel">Guarded Margin</div><div class="rval" id="rMargin">—</div></div>
+      <div class="result-item gold"><div class="rlabel">Transition Temp</div><div class="rval" id="rTemp">—</div></div>
+      <div class="result-item gold"><div class="rlabel">Binding Energy</div><div class="rval" id="rBind">—</div></div>
+      <div class="result-item gold"><div class="rlabel">Phase</div><div class="rval" id="rPhase">—</div></div>
+    </div>
+  </div>
+
+  <div class="ledger">
+    <h3>RUN LEDGER</h3>
+    <div class="ledger-entries" id="ledger"></div>
+  </div>
+
+</div>
+
+<div class="sidebar">
+  <div class="chat-header">QUEEN · AURA VOICE</div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg queen"><div class="role">QUEEN</div><div class="body">Venus engine ready. Select two metals and a temperature, then run the circuit. I'll explain what the governance scores mean for the transition state.</div></div>
+  </div>
+  <div class="chat-input">
+    <input id="chatInput" placeholder="Ask Queen..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button onclick="sendChat()">SEND</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── Metal properties (atomic number, mass, melting point K, electronegativity) ──
+const METALS = {
+  Au:{Z:79,mass:196.97,mp:1337,en:2.54,name:'Gold'},
+  Pt:{Z:78,mass:195.08,mp:2041,en:2.28,name:'Platinum'},
+  Ag:{Z:47,mass:107.87,mp:1235,en:1.93,name:'Silver'},
+  Cu:{Z:29,mass:63.55,mp:1358,en:1.90,name:'Copper'},
+  Fe:{Z:26,mass:55.85,mp:1811,en:1.83,name:'Iron'},
+  Ti:{Z:22,mass:47.87,mp:1941,en:1.54,name:'Titanium'},
+  W:{Z:74,mass:183.84,mp:3695,en:2.36,name:'Tungsten'},
+  Ir:{Z:77,mass:192.22,mp:2719,en:2.20,name:'Iridium'},
+  Os:{Z:76,mass:190.23,mp:3306,en:2.20,name:'Osmium'},
+  Pd:{Z:46,mass:106.42,mp:1828,en:2.20,name:'Palladium'},
+  Pb:{Z:82,mass:207.2,mp:600,en:1.87,name:'Lead'},
+  Bi:{Z:83,mass:208.98,mp:544,en:2.02,name:'Bismuth'},
+  Sn:{Z:50,mass:118.71,mp:505,en:1.96,name:'Tin'},
+  Zn:{Z:30,mass:65.38,mp:692,en:1.65,name:'Zinc'},
+  Ni:{Z:28,mass:58.69,mp:1728,en:1.91,name:'Nickel'},
+  Ta:{Z:73,mass:180.95,mp:3290,en:1.50,name:'Tantalum'},
+  Nb:{Z:41,mass:92.91,mp:2750,en:1.60,name:'Niobium'},
+  Mo:{Z:42,mass:95.94,mp:2896,en:2.16,name:'Molybdenum'},
+  Re:{Z:75,mass:186.21,mp:3459,en:1.90,name:'Rhenium'}
+};
+
+const canvas = document.getElementById('simCanvas');
+const ctx = canvas.getContext('2d');
+let animFrame = null;
+let running = false;
+let simData = null;
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ── Quantum circuit simulation (150 qubits, governed) ──
+function simulateCircuit(mA, mB, T) {
+  const a = METALS[mA], b = METALS[mB];
+  if (!a || !b) return null;
+
+  const qubits = 150;
+  const dZ = Math.abs(a.Z - b.Z);
+  const dEN = Math.abs(a.en - b.en);
+  const avgMass = (a.mass + b.mass) / 2;
+  const avgMP = (a.mp + b.mp) / 2;
+
+  // Binding energy estimate (eV) — simplified tight-binding
+  const E_bind = (dEN * 2.4 + dZ * 0.03) * (1 - Math.exp(-T / avgMP));
+
+  // Phase determination
+  let phase = 'solid';
+  if (T > Math.max(a.mp, b.mp)) phase = 'liquid';
+  else if (T > Math.min(a.mp, b.mp)) phase = 'transition';
+
+  // Transition state probability from qubit simulation
+  const H_diag = Array.from({length: qubits}, (_, i) => {
+    const theta = (i / qubits) * Math.PI * 2;
+    return E_bind * Math.cos(theta) + (dZ / 100) * Math.sin(theta * 3);
+  });
+
+  const transition_prob = H_diag.reduce((s, v) => s + Math.abs(v), 0) / qubits;
+  const coherence_raw = H_diag.reduce((s, v, i) => {
+    return s + Math.cos(v * (i + 1) / qubits);
+  }, 0) / qubits;
+
+  // Governance scoring (Contact Hamiltonian gate)
+  const trend = Math.min(1, transition_prob / 3);
+  const spike = Math.min(1, dEN / 2.5);
+  const boundary = phase === 'transition' ? 0.85 : 0.4;
+  const ambiguity = 1 - Math.abs(coherence_raw);
+  const transformation = E_bind / 5;
+
+  const admissibility = 0.3 * trend + 0.25 * (1 - spike) + 0.2 * boundary + 0.15 * (1 - ambiguity) + 0.1 * transformation;
+  const coherence = 0.5 + 0.5 * Math.abs(coherence_raw);
+  const margin = admissibility * coherence;
+  const recommendation = admissibility > 0.55 ? 'ADMIT' : 'HOLD';
+
+  return {
+    metalA: mA, metalB: mB, T,
+    qubits, E_bind, phase, transition_prob,
+    admissibility, coherence, margin, recommendation,
+    H_diag, timestamp: new Date().toISOString()
+  };
+}
+
+// ── Visualization ──
+function drawSim(data, t) {
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#080d18';
+  ctx.fillRect(0, 0, W, H);
+
+  if (!data) return;
+
+  // Draw qubit states as orbital ring
+  const cx = W * 0.35, cy = H * 0.5, r = Math.min(W, H) * 0.3;
+  const q = data.H_diag;
+
+  // Orbital paths
+  ctx.strokeStyle = 'rgba(99,242,255,0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Qubit dots on orbit
+  for (let i = 0; i < q.length; i++) {
+    const theta = (i / q.length) * Math.PI * 2 + t * 0.5;
+    const orbit = r * (0.6 + 0.4 * Math.abs(Math.sin(q[i] + t)));
+    const x = cx + orbit * Math.cos(theta);
+    const y = cy + orbit * Math.sin(theta);
+    const energy = Math.abs(q[i]);
+    const hue = data.recommendation === 'ADMIT' ? 160 : 0;
+    const brightness = 40 + energy * 30;
+    ctx.fillStyle = `hsl(${hue + energy * 40}, 80%, ${brightness}%)`;
+    ctx.beginPath();
+    ctx.arc(x, y, 2 + energy * 0.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Center label
+  ctx.fillStyle = 'rgba(251,191,36,0.7)';
+  ctx.font = '700 16px "IBM Plex Mono"';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${data.metalA}-${data.metalB}`, cx, cy - 8);
+  ctx.font = '11px "IBM Plex Mono"';
+  ctx.fillStyle = 'rgba(226,232,240,0.5)';
+  ctx.fillText(`${data.T} K · ${data.phase}`, cx, cy + 12);
+
+  // Right side: energy spectrum
+  const specX = W * 0.7, specW = W * 0.25, specH = H * 0.7, specY = H * 0.15;
+  ctx.strokeStyle = 'rgba(99,242,255,0.15)';
+  ctx.strokeRect(specX, specY, specW, specH);
+
+  ctx.font = '9px "IBM Plex Mono"';
+  ctx.fillStyle = 'rgba(99,242,255,0.5)';
+  ctx.textAlign = 'left';
+  ctx.fillText('ENERGY SPECTRUM', specX, specY - 4);
+
+  for (let i = 0; i < Math.min(q.length, 60); i++) {
+    const y = specY + (i / 60) * specH;
+    const w = (Math.abs(q[i]) / 3) * specW;
+    const alpha = 0.3 + 0.7 * Math.abs(Math.sin(q[i] + t * 2));
+    ctx.fillStyle = data.recommendation === 'ADMIT'
+      ? `rgba(74,222,128,${alpha})`
+      : `rgba(248,113,113,${alpha})`;
+    ctx.fillRect(specX + 2, y, w, 2);
+  }
+}
+
+function animate(t0) {
+  if (!running) return;
+  const t = (Date.now() - t0) / 1000;
+  drawSim(simData, t);
+  animFrame = requestAnimationFrame(() => animate(t0));
+}
+
+// ── Run ──
+function runSimulation() {
+  const mA = document.getElementById('metalA').value;
+  const mB = document.getElementById('metalB').value;
+  const T = parseInt(document.getElementById('tempK').value) || 2225;
+
+  simData = simulateCircuit(mA, mB, T);
+  if (!simData) return;
+
+  // Update results
+  document.getElementById('rStatus').textContent = 'RUNNING';
+  document.getElementById('rRec').textContent = simData.recommendation;
+  const recItem = document.getElementById('rRecItem');
+  recItem.className = simData.recommendation === 'ADMIT' ? 'result-item admit' : 'result-item hold';
+  document.getElementById('rAdm').textContent = simData.admissibility.toFixed(4);
+  document.getElementById('rCoh').textContent = simData.coherence.toFixed(4);
+  document.getElementById('rMargin').textContent = simData.margin.toFixed(4);
+  document.getElementById('rTemp').textContent = simData.T + ' K';
+  document.getElementById('rBind').textContent = simData.E_bind.toFixed(3) + ' eV';
+  document.getElementById('rPhase').textContent = simData.phase.toUpperCase();
+
+  // Ledger entry
+  addLedgerEntry(simData);
+
+  // Queen narration
+  addChatMsg('queen', `Circuit complete. ${METALS[mA].name}-${METALS[mB].name} at ${T}K.\n` +
+    `Phase: ${simData.phase}. Binding energy: ${simData.E_bind.toFixed(3)} eV.\n` +
+    `Governance: ${simData.recommendation} — admissibility ${simData.admissibility.toFixed(3)}, coherence ${simData.coherence.toFixed(3)}.\n` +
+    `${simData.recommendation === 'ADMIT' ? 'Transition state is constitutionally admissible.' : 'Transition state held for review — boundary conditions unstable.'}`);
+
+  // Start animation
+  running = true;
+  document.getElementById('runBtn').disabled = true;
+  document.getElementById('stopBtn').disabled = false;
+  animate(Date.now());
+}
+
+function stopSim() {
+  running = false;
+  if (animFrame) cancelAnimationFrame(animFrame);
+  document.getElementById('rStatus').textContent = 'STOPPED';
+  document.getElementById('runBtn').disabled = false;
+  document.getElementById('stopBtn').disabled = true;
+}
+
+function addLedgerEntry(data) {
+  const ledger = document.getElementById('ledger');
+  const div = document.createElement('div');
+  div.className = 'ledger-entry';
+  const time = new Date().toLocaleTimeString();
+  div.innerHTML = `<span class="le-time">${time}</span><span class="le-metal">${data.metalA}-${data.metalB} ${data.T}K</span><span class="le-result">${data.recommendation} ${data.admissibility.toFixed(3)}</span>`;
+  ledger.prepend(div);
+
+  // POST to ledger API if available
+  fetch('/api/invention-ledger', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      title: `${METALS[data.metalA].name}-${METALS[data.metalB].name} transition at ${data.T}K`,
+      engine: 'venus',
+      hardware: 'QuEra Aquila',
+      qubits: 150,
+      recommendation: data.recommendation,
+      admissibility: data.admissibility,
+      coherence: data.coherence,
+      binding_energy_eV: data.E_bind,
+      phase: data.phase,
+      timestamp: data.timestamp
+    })
+  }).catch(() => {});
+}
+
+// ── Chat ──
+function addChatMsg(role, text) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.innerHTML = `<div class="role">${role === 'queen' ? 'QUEEN' : 'YOU'}</div><div class="body"></div>`;
+  div.querySelector('.body').textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addChatMsg('user', text);
+  input.value = '';
+
+  fetch('/api/core/message', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({message: text, operator: 'Joshua Lopez', context: 'venus-metals-demo'})
+  }).then(r => r.json()).then(d => {
+    const reply = d.reply || d.response || 'Listening...';
+    addChatMsg('queen', typeof reply === 'string' ? reply : JSON.stringify(reply));
+  }).catch(() => {
+    addChatMsg('queen', 'Voice channel offline. Run a circuit — I can explain the results.');
+  });
+}
+
+// Initial draw
+drawSim(null, 0);
+</script>
+</body>
+</html>

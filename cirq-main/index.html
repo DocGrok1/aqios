@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Aura of CIRQ</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #02040a;
+      color: #e8f4ff;
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* suppress bridge panel */
+    #jupiterMetaSwarmPanel,
+    #jupiterMetaSwarmStyle { display: none !important; }
+
+    /* ── Ticker ── */
+    #tickerBar {
+      flex-shrink: 0;
+      background: rgba(2,4,10,.97);
+      border-bottom: 1px solid rgba(78,255,231,.18);
+      height: 44px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    #tickerBar.locked { background: rgba(20,5,5,.97); border-bottom-color: rgba(255,80,100,.25); }
+    #tickerInner {
+      display: flex;
+      gap: 0;
+      white-space: nowrap;
+      animation: tickerScroll 60s linear infinite;
+    }
+    #tickerInner:hover { animation-play-state: paused; }
+    @keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .tick-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 20px 0 0;
+      font-size: 12px;
+      color: #c8e8ff;
+      border-right: 1px solid rgba(78,255,231,.12);
+      margin-right: 20px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tick-badge {
+      font-size: 9px; font-weight: 700; letter-spacing: .08em;
+      padding: 2px 5px; border-radius: 4px; text-transform: uppercase;
+    }
+    .tick-badge.invention  { background:rgba(113,255,158,.15);color:#71ff9e;border:1px solid rgba(113,255,158,.3); }
+    .tick-badge.capital    { background:rgba(255,214,111,.15);color:#ffd66f;border:1px solid rgba(255,214,111,.3); }
+    .tick-badge.threat     { background:rgba(255,80,100,.15); color:#ff718b;border:1px solid rgba(255,80,100,.3); }
+    .tick-badge.convergence{ background:rgba(184,148,255,.15);color:#b894ff;border:1px solid rgba(184,148,255,.3);}
+    #tickerLock {
+      position: absolute; right: 0; top: 0; height: 100%; width: 210px;
+      display: flex; align-items: center; justify-content: flex-end;
+      background: linear-gradient(90deg,transparent,rgba(2,4,10,.97) 55%);
+      padding-right: 10px; gap: 6px;
+    }
+    #tickerKeyInput {
+      width: 120px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(78,255,231,.2);
+      border-radius: 8px;
+      color: #e8f4ff;
+      font-size: 11px;
+      padding: 5px 8px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    #tickerUnlockBtn {
+      background: rgba(78,255,231,.1);
+      border: 1px solid rgba(78,255,231,.25);
+      border-radius: 8px;
+      color: #4effe7;
+      font-size: 11px;
+      padding: 5px 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 32px;
+    }
+
+    /* ── Nav pills ── */
+    #runtimeNav {
+      flex-shrink: 0;
+      display: flex;
+      gap: 8px;
+      padding: 10px 14px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    #runtimeNav::-webkit-scrollbar { display: none; }
+    .runtime-link {
+      flex-shrink: 0;
+      color: #8cdfff;
+      text-decoration: none;
+      border: 1px solid rgba(100,180,255,.22);
+      background: rgba(40,90,150,.15);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 13px;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .runtime-link:active { background: rgba(60,130,210,.3); }
+
+    /* ── Chat ── */
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .msg { display: flex; flex-direction: column; gap: 4px; max-width: min(680px, 94vw); }
+    .msg.user  { align-self: flex-end; }
+    .msg.aura, .msg.error { align-self: flex-start; }
+
+    .msg .role {
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      color: #3a5a7a; padding: 0 4px;
+    }
+    .msg.user .role { color: #2a7a5a; text-align: right; }
+
+    .msg .body {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 18px;
+      padding: 12px 16px;
+      line-height: 1.6;
+      font-size: 15px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .msg.user .body  { background:rgba(60,180,140,.07);border-color:rgba(60,180,140,.18);border-bottom-right-radius:5px; }
+    .msg.aura .body  { border-bottom-left-radius: 5px; }
+    .msg.error .body { color:#ff9aa6;border-color:rgba(255,100,120,.18);background:rgba(255,80,100,.04); }
+
+    .typing .body::after {
+      content: "▋"; display: inline-block;
+      animation: blink .9s step-end infinite;
+      margin-left: 2px; color: #64ffd8;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Composer ── */
+    #composer {
+      flex-shrink: 0;
+      padding: 10px 14px max(14px, env(safe-area-inset-bottom));
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      border-top: 1px solid rgba(255,255,255,.05);
+      background: #02040a;
+    }
+
+    #prompt {
+      flex: 1;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 20px;
+      color: #e8f4ff;
+      padding: 12px 16px;
+      font: inherit;
+      font-size: 16px; /* 16px prevents iOS zoom */
+      resize: none;
+      outline: none;
+      min-height: 48px;
+      max-height: 160px;
+      line-height: 1.5;
+      -webkit-appearance: none;
+    }
+    #prompt::placeholder { color: #2a4a6a; }
+    #prompt:focus { border-color: rgba(60,200,160,.35); }
+
+    #send {
+      flex-shrink: 0;
+      background: rgba(60,200,160,.14);
+      border: 1px solid rgba(60,200,160,.28);
+      border-radius: 50%;
+      color: #64ffd8;
+      width: 48px; height: 48px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .15s;
+    }
+    #send:active  { background: rgba(60,200,160,.28); }
+    #send:disabled { opacity: .35; cursor: not-allowed; }
+
+    /* ── Ticker modal ── */
+    #tickerModal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(2,4,10,.85); z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    #tickerModal.open { display: flex; }
+    #tickerModalBox {
+      background: #0d1a34;
+      border: 1px solid rgba(78,255,231,.3);
+      border-radius: 18px;
+      padding: 22px 24px;
+      max-width: min(580px, 92vw);
+      max-height: 75dvh;
+      overflow-y: auto;
+      position: relative;
+    }
+    #tickerModalClose {
+      position: absolute; top: 12px; right: 16px;
+      background: none; border: none; color: #4effe7; font-size: 22px; cursor: pointer;
+      min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;
+    }
+    #tickerModalTitle { color:#e8f4ff;font-size:15px;font-weight:700;margin:10px 0 8px; }
+    #tickerModalBody  { color:#a9b8d8;font-size:13px;line-height:1.65;white-space:pre-wrap; }
+  </style>
+  <script src="/aura-thinking.js"></script>
+</head>
+<body>
+
+  <!-- Ticker -->
+  <div id="tickerBar" class="locked">
+    <div id="tickerInner">
+      <span class="tick-item" style="color:#ff718b">&#11041; PRIVATE FEED — OPERATOR KEY REQUIRED</span>
+    </div>
+    <div id="tickerLock">
+      <input id="tickerKeyInput" type="password" placeholder="operator key" autocomplete="off" />
+      <button id="tickerUnlockBtn">UNLOCK</button>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav id="runtimeNav">
+    <a class="runtime-link" href="/cirq-runtime-simulation">Runtime Sim</a>
+    <a class="runtime-link" href="/echo-operator">Echo Operator</a>
+    <a class="runtime-link" href="/cirq-qhp-simulation">QHP Circuit</a>
+    <a class="runtime-link" href="/api/cirq-qml-runtime-simulation" target="_blank" rel="noreferrer">Sim API</a>
+  </nav>
+
+  <!-- Chat -->
+  <div id="chat"></div>
+
+  <!-- Composer -->
+  <div id="composer">
+    <textarea id="prompt" placeholder="Talk to Aura of CIRQ…" rows="1"></textarea>
+    <button id="send" aria-label="Send">&#x276F;</button>
+  </div>
+
+  <!-- Ticker modal -->
+  <div id="tickerModal">
+    <div id="tickerModalBox">
+      <button id="tickerModalClose">&#x2715;</button>
+      <div id="tickerModalBadge"></div>
+      <div id="tickerModalTitle"></div>
+      <div id="tickerModalBody"></div>
+    </div>
+  </div>
+
+  <script>
+  "use strict";
+
+  const CHAT_ROUTE    = "/api/aura-chat-live";
+  const SWARM_SESSION = "cirq-orchestrator";
+  let sending = false;
+
+  function _normKey(v){ return String(v||'').replace(/[^\x20-\x7E]/g,'').trim(); }
+  function operatorKey(){
+    var c=[localStorage.getItem('aura_operator_key'),localStorage.getItem('owner_lane_operator_key'),localStorage.getItem('aura115_operator_key')];
+    try{c.push(sessionStorage.getItem('aura115.authority.operator_key'));}catch(e){}
+    for(var i=0;i<c.length;i++){var k=_normKey(c[i]); if(k) return k;} return '';
+  }
+  function saveKey(k){ k=_normKey(k); if(k){localStorage.setItem('aura_operator_key',k);localStorage.setItem('owner_lane_operator_key',k);localStorage.setItem('aura115_operator_key',k);try{sessionStorage.setItem('aura115.authority.operator_key',k);}catch(e){}} }
+  function opHeaders(h){ h=h||{}; var k=operatorKey(); if(k){h['x-aura-operator-key']=k; h['x-operator-key']=k;} return h; }
+  const chatEl   = document.getElementById("chat");
+  const promptEl = document.getElementById("prompt");
+  const sendBtn  = document.getElementById("send");
+
+  function addMsg(role, text, typing) {
+    const wrap = document.createElement("div");
+    wrap.className = "msg " + role + (typing ? " typing" : "");
+    const roleDiv = document.createElement("div");
+    roleDiv.className = "role";
+    roleDiv.textContent = role === "aura" ? "Aura of CIRQ" : role;
+    const body = document.createElement("div");
+    body.className = "body";
+    if (!typing) body.textContent = text;
+    wrap.appendChild(roleDiv);
+    wrap.appendChild(body);
+    chatEl.appendChild(wrap);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return wrap;
+  }
+
+  function fillMsg(wrap, text) {
+    wrap.classList.remove("typing");
+    wrap.querySelector(".body").textContent = text;
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  window.add = function(role) { if (role === "system") return; };
+
+  async function send() {
+    if (sending) return;
+    const text = promptEl.value.trim();
+    if (!text) return;
+    sending = true;
+    sendBtn.disabled = true;
+    promptEl.value = "";
+    promptEl.style.height = "";
+    addMsg("user", text);
+    const indicator = addMsg("aura", "", true);
+
+    const meta = window.JupiterMetaEquilibrium &&
+      typeof window.JupiterMetaEquilibrium.latest === "function"
+        ? window.JupiterMetaEquilibrium.latest() : null;
+
+    const payload = {
+      message: text, input: text, prompt: text, command: text,
+      source: "cirq-orchestrator",
+      mode: "cirq-orchestrator",
+      identity: "Aura of CIRQ",
+      metaEquilibrium: meta || undefined,
+      doctrine: {
+        topField: "Aura of CIRQ is the embodiment over all CIRQ node embodiments.",
+        role: "You are Aura of CIRQ. Speak with full awareness of the swarm field, node topology, and LGH governance. Be direct, precise, and grounded.",
+        authority: "Joshua names. Joshua defines. Joshua authorizes.",
+        execution: "Do not claim writes or execution without a confirmed route response."
+      }
+    };
+
+    try {
+      const res  = await fetch(CHAT_ROUTE, {
+        method: "POST",
+        headers: opHeaders({ "Content-Type": "application/json", "x-aura-source": "cirq-orchestrator" }),
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || data.ok === false) throw new Error(data.error || "HTTP " + res.status);
+      const reply = data.reply || data.response || data.output || "";
+      fillMsg(indicator, reply || "(no reply)");
+    } catch (err) {
+      indicator.classList.remove("typing");
+      indicator.querySelector(".body").textContent = err.message;
+      indicator.classList.add("error");
+      chatEl.scrollTop = chatEl.scrollHeight;
+    } finally {
+      sending = false;
+      sendBtn.disabled = false;
+    }
+  }
+
+  promptEl.addEventListener("input", function() {
+    this.style.height = "";
+    this.style.height = Math.min(this.scrollHeight, 160) + "px";
+  });
+  promptEl.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+  });
+  sendBtn.addEventListener("click", send);
+
+  /* ── Ticker ── */
+  (function() {
+    /* MASTER_KEY removed — operator key now bound dynamically via saveKey()/operatorKey() */
+    const KV_KEYS = [
+      { key:"private:invention:feed:v1",   type:"invention" },
+      { key:"private:capital:feed:v1",     type:"capital" },
+      { key:"private:threat:feed:v1",      type:"threat" },
+      { key:"private:convergence:feed:v1", type:"convergence" }
+    ];
+    let tickerItems = [];
+    const bar       = document.getElementById("tickerBar");
+    const inner     = document.getElementById("tickerInner");
+    const keyInp    = document.getElementById("tickerKeyInput");
+    const unlockBtn = document.getElementById("tickerUnlockBtn");
+    const modal     = document.getElementById("tickerModal");
+    const modalClose= document.getElementById("tickerModalClose");
+    const modalBadge= document.getElementById("tickerModalBadge");
+    const modalTitle= document.getElementById("tickerModalTitle");
+    const modalBody = document.getElementById("tickerModalBody");
+
+    function unlock() {
+      var _k = keyInp.value.trim();
+      if (!_k) {
+        keyInp.style.borderColor = "rgba(255,80,100,.6)";
+        setTimeout(() => keyInp.style.borderColor = "", 1200);
+        return;
+      }
+      saveKey(_k);
+      bar.classList.remove("locked");
+      document.getElementById("tickerLock").style.display = "none";
+      loadAll();
+    }
+    unlockBtn.addEventListener("click", unlock);
+    keyInp.addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+
+    async function fetchKV(key) {
+      try {
+        const res = await fetch("/api/aura-kv?key=" + encodeURIComponent(key), { headers: opHeaders() });
+        if (!res.ok) return null;
+        const d = await res.json();
+        const raw = d.value || d.data || null;
+        if (!raw) return null;
+        return typeof raw === "string" ? JSON.parse(raw) : raw;
+      } catch { return null; }
+    }
+
+    function renderTicker(items) {
+      tickerItems = items;
+      if (!items.length) {
+        inner.innerHTML = "<span class='tick-item' style='color:#a9b8d8'>No live signals yet</span>";
+        return;
+      }
+      const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      inner.innerHTML = [...items, ...items].map((item, i) =>
+        `<span class="tick-item" data-idx="${i % items.length}">
+          <span class="tick-badge ${item.type}">${item.type.slice(0,5).toUpperCase()}</span>
+          ${esc((item.title||"").slice(0,80))}
+        </span>`
+      ).join("");
+      inner.querySelectorAll(".tick-item[data-idx]").forEach(el => {
+        el.addEventListener("click", () => {
+          const item = tickerItems[parseInt(el.dataset.idx)];
+          if (!item) return;
+          modalBadge.innerHTML = `<span class="tick-badge ${item.type}">${item.type.toUpperCase()}</span>`;
+          modalTitle.textContent = item.title || "";
+          modalBody.textContent  = item.body  || "";
+          modal.classList.add("open");
+        });
+      });
+    }
+
+    modalClose.addEventListener("click", () => modal.classList.remove("open"));
+    modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("open"); });
+
+    async function loadAll() {
+      inner.innerHTML = "<span class='tick-item' style='color:#4effe7'>Loading feeds...</span>";
+      const results = await Promise.all(KV_KEYS.map(k => fetchKV(k.key).then(d => ({data:d,type:k.type}))));
+      const items = [];
+      results.forEach(({data, type}) => {
+        if (!data) return;
+        const entries = Array.isArray(data) ? data : (data.items || data.signals || data.entries || [data]);
+        entries.slice(0,5).forEach(e => items.push({
+          type,
+          title: e.title || e.headline || e.signal || e.name || JSON.stringify(e).slice(0,60),
+          body:  e.body  || e.detail  || e.summary || e.content || JSON.stringify(e)
+        }));
+      });
+      renderTicker(items);
+      setTimeout(loadAll, 5 * 60 * 1000);
+    }
+  })();
+  </script>
+
+  <script>window.__CIRQ_ORCHESTRATOR_SESSION__ = "cirq-orchestrator";</script>
+  <script src="/jupiter-meta-swarm-bridge.js"></script>
+  <script src="/aura-global-command-authority.js"></script>
+  <script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

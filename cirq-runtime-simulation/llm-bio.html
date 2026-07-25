@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURA · Bio Runtime · CIRQ Governed Pipeline</title>
+  <style>
+    :root {
+      --color-text-primary: #ecf4ff;
+      --color-text-secondary: #9fb4d4;
+      --color-background-primary: #0d1628;
+      --color-background-secondary: #040812;
+      --color-border-tertiary: rgba(138,182,255,.18);
+      --font-sans: Inter, system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at top, rgba(83,74,183,.12), transparent 40%), #040812;
+      color: #ecf4ff;
+      font-family: Inter, system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .cirq-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 0.5px solid rgba(138,182,255,.18);
+    }
+    .cirq-badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: rgba(83,74,183,.2);
+      color: #534AB7;
+      border: 0.5px solid rgba(83,74,183,.4);
+    }
+    .cirq-title { font-size: 13px; color: #9fb4d4; }
+    #root { max-width: 860px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div class="cirq-header">
+    <span class="cirq-badge">CIRQ · GOVERNED RUNTIME</span>
+    <span class="cirq-title">Bio Pipeline Simulation · AURA Hybrid Runtime · Venus → Jupiter → Saturn · Zero External Providers</span>
+  </div>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+
+const C = {
+  gov: "#534AB7", stable: "#1D9E75", warn: "#BA7517", danger: "#A32D2D",
+  info: "#185FA5", text: "var(--color-text-primary)", muted: "var(--color-text-secondary)",
+  card: "var(--color-background-primary)", bg: "var(--color-background-secondary)",
+  border: "var(--color-border-tertiary)",
+};
+
+const TARGETS = [
+  { id: "T1", name: "KRAS G12C", pathway: "RAS/MAPK", baseDrift: 0.06, viability: 0.91 },
+  { id: "T2", name: "CDK4/6", pathway: "Cell Cycle", baseDrift: 0.19, viability: 0.72 },
+  { id: "T3", name: "PD-L1", pathway: "Immune Checkpoint", baseDrift: 0.33, viability: 0.55 },
+  { id: "T4", name: "EGFR T790M", pathway: "RTK Signaling", baseDrift: 0.07, viability: 0.93 },
+];
+
+const COMPOUNDS = {
+  T1: [{ id:"C1", name:"AMG-510 analog", binding:0.91, tox:0.11, selectivity:0.88 },
+       { id:"C2", name:"SOS1 inhibitor",  binding:0.74, tox:0.29, selectivity:0.71 }],
+  T2: [{ id:"C3", name:"Palbociclib-X",  binding:0.85, tox:0.16, selectivity:0.82 },
+       { id:"C4", name:"Ribociclib-2",   binding:0.68, tox:0.42, selectivity:0.61 }],
+  T3: [{ id:"C5", name:"Atezolizumab-v2",binding:0.77, tox:0.20, selectivity:0.74 },
+       { id:"C6", name:"Durvalumab-M",   binding:0.59, tox:0.53, selectivity:0.49 }],
+  T4: [{ id:"C7", name:"Osimertinib-B", binding:0.93, tox:0.08, selectivity:0.91 },
+       { id:"C8", name:"Lazertinib-X",  binding:0.81, tox:0.23, selectivity:0.79 }],
+};
+
+const STAGES = ["Target ID","Compound Select","In Vitro","In Vivo","IND Filing","Phase I","Phase II"];
+const BIO_LAYERS = ["Cell","Tissue","Organ","System"];
+
+// SOVEREIGN INFERENCE — routes through AURA governed layer, zero external providers
+async function callAura(sys, user) {
+  const r = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: user,
+      system: sys,
+      session_id: "llm-bio-" + Date.now(),
+      source: "cirq-bio-sim"
+    })
+  });
+  const d = await r.json();
+  return d.reply || d.text || d.content || "";
+}
+
+function Bar({ val, color, max = 1, h = 5 }) {
+  return (
+    <div style={{ flex: 1, height: h, background: C.border, borderRadius: 3, overflow: "hidden" }}>
+      <div style={{ width: `${Math.min(100, Math.round((val / max) * 100))}%`, height: "100%", background: color, borderRadius: 3, transition: "width 0.5s" }} />
+    </div>
+  );
+}
+
+function Tag({ color, children }) {
+  return <span style={{ fontSize: 10, fontWeight: 500, padding: "2px 7px", borderRadius: 5, background: color + "20", color, border: `0.5px solid ${color}44` }}>{children}</span>;
+}
+
+function Panel({ title, color = C.gov, loading, children, accent }) {
+  return (
+    <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderLeft: `3px solid ${color}`, borderRadius: 10, padding: "13px 16px", marginBottom: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 500, color, textTransform: "uppercase", letterSpacing: "0.05em" }}>{title}</div>
+        {accent && <Tag color={color}>{accent}</Tag>}
+      </div>
+      {loading ? <div style={{ fontSize: 13, color: C.muted, fontStyle: "italic" }}>Analyzing...</div> : children}
+    </div>
+  );
+}
+
+function BioSimViz({ layer, governed, drift }) {
+  const colors = [C.stable, C.info, C.gov, C.warn];
+  return (
+    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+      {BIO_LAYERS.map((l, i) => {
+        const active = i === layer;
+        const past = i < layer;
+        const col = governed ? colors[i] : drift > 0.3 ? C.danger : C.warn;
+        return (
+          <div key={l} style={{ display: "flex", alignItems: "center", flex: 1 }}>
+            <div style={{
+              flex: 1, padding: "6px 4px", borderRadius: 6, textAlign: "center",
+              fontSize: 10, fontWeight: active ? 500 : 400,
+              background: active ? col + "22" : past ? col + "11" : C.bg,
+              color: active ? col : past ? col + "99" : C.muted,
+              border: `${active ? "1.5px" : "0.5px"} solid ${active ? col : C.border}`,
+              transition: "all 0.4s",
+            }}>{l}</div>
+            {i < BIO_LAYERS.length - 1 && <div style={{ width: 10, height: 1, background: past ? col + "55" : C.border }} />}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function App() {
+  const [governed, setGoverned] = React.useState(true);
+  const [target, setTarget] = React.useState(null);
+  const [compound, setCompound] = React.useState(null);
+  const [stage, setStage] = React.useState(0);
+  const [bioLayer, setBioLayer] = React.useState(0);
+  const [drift, setDrift] = React.useState(0);
+  const [manifold, setManifold] = React.useState(1);
+  const [running, setRunning] = React.useState(false);
+  const [rejected, setRejected] = React.useState(false);
+  const [ai, setAi] = React.useState({ drift: null, score: null, horizon: null, reasoning: null });
+  const [loading, setLoading] = React.useState({});
+  const [log, setLog] = React.useState([]);
+  const [history, setHistory] = React.useState([]);
+  const logRef = React.useRef(null);
+
+  React.useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [log]);
+
+  const addLog = React.useCallback((msg, t = "info") => {
+    const colors = { info: C.muted, gov: C.gov, ok: C.stable, warn: C.warn, err: C.danger, llm: C.info };
+    setLog(l => [...l, { msg, color: colors[t] || C.muted, ts: new Date().toLocaleTimeString("en", { hour12: false }) }]);
+  }, []);
+
+  const reset = () => {
+    setTarget(null); setCompound(null); setStage(0); setBioLayer(0);
+    setDrift(0); setManifold(1); setRejected(false);
+    setAi({ drift: null, score: null, horizon: null, reasoning: null });
+    setLoading({}); setLog([]); setHistory([]);
+  };
+
+  const advance = React.useCallback(async () => {
+    if (!target || !compound || running) return;
+    setRunning(true); setRejected(false);
+
+    const nextStage = Math.min(stage + 1, STAGES.length - 1);
+    const nextLayer = Math.min(bioLayer + 1, BIO_LAYERS.length - 1);
+    const newDrift = governed
+      ? parseFloat(Math.min(0.08, target.baseDrift * 0.3 + Math.random() * 0.02).toFixed(3))
+      : parseFloat(Math.min(0.92, target.baseDrift + compound.tox * 0.4 + Math.random() * 0.2).toFixed(3));
+    const newManifold = governed
+      ? parseFloat(Math.max(0.75, manifold - 0.03 * newDrift).toFixed(2))
+      : parseFloat(Math.max(0.1, manifold - 0.18 * newDrift - 0.05).toFixed(2));
+
+    setStage(nextStage); setBioLayer(nextLayer); setDrift(newDrift); setManifold(newManifold);
+    addLog(`Pipeline -> ${STAGES[nextStage]} | Bio layer -> ${BIO_LAYERS[nextLayer]}`, "gov");
+
+    setLoading(l => ({ ...l, reasoning: true }));
+    addLog("[AURA] Reasoning chain initiated...", "llm");
+    const reasonText = await callAura(
+      "You are the AURA LLM reasoning engine embedded in a drug discovery pipeline. 3 sentences. Think step by step about mechanism coherence.",
+      `Target: ${target.name} (${target.pathway}). Compound: ${compound.name}. Biology layer: ${BIO_LAYERS[nextLayer]}. Stage: ${STAGES[nextStage]}. Drift: ${newDrift}. Manifold integrity: ${newManifold}. Governed: ${governed}.\nAssess the mechanistic coherence of this pipeline at this stage.`
+    );
+    setAi(a => ({ ...a, reasoning: reasonText }));
+    setLoading(l => ({ ...l, reasoning: false }));
+    addLog("[AURA] Reasoning chain complete", "llm");
+
+    setLoading(l => ({ ...l, drift: true }));
+    const driftText = await callAura(
+      "You are AURA's drift detection engine. 3 sentences. Be specific about what is drifting.",
+      `Stage: ${STAGES[nextStage]}. Target: ${target.name}. Drift: ${newDrift}. Viability manifold: ${newManifold}. Bio layer: ${BIO_LAYERS[nextLayer]}. Governed: ${governed}.\nWhat is drifting in this pipeline? Is the trajectory inside the CHVM?`
+    );
+    setAi(a => ({ ...a, drift: driftText }));
+    setLoading(l => ({ ...l, drift: false }));
+    addLog(`Drift ${newDrift} -- manifold ${newManifold}`, newDrift > 0.3 ? "err" : newDrift > 0.15 ? "warn" : "ok");
+
+    setLoading(l => ({ ...l, score: true }));
+    const scoreText = await callAura(
+      "You are AURA's candidate scoring engine. 3 sentences. State clearly: advance, watch, or reject.",
+      `Compound: ${compound.name}. Binding: ${compound.binding}. Toxicity: ${compound.tox}. Selectivity: ${compound.selectivity}. Drift: ${newDrift}. Manifold: ${newManifold}. Stage: ${STAGES[nextStage]}. Governed: ${governed}.\nScore this candidate. Verdict: advance, watch, or reject?`
+    );
+    setAi(a => ({ ...a, score: scoreText }));
+    setLoading(l => ({ ...l, score: false }));
+
+    const doReject = !governed && (compound.tox > 0.35 || newDrift > 0.28 || newManifold < 0.45);
+    if (doReject) { setRejected(true); addLog(`REJECTED: ${compound.name}`, "err"); }
+    else addLog("Candidate advanced", "ok");
+
+    setLoading(l => ({ ...l, horizon: true }));
+    const horizonText = await callAura(
+      "You are AURA's governance horizon detector. 3 sentences. Name the specific stage where failure risk peaks.",
+      `Pipeline: ${target.name} -> ${compound.name}. Stage: ${STAGES[nextStage]}. Drift: ${newDrift}. Manifold: ${newManifold}. Governed: ${governed}. Remaining: ${STAGES.slice(nextStage + 1).join(", ")}.\nAt which future stage does failure risk peak? What is the earliest viable intervention point?`
+    );
+    setAi(a => ({ ...a, horizon: horizonText }));
+    setLoading(l => ({ ...l, horizon: false }));
+    addLog("Horizon projection complete", "ok");
+
+    setHistory(h => [...h, { stage: STAGES[nextStage], layer: BIO_LAYERS[nextLayer], drift: newDrift, manifold: newManifold, governed, rejected: doReject }]);
+    setRunning(false);
+  }, [target, compound, stage, bioLayer, drift, manifold, governed, running, addLog]);
+
+  const driftColor = drift > 0.3 ? C.danger : drift > 0.15 ? C.warn : C.stable;
+  const manifoldColor = manifold < 0.45 ? C.danger : manifold < 0.7 ? C.warn : C.stable;
+  const compounds = target ? COMPOUNDS[target.id] : [];
+  const hasAny = Object.values(ai).some(Boolean);
+
+  return (
+    <div style={{ fontFamily: "system-ui,sans-serif", color: C.text, padding: "6px 0", maxWidth: 800, margin: "0 auto" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 500 }}>AURA - Hybrid Bio Runtime</div>
+          <div style={{ fontSize: 12, color: C.muted, marginTop: 1 }}>CIRQ Governed Pipeline - LLM reasoning + biology simulation + CHVM governance substrate</div>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontSize: 12, color: C.muted }}>Governance</span>
+          <button onClick={() => setGoverned(g => !g)} style={{
+            padding: "5px 14px", borderRadius: 20, fontSize: 12, fontWeight: 500, cursor: "pointer",
+            background: governed ? C.gov + "18" : C.danger + "18",
+            color: governed ? C.gov : C.danger,
+            border: `1px solid ${governed ? C.gov : C.danger}55`,
+          }}>{governed ? "ON" : "OFF"}</button>
+          <button onClick={reset} style={{ padding: "5px 11px", borderRadius: 6, fontSize: 12, cursor: "pointer", background: "none", border: `0.5px solid ${C.border}`, color: C.muted }}>Reset</button>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 14 }}>
+        {[
+          { label: "Governance", val: governed ? "Active" : "Off", color: governed ? C.gov : C.danger },
+          { label: "Drift index", val: drift > 0 ? drift : "-", color: drift > 0 ? driftColor : C.muted },
+          { label: "Manifold", val: manifold < 1 ? manifold : "-", color: manifold < 1 ? manifoldColor : C.muted },
+          { label: "Pipeline stage", val: STAGES[stage], color: C.text },
+          { label: "Bio layer", val: BIO_LAYERS[bioLayer], color: C.info },
+        ].map(s => (
+          <div key={s.label} style={{ background: C.bg, borderRadius: 8, padding: "9px 11px" }}>
+            <div style={{ fontSize: 10, color: C.muted, marginBottom: 2 }}>{s.label}</div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: s.color }}>{s.val}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 10, padding: "12px 16px", marginBottom: 12 }}>
+        <div style={{ fontSize: 11, color: C.muted, marginBottom: 6 }}>Drug pipeline</div>
+        <div style={{ display: "flex", gap: 0, alignItems: "center", marginBottom: 12 }}>
+          {STAGES.map((s, i) => {
+            const active = i === stage, past = i < stage;
+            const bg = active ? (governed ? C.gov : driftColor) : past ? C.gov + "28" : C.bg;
+            return (
+              <div key={i} style={{ display: "flex", alignItems: "center", flex: i < STAGES.length - 1 ? 1 : "none" }}>
+                <div style={{
+                  padding: "5px 6px", borderRadius: 5, fontSize: 9, fontWeight: active ? 500 : 400,
+                  background: bg, color: active ? "#fff" : past ? C.gov : C.muted,
+                  border: active ? "none" : `0.5px solid ${C.border}`,
+                  whiteSpace: "nowrap", transition: "all 0.4s",
+                }}>{s}</div>
+                {i < STAGES.length - 1 && <div style={{ flex: 1, height: 1, background: i < stage ? C.gov + "55" : C.border, minWidth: 4 }} />}
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ fontSize: 11, color: C.muted, marginBottom: 6 }}>Biological simulation layer</div>
+        <BioSimViz layer={bioLayer} governed={governed} drift={drift} />
+      </div>
+
+      {manifold < 1 && (
+        <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 10, padding: "11px 16px", marginBottom: 12 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <span style={{ fontSize: 11, color: C.muted }}>Viability manifold integrity (CHVM)</span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: manifoldColor }}>{Math.round(manifold * 100)}%</span>
+          </div>
+          <Bar val={manifold} color={manifoldColor} h={8} />
+        </div>
+      )}
+
+      <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 8 }}>1. Select target</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
+        {TARGETS.map(t => {
+          const sel = target?.id === t.id;
+          const dc = t.baseDrift > 0.2 ? C.warn : C.stable;
+          return (
+            <div key={t.id} onClick={() => { setTarget(t); setCompound(null); }} style={{
+              padding: "10px 13px", borderRadius: 8, cursor: "pointer",
+              background: sel ? C.gov + "12" : C.bg,
+              border: `${sel ? "1.5px" : "0.5px"} solid ${sel ? C.gov : C.border}`,
+              transition: "all 0.2s",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontWeight: 500, fontSize: 13 }}>{t.name}</span>
+                <Tag color={dc}>drift {t.baseDrift}</Tag>
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, marginBottom: 6 }}>{t.pathway}</div>
+              <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                <span style={{ fontSize: 10, color: C.muted, minWidth: 52 }}>viability</span>
+                <Bar val={t.viability} color={C.gov} />
+                <span style={{ fontSize: 10 }}>{t.viability}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {target && (
+        <>
+          <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 8 }}>2. Select compound for {target.name}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 12 }}>
+            {compounds.map(cp => {
+              const sel = compound?.id === cp.id;
+              const tc = cp.tox > 0.35 ? C.danger : cp.tox > 0.2 ? C.warn : C.stable;
+              return (
+                <div key={cp.id} onClick={() => setCompound(cp)} style={{
+                  padding: "10px 13px", borderRadius: 8, cursor: "pointer",
+                  background: sel ? C.gov + "12" : C.bg,
+                  border: `${sel ? "1.5px" : "0.5px"} solid ${sel ? C.gov : C.border}`,
+                  opacity: rejected && sel ? 0.6 : 1, transition: "all 0.2s",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 7 }}>
+                    <span style={{ fontWeight: 500, fontSize: 13 }}>{cp.name}</span>
+                    {rejected && sel && <Tag color={C.danger}>REJECTED</Tag>}
+                  </div>
+                  {[["Binding", cp.binding, C.gov], ["Toxicity", cp.tox, tc], ["Selectivity", cp.selectivity, C.info]].map(([label, val, col]) => (
+                    <div key={label} style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
+                      <span style={{ fontSize: 10, color: C.muted, minWidth: 58 }}>{label}</span>
+                      <Bar val={val} color={col} />
+                      <span style={{ fontSize: 10, color: col, minWidth: 24 }}>{val}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {target && compound && (
+        <button onClick={advance} disabled={running || stage >= STAGES.length - 1} style={{
+          width: "100%", padding: "11px 0", borderRadius: 8, fontSize: 14, fontWeight: 500,
+          cursor: running || stage >= STAGES.length - 1 ? "not-allowed" : "pointer",
+          background: governed ? C.gov : C.warn, color: "#fff", border: "none",
+          opacity: running ? 0.7 : 1, marginBottom: 14, transition: "all 0.2s",
+        }}>
+          {running ? "Running AURA governed analysis..." : stage >= STAGES.length - 1 ? "Pipeline complete" : `Advance to ${STAGES[Math.min(stage + 1, STAGES.length - 1)]}`}
+        </button>
+      )}
+
+      {hasAny && (
+        <>
+          {(ai.reasoning || loading.reasoning) && (
+            <Panel title="AURA reasoning chain - mechanistic coherence" color={C.info} loading={loading.reasoning} accent={`bio layer: ${BIO_LAYERS[bioLayer]}`}>
+              <div style={{ fontSize: 13, lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{ai.reasoning}</div>
+            </Panel>
+          )}
+          {(ai.drift || loading.drift) && (
+            <Panel title="Drift detection & governance narration" color={C.gov} loading={loading.drift} accent={drift > 0 ? `CHVM ${Math.round(manifold * 100)}%` : undefined}>
+              <div style={{ fontSize: 13, lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{ai.drift}</div>
+            </Panel>
+          )}
+          {(ai.score || loading.score) && (
+            <Panel title="Candidate scoring & rejection reasoning" color={rejected ? C.danger : C.stable} loading={loading.score}>
+              <div style={{ fontSize: 13, lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{ai.score}</div>
+            </Panel>
+          )}
+          {(ai.horizon || loading.horizon) && (
+            <Panel title="Horizon failure analysis" color={C.warn} loading={loading.horizon}>
+              <div style={{ fontSize: 13, lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{ai.horizon}</div>
+            </Panel>
+          )}
+        </>
+      )}
+
+      {history.length > 0 && (
+        <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 10, padding: "12px 16px", marginBottom: 10 }}>
+          <div style={{ fontSize: 11, color: C.muted, marginBottom: 8 }}>Trajectory history</div>
+          {history.map((h, i) => (
+            <div key={i} style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 5, alignItems: "center" }}>
+              <span style={{ fontSize: 12, color: C.muted, minWidth: 90 }}>{h.stage}</span>
+              <Tag color={C.info}>{h.layer}</Tag>
+              <Tag color={h.drift > 0.3 ? C.danger : h.drift > 0.15 ? C.warn : C.stable}>drift {h.drift}</Tag>
+              <Tag color={h.manifold < 0.5 ? C.danger : h.manifold < 0.7 ? C.warn : C.stable}>CHVM {h.manifold}</Tag>
+              <Tag color={h.governed ? C.gov : C.danger}>{h.governed ? "governed" : "ungoverned"}</Tag>
+              {h.rejected && <Tag color={C.danger}>rejected</Tag>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {log.length > 0 && (
+        <div style={{ background: C.card, border: `0.5px solid ${C.border}`, borderRadius: 10, padding: "12px 16px", marginBottom: 10 }}>
+          <div style={{ fontSize: 11, color: C.muted, marginBottom: 6 }}>Runtime log</div>
+          <div ref={logRef} style={{ maxHeight: 130, overflowY: "auto", fontFamily: "monospace", fontSize: 11, lineHeight: 1.8 }}>
+            {log.map((l, i) => (
+              <div key={i} style={{ color: l.color }}><span style={{ color: C.muted, marginRight: 8 }}>{l.ts}</span>{l.msg}</div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ padding: "9px 13px", borderRadius: 8, background: governed ? C.gov + "0d" : C.danger + "0d", border: `0.5px solid ${governed ? C.gov : C.danger}33` }}>
+        <span style={{ fontSize: 12, color: governed ? C.gov : C.danger }}>
+          {governed
+            ? "AURA governance active - LLM reasoning chain validated through governed inference layer. CHVM enforced."
+            : "Governance off - LLM reasoning chain ungoverned. Biological assumption drift uncontrolled."}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

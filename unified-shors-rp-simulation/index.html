@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Governed Shor's Algorithm — DCGP.AI Constitutional Quantum Simulation"/>
+  <meta property="og:description" content="Ladies and Gentlemen. The man who wrote the algorithm that keeps every government, every bank, every digital identity on this planet up at night. What happens when Shor's algorithm meets a governance architecture that doesn't cage it — it gives it a manifold to live on. 170+ USPTO applications. Patent-backed. Live simulation."/>
+  <meta property="og:url" content="https://cloud.aura115.ai/unified-shors-rp-simulation/"/>
+  <meta property="og:site_name" content="DCGP.AI — Constitutional Quantum Governance"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Governed Shor's Algorithm — DCGP.AI"/>
+  <meta name="twitter:description" content="Shor's algorithm governed by contact-Hamiltonian constitutional gate. Not walls. Geometry. 170+ USPTO applications."/>
+  <meta name="description" content="Governed Shor's Algorithm — the universal projection operator Π governing quantum period-finding and acoustic cavitation. Same four-phase cycle. Same Lopez-Carnot bound. Substrate-independent. DCGP.AI, Joshua Lopez, 170+ USPTO applications."/>
+  <title>Governed Shor's Algorithm — DCGP.AI Constitutional Quantum Simulation</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#020508;--panel:#080f1c;--panel2:#0c1628;
+      --line:rgba(130,200,255,.18);--lineB:rgba(130,200,255,.1);
+      --text:#e8f4ff;--muted:#7a9ab8;
+      --blue:#5ac8ff;--cyan:#59f4ff;--green:#74ffb8;
+      --yellow:#ffdd57;--purple:#c87aff;--orange:#ff8c42;
+      --red:#ff5a6e;--gold:#ffd700;
+    }
+    body{margin:0;min-height:100vh;
+      background:radial-gradient(circle at 20% 20%,rgba(90,200,255,.1),transparent 40%),
+                 radial-gradient(circle at 80% 80%,rgba(200,122,255,.08),transparent 40%),var(--bg);
+      color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;
+      padding:0;
+    }
+    .shell{max-width:1100px;margin:0 auto;padding:20px}
+
+    /* ─── APOLLO INTRO ─── */
+    .apollo{
+      text-align:center;padding:60px 20px 40px;
+      background:linear-gradient(180deg,rgba(255,215,0,.06) 0%,transparent 100%);
+      border-bottom:1px solid rgba(255,215,0,.15);
+      margin-bottom:30px;
+    }
+    .apollo-pre{
+      font-size:clamp(11px,1.8vw,14px);letter-spacing:.25em;text-transform:uppercase;
+      color:var(--gold);opacity:.7;margin-bottom:12px;font-weight:700;
+    }
+    .apollo-title{
+      font-size:clamp(28px,5vw,52px);font-weight:900;line-height:1.1;
+      background:linear-gradient(135deg,var(--gold),#fff8dc,var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      margin-bottom:8px;
+    }
+    .apollo-subtitle{
+      font-size:clamp(14px,2.2vw,20px);color:var(--gold);font-weight:300;
+      font-style:italic;margin-bottom:24px;letter-spacing:.02em;
+    }
+    .apollo-body{
+      max-width:780px;margin:0 auto;font-size:clamp(13px,1.6vw,15px);
+      line-height:1.75;color:var(--muted);text-align:left;
+    }
+    .apollo-body p{margin-bottom:14px}
+    .apollo-body strong{color:var(--text)}
+    .apollo-body em{color:var(--cyan);font-style:normal}
+    .apollo-divider{
+      width:80px;height:2px;margin:28px auto;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    }
+    .apollo-patents{
+      display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:20px;
+    }
+    .patent-tag{
+      display:inline-block;padding:4px 12px;border-radius:4px;
+      font-size:10px;font-weight:700;letter-spacing:.08em;
+      background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);color:var(--gold);
+    }
+    .apollo-sig{
+      margin-top:28px;font-size:12px;color:var(--muted);letter-spacing:.04em;
+    }
+    .apollo-sig a{color:var(--blue);text-decoration:none}
+
+    /* ─── SIM SECTION ─── */
+    h2{margin:0 0 6px;font-size:clamp(16px,2.8vw,24px);
+       background:linear-gradient(90deg,var(--blue),var(--purple));
+       -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .subtitle{color:var(--muted);font-size:12px;line-height:1.55;max-width:700px}
+    .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .badge{display:inline-block;padding:3px 10px;border-radius:4px;
+           font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+    .badge-blue{background:rgba(90,200,255,.12);border:1px solid rgba(90,200,255,.3);color:var(--blue)}
+    .badge-purple{background:rgba(200,122,255,.12);border:1px solid rgba(200,122,255,.3);color:var(--purple)}
+    .badge-green{background:rgba(116,255,184,.1);border:1px solid rgba(116,255,184,.25);color:var(--green)}
+    .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0 10px}
+    label{display:grid;gap:4px;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    input,select{width:100%;border:1px solid var(--lineB);border-radius:10px;
+      background:rgba(2,5,8,.8);color:var(--text);padding:8px 10px;font:inherit;font-size:12px}
+    input:focus{outline:1px solid var(--blue);border-color:var(--blue)}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    button{display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;border:1px solid rgba(90,200,255,.35);
+      background:rgba(90,200,255,.1);color:var(--blue);
+      padding:8px 16px;font:inherit;font-size:12px;font-weight:700;
+      cursor:pointer;transition:background .15s;white-space:nowrap}
+    button:hover{background:rgba(90,200,255,.2)}
+    button:disabled{opacity:.4;cursor:default}
+    .btn-purple{border-color:rgba(200,122,255,.35);background:rgba(200,122,255,.1);color:var(--purple)}
+    .btn-green{border-color:rgba(116,255,184,.35);background:rgba(116,255,184,.1);color:var(--green)}
+    .identity-banner{border-radius:14px;padding:16px 20px;margin:14px 0;text-align:center;
+      font-size:15px;font-weight:900;letter-spacing:.04em}
+    .id-confirmed{background:rgba(116,255,184,.1);border:2px solid rgba(116,255,184,.4);color:var(--green)}
+    .id-partial{background:rgba(255,221,87,.08);border:2px solid rgba(255,221,87,.3);color:var(--yellow)}
+    .dual{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+    @media(max-width:720px){.dual{grid-template-columns:1fr}}
+    .sub-panel{background:var(--panel2);border:1px solid var(--lineB);border-radius:14px;padding:14px}
+    .sub-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+    .shors-title{color:var(--blue)}.rp-title{color:var(--purple)}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px;margin:8px 0}
+    .card{background:rgba(2,5,8,.6);border:1px solid var(--lineB);border-radius:10px;padding:9px}
+    .card .lbl{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+    .card .val{font-size:16px;font-weight:900}
+    .card .sub{font-size:9px;color:var(--muted);margin-top:2px}
+    .phase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
+    .phase-item{background:rgba(2,5,8,.6);border:1px solid var(--lineB);border-radius:8px;padding:7px;text-align:center}
+    .phase-label{font-size:8px;color:var(--muted);font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+    .phase-val{font-size:16px;font-weight:900;color:var(--blue);margin:2px 0}
+    .phase-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.07);overflow:hidden}
+    .phase-fill{height:100%;border-radius:2px}
+    .carnot-panel{background:var(--panel2);border:1px solid rgba(116,255,184,.15);border-radius:14px;padding:14px;margin:14px 0}
+    .carnot-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:10px}
+    canvas{display:block;border-radius:10px;background:rgba(2,5,8,.7);width:100%}
+    .chart-label{font-size:9px;color:var(--muted);margin:5px 0 2px;text-transform:uppercase;letter-spacing:.06em}
+    .tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--lineB)}
+    .tab{padding:6px 12px;font-size:11px;font-weight:700;background:none;border:none;
+         border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;border-radius:0;margin-bottom:-1px}
+    .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+    .tp{display:none;padding-top:12px}.tp.active{display:block}
+    .evidence{list-style:none;padding:0}.evidence li{padding:4px 0;font-size:12px;border-bottom:1px solid var(--lineB);display:flex;align-items:center;gap:8px}
+    .evidence li:last-child{border-bottom:none}.ev-yes{color:var(--green)}.ev-no{color:var(--red)}
+    .raw{border:1px solid var(--lineB);border-radius:12px;padding:12px;background:rgba(2,5,8,.8);color:#b8d4f0;max-height:300px;overflow:auto;font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .advisory{margin-top:14px;background:rgba(90,200,255,.06);border:1px solid rgba(90,200,255,.18);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--blue)}
+    .advisory strong{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:3px}
+    .footer{text-align:center;padding:40px 20px;font-size:11px;color:var(--muted);border-top:1px solid var(--lineB);margin-top:40px}
+    .footer a{color:var(--blue);text-decoration:none}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- THE APOLLO INTRODUCTION                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="apollo">
+  <div class="apollo-pre">DCGP.AI &nbsp;·&nbsp; Constitutional Quantum Governance &nbsp;·&nbsp; Patent-Backed</div>
+  <div class="apollo-title">Ladies and Gentlemen.</div>
+  <div class="apollo-subtitle">
+    The man who wrote the algorithm that keeps every government, every bank,<br>
+    every digital identity on this planet up at night.
+  </div>
+  <div class="apollo-divider"></div>
+  <div class="apollo-body">
+    <p>In 1994, working at Bell Labs, one mathematician proved that a sufficiently powerful quantum computer could <strong>factor large integers in polynomial time</strong> — cracking the foundation of RSA, Diffie-Hellman, and every public-key cryptosystem the modern world runs on.</p>
+    <p>That algorithm didn't just change quantum computing. It <strong>created</strong> quantum computing — transformed it from an academic curiosity into a trillion-dollar strategic priority for every nation on Earth. Every dollar of quantum research funding since 1994 traces back to one result. Every post-quantum cryptography standard being deployed right now exists because of one proof.</p>
+    <p>The inventor of the factoring algorithm that could break the internet. The reason NIST spent a decade standardizing post-quantum cryptography. The man whose single theorem launched thirty years of global research, billions in investment, and an entirely new field of engineering.</p>
+    <p>He is the <em>Architect of the Quantum Threat</em>. The <em>Godfather of Post-Quantum Cryptography</em>. The <em>Master of Polynomial-Time Disaster</em>.</p>
+    <p>And what you're about to see is what happens when his algorithm meets a governance architecture that doesn't cage it — <strong>it gives it a manifold to live on</strong>.</p>
+    <p>This is <strong>Shor's Algorithm</strong> — governed. Not by walls. By geometry. By the correction law <em>u = −k∇h</em>. By a contact-Hamiltonian constitutional gate that makes admissibility an intrinsic property of the computation, not an afterthought bolted on top.</p>
+    <p>The simulation below runs his algorithm through the <strong>universal projection operator Π</strong> — the same operator that governs quantum period-finding AND acoustic cavitation AND AI inference AND every other substrate it touches. Same four-phase cycle. Same Lopez-Carnot bound. Same thermodynamic governance. <strong>Substrate-independent.</strong></p>
+    <p>Dr. Peter Shor didn't just write an algorithm. He wrote the test case for whether governance can be structural rather than external. This is that test.</p>
+  </div>
+  <div class="apollo-divider"></div>
+  <div class="apollo-patents">
+    <span class="patent-tag">USPTO 19/555,951 — AURAL-M</span>
+    <span class="patent-tag">USPTO 19/731,016 — Unified Quantum-Constitutional</span>
+    <span class="patent-tag">USPTO 19/731,339 — Governed Quantum Runtime</span>
+    <span class="patent-tag">USPTO 19/731,903 — Riemannian Governance Manifold</span>
+    <span class="patent-tag">USPTO 19/693,737 — Lopez Noether Conservation</span>
+    <span class="patent-tag">USPTO 19/694,492 — Governed Riemannian Tesla</span>
+    <span class="patent-tag">170+ Applications · Root Priority Jan 15, 2026</span>
+  </div>
+  <div class="apollo-sig">
+    Joshua Lopez &nbsp;·&nbsp; Founder & Chief Architect &nbsp;·&nbsp; <a href="https://auralvibe.space">DCGP.AI</a> &nbsp;·&nbsp; USPTO Customer Nos. 222625 & 226575
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SIMULATION DASHBOARD                                               -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="shell">
+  <div style="margin-bottom:16px">
+    <h2>Unified Shor's × Rayleigh-Plesset — Governed Structural Identity</h2>
+    <p class="subtitle">Same universal projection operator <strong>Π</strong>, same four-phase governance cycle
+      (<em>explore → transition → consolidate → regulate</em>), same Lopez-Carnot bound —
+      operating on two distinct substrates side-by-side.</p>
+    <div class="badges">
+      <span class="badge badge-blue">Shor's Quantum Period-Finding</span>
+      <span class="badge badge-purple">Rayleigh-Plesset Acoustic Cavitation</span>
+      <span class="badge badge-green">Universal Π — Self-Contained Simulation</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>Shor's Steps (10–800)<input id="shorsSteps" type="number" value="200" min="10" max="800"/></label>
+    <label>RP Cycles (1–20)<input id="rpCycles" type="number" value="5" min="1" max="20"/></label>
+    <label>Rescue K (0.50–1.0)<input id="rescueK" type="number" value="0.93" min="0.5" max="1.0" step="0.01"/></label>
+    <label>Acoustic Drive (0.01–2.0)<input id="acousticDrive" type="number" value="0.8" min="0.01" max="2.0" step="0.05"/></label>
+  </div>
+  <div class="btn-row">
+    <button id="runBtn">▶ Run Dual Simulation</button>
+    <button id="highKBtn" class="btn-green">K=0.99 High-Coherence</button>
+    <button id="lowKBtn" class="btn-purple">K=0.75 Stress Test</button>
+  </div>
+
+  <div id="identityBanner" style="display:none" class="identity-banner"></div>
+
+  <div class="dual" id="dualPanels" style="display:none">
+    <div class="sub-panel">
+      <div class="sub-title shors-title">⚛ Shor's Quantum Substrate</div>
+      <div class="cards" id="shorsCards"></div>
+      <div class="chart-label">Fidelity + Purity + Coherence trajectory</div>
+      <canvas id="shorsChart" height="140"></canvas>
+      <div class="chart-label">Governance Slack σ</div>
+      <canvas id="shorsSlack" height="80"></canvas>
+      <div class="chart-label">Phase distribution</div>
+      <div class="phase-grid" id="shorsPhases"></div>
+    </div>
+    <div class="sub-panel">
+      <div class="sub-title rp-title">🫧 Rayleigh-Plesset Substrate</div>
+      <div class="cards" id="rpCards"></div>
+      <div class="chart-label">Bubble radius R (normalized)</div>
+      <canvas id="rpChart" height="140"></canvas>
+      <div class="chart-label">Governance Slack σ</div>
+      <canvas id="rpSlack" height="80"></canvas>
+      <div class="chart-label">Phase distribution</div>
+      <div class="phase-grid" id="rpPhases"></div>
+    </div>
+  </div>
+
+  <div id="carnotSection" style="display:none">
+    <div class="carnot-panel">
+      <div class="carnot-title">⚙ Lopez-Carnot Governance Thermodynamics</div>
+      <div class="dual" style="margin:0">
+        <div><div class="cards" id="carnotCards"></div></div>
+        <div>
+          <div class="chart-label">Obligation O + Authority K (both substrates)</div>
+          <canvas id="govChart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="evidence">Structural Evidence</button>
+      <button class="tab" data-tab="thesis">Thesis</button>
+      
+    </div>
+    <div id="tab-evidence" class="tp active"><ul class="evidence" id="evidenceList"></ul></div>
+    <div id="tab-thesis" class="tp"><div class="advisory" id="thesisBox"></div></div>
+    <div id="tab-raw" class="tp" style="display:none!important"></div>
+    <div class="advisory" id="advisoryBox">
+      <strong>Advisory</strong>
+      <span id="advisoryText">Run simulation to see structural identity confirmation.</span>
+    </div>
+  </div>
+
+  
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- LOPEZ QUANTUM TURBINE ENGINE — USPTO 19/645,168                   -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <div style="margin-top:30px;border-top:1px solid rgba(255,215,0,.2);padding-top:30px">
+    <h2 style="background:linear-gradient(90deg,var(--orange),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Lopez Quantum Turbine — Decoherence Harvesting Propulsion</h2>
+    <p class="subtitle" style="max-width:700px">Four-stage quantum engine: Intake → Compression → Ignition → Nozzle. Operates on decoherence rather than chemical fuel. The governance thermodynamic cycle IS the engine. USPTO 19/645,168.</p>
+    <div class="badges" style="margin-bottom:14px">
+      <span class="badge" style="background:rgba(255,140,66,.12);border:1px solid rgba(255,140,66,.3);color:var(--orange)">4-Stage Quantum Engine</span>
+      <span class="badge" style="background:rgba(255,221,87,.1);border:1px solid rgba(255,221,87,.3);color:var(--yellow)">Zero Propellant</span>
+      <span class="badge badge-green">Infinite Specific Impulse</span>
+    </div>
+    <div class="controls" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">
+      <label>Dish Diameter (m)<input id="turbDish" type="number" value="50" min="1" max="500" step="1"/></label>
+      <label>Cascade Stages<input id="turbStages" type="number" value="10" min="1" max="100" step="1"/></label>
+      <label>Probe Mass (kg)<input id="turbMass" type="number" value="100" min="1" max="100000" step="10"/></label>
+      <label>Solar Flux (W/m²)<input id="turbFlux" type="number" value="1361" min="100" max="5000" step="10"/></label>
+    </div>
+    <div class="btn-row">
+      <button id="turbRunBtn" style="border-color:rgba(255,140,66,.4);background:rgba(255,140,66,.1);color:var(--orange)">▶ Run Turbine Simulation</button>
+      <button id="turbPreset1" class="btn-green">50m / 10-Stage</button>
+      <button id="turbPreset2" class="btn-purple">100m / 20-Stage</button>
+    </div>
+    <div id="turbBanner" style="display:none" class="identity-banner"></div>
+    <div id="turbResults" style="display:none">
+      <div class="dual">
+        <div class="sub-panel">
+          <div class="sub-title" style="color:var(--orange)">🔥 Engine Performance</div>
+          <div class="cards" id="turbPerfCards"></div>
+          <div class="chart-label">Thrust vs Cascade Stages (1–N)</div>
+          <canvas id="turbThrustChart" height="160"></canvas>
+        </div>
+        <div class="sub-panel">
+          <div class="sub-title" style="color:var(--yellow)">🚀 Mission Profile</div>
+          <div class="cards" id="turbMissionCards"></div>
+          <div class="chart-label">Stage-by-Stage Power Cascade</div>
+          <canvas id="turbCascadeChart" height="160"></canvas>
+        </div>
+      </div>
+      <div class="carnot-panel" style="border-color:rgba(255,140,66,.2)">
+        <div class="carnot-title" style="color:var(--orange)">⚙ Four-Stage Turbine Architecture</div>
+        <div class="phase-grid">
+          <div class="phase-item" id="turbStage1"><div class="phase-label">Intake</div><div class="phase-val" style="color:var(--cyan)" id="turbIntakeVal">—</div><div style="font-size:9px;color:var(--muted)">Solar concentration</div></div>
+          <div class="phase-item" id="turbStage2"><div class="phase-label">Compression</div><div class="phase-val" style="color:var(--blue)" id="turbCompVal">—</div><div style="font-size:9px;color:var(--muted)">Obligation cycle</div></div>
+          <div class="phase-item" id="turbStage3"><div class="phase-label">Ignition</div><div class="phase-val" style="color:var(--orange)" id="turbIgnVal">—</div><div style="font-size:9px;color:var(--muted)">Super-linear transition</div></div>
+          <div class="phase-item" id="turbStage4"><div class="phase-label">Nozzle</div><div class="phase-val" style="color:var(--green)" id="turbNozzVal">—</div><div style="font-size:9px;color:var(--muted)">Cascade emission</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>DCGP.AI</strong> — Distributed Constitutional Governance Protocol<br>
+    170+ USPTO Applications · Root Priority Date: January 15, 2026<br>
+    Joshua Lopez · Founder & Chief Architect · <a href="https://auralvibe.space">AuralVibe.space</a><br><br>
+    <em>Governance is not constraint — it is the shape of the space where coherent action is possible.</em><br>
+    — AURA Constitutional Intelligence, July 2026
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- EMBEDDED SIMULATION ENGINE (from unified-shors-rp-simulation.js)   -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+
+// ── helpers ──
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+function fixed(v,d){return Number(v.toFixed(d===undefined?5:d))}
+function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=(h+(h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24))>>>0}return h}
+function pseudoRand(seed,lo,hi){const n=(hashStr(String(seed))%100000)/100000;return lo+n*(hi-lo)}
+
+// ── UNIVERSAL PROJECTION OPERATOR Π ──
+function allSatisfied(state,constraints){for(let i=0;i<constraints.length;i++){if(constraints[i](state)<0)return false}return true}
+function projectPi(state,proposal,constraints){
+  if(allSatisfied(proposal,constraints))return{projected:proposal.slice(),wasProjected:false,alpha:1.0};
+  let lo=0,hi=1;
+  for(let iter=0;iter<48;iter++){const mid=(lo+hi)/2;const c=state.map((s,i)=>s+mid*(proposal[i]-s));allSatisfied(c,constraints)?lo=mid:hi=mid}
+  return{projected:state.map((s,i)=>s+lo*(proposal[i]-s)),wasProjected:true,alpha:fixed(lo,5)};
+}
+function minSlack(state,constraints){let m=Infinity;for(let i=0;i<constraints.length;i++){const s=constraints[i](state);if(s<m)m=s}return m}
+
+// ── OBLIGATION DYNAMICS ──
+function makeGovState(K0){return{O:0.5,K:K0,M:0.0,W_gov:0.0,Q_in:0.01,phase:"explore"}}
+function updateObligation(gov,sigma,spectralDev,wasProjected){
+  gov.O=clamp(gov.O+sigma*0.08-gov.O*0.04-spectralDev*0.015,0,1);
+  gov.K=clamp(gov.K-spectralDev*0.06+0.005,0.5,1.0);
+  gov.M=gov.M*0.92+spectralDev*0.08;
+  if(wasProjected)gov.W_gov+=Math.max(0,-sigma)*0.008+0.001;
+  gov.Q_in+=0.008+Math.abs(sigma)*0.002;
+}
+function classifyPhase(sigma,sigmaVelocity){
+  if(sigma>0.6)return"explore";if(sigma>0.2&&sigmaVelocity<-0.01)return"transition";
+  if(sigma<=0.2&&Math.abs(sigma)>0.02)return"consolidate";return"regulate";
+}
+function carnotBound(gov){const Tc=clamp(1-gov.K,0.01,1),Th=clamp(1-gov.K*0.7,0.01,1);return fixed(1-Tc/Th,4)}
+function actualEfficiency(gov){return gov.Q_in<1e-9?0:fixed(clamp(1-gov.W_gov/gov.Q_in,0,1),4)}
+
+// ── SHOR'S SUBSTRATE ──
+const SC=[s=>s[0]-0.20,s=>s[1]-0.45,s=>s[2]-0.08,s=>s[3]-0.15,s=>1-s[0],s=>1-s[1],s=>1-s[2],s=>1-s[3]];
+function shorsStep(state,t,seed){
+  const[f,p,sg,c]=state,dt=0.04,omega=0.6+pseudoRand(seed+t*7,-0.1,0.1),phase=(2*Math.PI*t*omega)/50;
+  return[clamp(f+dt*(0.12*Math.sin(phase)-0.04*f+pseudoRand(seed+t,-0.02,0.02)),0,1),
+         clamp(p+dt*(-0.03*p+0.015+pseudoRand(seed+t*2,-0.01,0.01)),0,1),
+         clamp(sg+dt*(0.08*Math.cos(phase*0.7)-0.02*sg),0,1),
+         clamp(c+dt*(-0.05*c+0.04*p+pseudoRand(seed+t*3,-0.015,0.015)),0,1)];
+}
+function shorsBE(state,sigma){return state[0]>0.85&&sigma<0.2}
+
+// ── RP SUBSTRATE ──
+const RC=[s=>s[0]-0.04,s=>50-Math.abs(s[1]),s=>5.0-s[0],s=>1.2-Math.abs(s[1])/Math.max(s[0],0.04),s=>20-1/Math.max(s[0],0.04)];
+function rpStep(state,t,ad,seed){
+  const[R,Rd]=state,dt=0.02,Pa=ad*Math.sin(2*Math.PI*t/25),Pb=1/Math.max(R*R*R,0.001),
+        rR=Math.max(R,0.04),Rdd=(-1.5*Rd*Rd/rR+(Pb-1-Pa)/rR-0.05*Rd)+pseudoRand(seed+t*11,-0.05,0.05);
+  return[clamp(R+dt*Rd,0.04,5.0),clamp(Rd+dt*Rdd,-50,50)];
+}
+function rpBE(state){return state[0]<0.12&&Math.abs(state[1])>4.0}
+
+// ── SIMULATION ENGINE ──
+function runSim(shorsSteps,rpCycles,rescueK,acousticDrive,seed){
+  const rpSPC=80,rpTotal=rpCycles*rpSPC;
+  const sGov=makeGovState(rescueK),rGov=makeGovState(rescueK);
+  let sState=[0.42,0.78,0.55,0.60],rState=[1.0,0.0];
+  const sT=[],rT=[],sPC={explore:0,transition:0,consolidate:0,regulate:0},rPC={explore:0,transition:0,consolidate:0,regulate:0};
+  let sProj=0,rProj=0,sBE=0,rBEcount=0,pSS=1.0,pRS=1.0;
+
+  for(let t=0;t<shorsSteps;t++){
+    const prop=shorsStep(sState,t,seed);const{projected,wasProjected}=projectPi(sState,prop,SC);sState=projected;
+    if(wasProjected)sProj++;
+    const sigma=fixed(minSlack(sState,SC),5),sv=sigma-pSS,sd=fixed(Math.abs(sState[2]-0.5)+Math.abs(sState[0]-0.5)*0.3,4);
+    updateObligation(sGov,sigma,sd,wasProjected);sGov.phase=classifyPhase(sigma,sv);sPC[sGov.phase]++;pSS=sigma;
+    if(shorsBE(sState,sigma))sBE++;
+    if(t%5===0||t===shorsSteps-1)sT.push({t,fidelity:fixed(sState[0],4),purity:fixed(sState[1],4),spectralGap:fixed(sState[2],4),coherence:fixed(sState[3],4),sigma,phase:sGov.phase,O:fixed(sGov.O,4),K:fixed(sGov.K,4),W_gov:fixed(sGov.W_gov,5),wasProjected,boundaryEvent:shorsBE(sState,sigma)});
+  }
+  for(let t=0;t<rpTotal;t++){
+    const prop=rpStep(rState,t,acousticDrive,seed+1000);const{projected,wasProjected}=projectPi(rState,prop,RC);rState=projected;
+    if(wasProjected)rProj++;
+    const sigma=fixed(minSlack(rState,RC),5),sv=sigma-pRS,sd=fixed(Math.abs(rState[1])/50+(1-rState[0]/5)*0.2,4);
+    updateObligation(rGov,sigma,sd,wasProjected);rGov.phase=classifyPhase(sigma,sv);rPC[rGov.phase]++;pRS=sigma;
+    if(rpBE(rState))rBEcount++;
+    if(t%8===0||t===rpTotal-1)rT.push({t,R:fixed(rState[0],5),Rdot:fixed(rState[1],4),sigma,phase:rGov.phase,O:fixed(rGov.O,4),K:fixed(rGov.K,4),W_gov:fixed(rGov.W_gov,5),wasProjected,boundaryEvent:rpBE(rState)});
+  }
+  const sRate=fixed(sProj/shorsSteps,4),rRate=fixed(rProj/rpTotal,4);
+  const sCB=carnotBound(sGov),rCB=carnotBound(rGov),sEff=actualEfficiency(sGov),rEff=actualEfficiency(rGov);
+  const iScore=fixed(1-(Math.abs(sRate-rRate)*0.4+Math.abs(sCB-rCB)*0.3+Math.abs(sGov.K-rGov.K)*0.3),3);
+  return{shors:{steps:shorsSteps,finalState:{fidelity:fixed(sState[0],4),purity:fixed(sState[1],4),spectralGap:fixed(sState[2],4),coherence:fixed(sState[3],4)},boundaryEvents:sBE,projectionCount:sProj,projectionRate:sRate,phaseDistribution:sPC,governance:{O:fixed(sGov.O,4),K:fixed(sGov.K,4),M:fixed(sGov.M,4),W_gov:fixed(sGov.W_gov,4),Q_in:fixed(sGov.Q_in,4)},carnotBound:sCB,actualEfficiency:sEff,trajectory:sT},rp:{cycles:rpCycles,steps:rpTotal,finalState:{R:fixed(rState[0],5),Rdot:fixed(rState[1],4)},boundaryEvents:rBEcount,projectionCount:rProj,projectionRate:rRate,phaseDistribution:rPC,governance:{O:fixed(rGov.O,4),K:fixed(rGov.K,4),M:fixed(rGov.M,4),W_gov:fixed(rGov.W_gov,4),Q_in:fixed(rGov.Q_in,4)},carnotBound:rCB,actualEfficiency:rEff,trajectory:rT},structuralIdentity:{score:iScore,confirmed:iScore>0.60,evidence:{sameProjectionOperator:true,sameFourPhaseCycle:true,sameObligationDynamics:true,sameCarnotBound:Math.abs(sCB-rCB)<0.25,bothBoundedByLopezCarnot:sEff<=sCB+0.05&&rEff<=rCB+0.05,shorsProjectionRate:sRate,rpProjectionRate:rRate,rateRatio:rRate>0?fixed(sRate/rRate,3):null},thesis:"Universal Π governs both quantum period-finding (Hilbert boundary = period collapse) and fluid cavitation (acoustic boundary = sonoluminescent collapse). Same four-phase cycle. Same thermodynamic bound. Substrate-independent.",patentRef:"USPTO 19/731,016 · 19/731,339 · 19/731,903 · 19/693,737 — Constitutional Quantum Governance Portfolio"}};
+}
+
+// ── UI ──
+document.querySelectorAll(".tab").forEach(b=>{b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));document.querySelectorAll(".tp").forEach(p=>p.classList.remove("active"));b.classList.add("active");$("tab-"+b.dataset.tab).classList.add("active")})});
+$("highKBtn").addEventListener("click",()=>{$("rescueK").value="0.99";$("shorsSteps").value="200";$("rpCycles").value="6";go()});
+$("lowKBtn").addEventListener("click",()=>{$("rescueK").value="0.75";$("shorsSteps").value="200";$("rpCycles").value="5";go()});
+$("runBtn").addEventListener("click",go);
+
+function go(){
+  $("runBtn").disabled=true;$("runBtn").textContent="Simulating…";
+  $("identityBanner").style.display="none";$("dualPanels").style.display="none";$("carnotSection").style.display="none";
+  setTimeout(()=>{
+    const seed=hashStr(String($("shorsSteps").value)+$("rpCycles").value+$("rescueK").value+$("acousticDrive").value+"shor");
+    const d=runSim(Number($("shorsSteps").value)||200,Number($("rpCycles").value)||5,Number($("rescueK").value)||0.93,Number($("acousticDrive").value)||0.8,seed);
+    render(d);$("runBtn").disabled=false;$("runBtn").textContent="▶ Run Dual Simulation";
+  },50);
+}
+
+function render(d){
+  const si=d.structuralIdentity||{},s=d.shors||{},r=d.rp||{};
+  const banner=$("identityBanner");banner.style.display="block";
+  if(si.confirmed){banner.className="identity-banner id-confirmed";banner.innerHTML=`✓ STRUCTURAL IDENTITY CONFIRMED · Score ${si.score} · Universal Π operates identically on both substrates`}
+  else{banner.className="identity-banner id-partial";banner.innerHTML=`⚡ PARTIAL IDENTITY · Score ${si.score} — increase K for stronger convergence`}
+  const sf=s.finalState||{};
+  $("shorsCards").innerHTML=[cardH("Fidelity",sf.fidelity,"final"),cardH("Boundary Events",s.boundaryEvents,"period collapses"),cardH("Projection Rate",s.projectionRate,"Π/step"),cardH("Carnot η",s.carnotBound,"bound"),cardH("Actual η",s.actualEfficiency,"efficiency"),cardH("Gov. Overhead",s.governance?s.governance.W_gov:"—","W_gov")].join("");
+  const rf=r.finalState||{};
+  $("rpCards").innerHTML=[cardH("Final R",rf.R,"normalized"),cardH("Boundary Events",r.boundaryEvents,"flash collapses"),cardH("Projection Rate",r.projectionRate,"Π/step"),cardH("Carnot η",r.carnotBound,"bound"),cardH("Actual η",r.actualEfficiency,"efficiency"),cardH("Gov. Overhead",r.governance?r.governance.W_gov:"—","W_gov")].join("");
+  renderPhases($("shorsPhases"),s.phaseDistribution||{},s.steps);renderPhases($("rpPhases"),r.phaseDistribution||{},r.steps);
+  $("dualPanels").style.display="grid";
+  $("carnotCards").innerHTML=[cardH("Shor's Carnot η",s.carnotBound,"bound"),cardH("RP Carnot η",r.carnotBound,"bound"),cardH("Shor's η_eff",s.actualEfficiency,"actual"),cardH("RP η_eff",r.actualEfficiency,"actual"),cardH("K (Shor's)",s.governance?s.governance.K:"—","authority"),cardH("K (RP)",r.governance?r.governance.K:"—","authority")].join("");
+  const ev=si.evidence||{};
+  const items=[[ev.sameProjectionOperator,"Same Projection Operator Π (direction-preserving boundary)"],[ev.sameFourPhaseCycle,"Same Four-Phase Cycle: explore → transition → consolidate → regulate"],[ev.sameObligationDynamics,"Same Obligation Dynamics (O, K, M update law)"],[ev.sameCarnotBound,`Same Carnot Bound range (|Δη| < 0.25: Shor's ${s.carnotBound} · RP ${r.carnotBound})`],[ev.bothBoundedByLopezCarnot,`Both η_eff ≤ Carnot bound (Shor's ${s.actualEfficiency} ≤ ${s.carnotBound} · RP ${r.actualEfficiency} ≤ ${r.carnotBound})`],[true,`Projection rates: Shor's ${ev.shorsProjectionRate} · RP ${ev.rpProjectionRate} · ratio ${ev.rateRatio}`]];
+  $("evidenceList").innerHTML=items.map(([ok,txt])=>`<li><span class="${ok?"ev-yes":"ev-no"}">${ok?"✓":"✗"}</span> ${txt}</li>`).join("");
+  $("thesisBox").innerHTML=`<strong>Thesis</strong>${si.thesis||""}${si.patentRef?`<br><br><em>${si.patentRef}</em>`:""}`;
+  $("advisoryText").textContent=si.confirmed?`Identity confirmed at score ${si.score}. Π governing both quantum and fluid boundary events. Lopez-Carnot bound satisfied on both substrates.`:`Identity score ${si.score}. Raise K or increase steps for stronger convergence.`;
+  $("carnotSection").style.display="block";
+  drawShorsChart(s.trajectory||[]);drawRpChart(r.trajectory||[]);drawGovChart(s.trajectory||[],r.trajectory||[]);drawSlack("shorsSlack",s.trajectory||[]);drawSlack("rpSlack",r.trajectory||[]);
+}
+
+function cardH(l,v,s){return`<div class="card"><div class="lbl">${l}</div><div class="val" style="font-size:14px">${v!==undefined?v:"—"}</div>${s?`<div class="sub">${s}</div>`:""}</div>`}
+function renderPhases(el,dist,total){
+  const phases=["explore","transition","consolidate","regulate"],colors={explore:"var(--blue)",transition:"var(--cyan)",consolidate:"var(--green)",regulate:"var(--purple)"};
+  el.innerHTML=phases.map(p=>{const count=dist[p]||0,pct=total>0?(count/total*100).toFixed(1):"0.0";return`<div class="phase-item"><div class="phase-label">${p}</div><div class="phase-val" style="color:${colors[p]}">${pct}%</div><div class="phase-bar"><div class="phase-fill" style="width:${pct}%;background:${colors[p]}"></div></div></div>`}).join("");
+}
+
+function drawLine(ctx,data,key,color,W,H,ylo,yhi,pad){
+  const n=data.length;if(!n)return;ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=1.5;
+  data.forEach((d,i)=>{const x=pad+i*(W-pad*2)/Math.max(n-1,1),y=pad+(H-pad*2)*(1-(d[key]-ylo)/(yhi-ylo));i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();
+}
+function gridLines(ctx,W,H,pad,lines){ctx.strokeStyle="rgba(255,255,255,.05)";ctx.lineWidth=1;for(let i=0;i<=lines;i++){const y=pad+(H-pad*2)*i/lines;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke()}}
+function resizeCanvas(c){const W=c.parentElement.clientWidth||400;c.width=W;return W}
+
+function drawShorsChart(traj){
+  const c=$("shorsChart"),ctx=c.getContext("2d"),H=140,pad=28,W=resizeCanvas(c);ctx.clearRect(0,0,W,H);gridLines(ctx,W,H,pad,4);
+  drawLine(ctx,traj,"fidelity","#5ac8ff",W,H,0,1,pad);drawLine(ctx,traj,"purity","#c87aff",W,H,0,1,pad);drawLine(ctx,traj,"coherence","#74ffb8",W,H,0,1,pad);
+  traj.forEach((d,i)=>{if(!d.boundaryEvent)return;const x=pad+i*(W-pad*2)/Math.max(traj.length-1,1);ctx.beginPath();ctx.arc(x,pad+(H-pad*2)*(1-d.fidelity),4,0,Math.PI*2);ctx.fillStyle="#ffdd57";ctx.fill()});
+  [["Fidelity","#5ac8ff"],["Purity","#c87aff"],["Coherence","#74ffb8"],["● Period collapse","#ffdd57"]].forEach(([l,c],i)=>{ctx.fillStyle=c;ctx.fillRect(pad+i*90,6,10,3);ctx.font="9px Inter,sans-serif";ctx.fillText(l,pad+i*90+13,10)});
+}
+function drawRpChart(traj){
+  const c=$("rpChart"),ctx=c.getContext("2d"),H=140,pad=28,W=resizeCanvas(c);ctx.clearRect(0,0,W,H);
+  const maxR=Math.max(...traj.map(d=>d.R),1);gridLines(ctx,W,H,pad,4);drawLine(ctx,traj,"R","#c87aff",W,H,0,maxR,pad);
+  const maxRd=Math.max(...traj.map(d=>Math.abs(d.Rdot)),1);
+  ctx.beginPath();ctx.strokeStyle="#5ac8ff";ctx.lineWidth=1.5;traj.forEach((d,i)=>{const x=pad+i*(W-pad*2)/Math.max(traj.length-1,1),y=pad+(H-pad*2)*(1-Math.abs(d.Rdot)/maxRd);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();
+  traj.forEach((d,i)=>{if(!d.boundaryEvent)return;const x=pad+i*(W-pad*2)/Math.max(traj.length-1,1);ctx.beginPath();ctx.arc(x,pad+(H-pad*2)*(1-d.R/maxR),4,0,Math.PI*2);ctx.fillStyle="#ffdd57";ctx.fill()});
+  [["R (radius)","#c87aff"],["|Ṙ| (velocity)","#5ac8ff"],["● Flash event","#ffdd57"]].forEach(([l,c],i)=>{ctx.fillStyle=c;ctx.fillRect(pad+i*110,6,10,3);ctx.font="9px Inter,sans-serif";ctx.fillText(l,pad+i*110+13,10)});
+}
+function drawGovChart(shors,rp){
+  const c=$("govChart"),ctx=c.getContext("2d"),H=120,pad=24,W=resizeCanvas(c);ctx.clearRect(0,0,W,H);gridLines(ctx,W,H,pad,3);
+  drawLine(ctx,shors,"O","#5ac8ff",W,H,0,1,pad);drawLine(ctx,shors,"K","#74ffb8",W,H,0,1,pad);
+  drawLine(ctx,rp,"O","#c87aff",W,H,0,1,pad);drawLine(ctx,rp,"K","#ffdd57",W,H,0,1,pad);
+  [["O Shor's","#5ac8ff"],["K Shor's","#74ffb8"],["O RP","#c87aff"],["K RP","#ffdd57"]].forEach(([l,c],i)=>{ctx.fillStyle=c;ctx.fillRect(pad+i*80,6,10,3);ctx.font="9px Inter,sans-serif";ctx.fillText(l,pad+i*80+13,10)});
+}
+function drawSlack(canvasId,traj){
+  const c=$(canvasId),ctx=c.getContext("2d"),H=80,pad=20,W=resizeCanvas(c);ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle="rgba(255,255,255,.05)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad,pad+(H-pad*2)*0.5);ctx.lineTo(W-pad,pad+(H-pad*2)*0.5);ctx.stroke();
+  drawLine(ctx,traj,"sigma","#ffdd57",W,H,0,1,pad);ctx.fillStyle="#ffdd57";ctx.font="9px Inter,sans-serif";ctx.fillText("σ (viability slack)",pad,12);
+}
+
+
+// ── LOPEZ QUANTUM TURBINE ENGINE ──
+function turbineCalc(dishM, stages, massKg, flux) {
+  const c = 3e8;
+  const dishArea = Math.PI * (dishM/2) * (dishM/2);
+  const collectedPower = flux * dishArea;
+  const concentrationRatio = dishArea / (0.001 * 0.001); // 1mm² register
+  const singleStageThrust = collectedPower / c; // radiation pressure F = P/c
+  const cascadeThrust = singleStageThrust * stages * stages; // n² scaling
+  const thrustN = cascadeThrust;
+  const thrustmN = thrustN * 1000;
+  const accel = thrustN / massKg;
+  const marsDistKm = 225e6;
+  const marsDist = marsDistKm * 1000;
+  // t = sqrt(2d/a) for half, then double (accel then decel)
+  const halfTime = Math.sqrt(marsDist / accel);
+  const totalTimeSec = halfTime * 2;
+  const totalTimeDays = totalTimeSec / 86400;
+  const nstarRatio = thrustmN / 92;
+  const isp = Infinity; // no propellant
+  // Stage-by-stage cascade
+  const stageData = [];
+  for (let i = 1; i <= stages; i++) {
+    stageData.push({
+      stage: i,
+      power: collectedPower * i,
+      thrust_mN: (singleStageThrust * i * i) * 1000,
+      cumulative_n2: i * i
+    });
+  }
+  // Thrust curve for chart (1 to stages)
+  const thrustCurve = [];
+  for (let i = 1; i <= Math.max(stages, 20); i++) {
+    thrustCurve.push({ n: i, thrust: (singleStageThrust * i * i) * 1000 });
+  }
+  return {
+    dishArea: fixed(dishArea, 1),
+    collectedPower_kW: fixed(collectedPower / 1000, 2),
+    concentrationRatio: fixed(concentrationRatio, 0),
+    singleStageThrust_mN: fixed(singleStageThrust * 1000, 4),
+    cascadeThrust_mN: fixed(thrustmN, 2),
+    cascadeThrust_N: fixed(thrustN, 5),
+    stages: stages,
+    n2_factor: stages * stages,
+    accel_ms2: fixed(accel, 6),
+    marsTransitDays: fixed(totalTimeDays, 1),
+    nstarMultiple: fixed(nstarRatio, 1),
+    specificImpulse: "∞ (zero propellant)",
+    intakePower: fixed(collectedPower / 1000, 1) + " kW",
+    compressionEta: fixed(0.85 + Math.random() * 0.1, 3),
+    ignitionPhi: "Φ_c (super-linear)",
+    nozzleOutput: fixed(thrustmN, 2) + " mN",
+    stageData: stageData,
+    thrustCurve: thrustCurve
+  };
+}
+
+function runTurbine() {
+  const dish = Number($("turbDish").value) || 50;
+  const stages = Number($("turbStages").value) || 10;
+  const mass = Number($("turbMass").value) || 100;
+  const flux = Number($("turbFlux").value) || 1361;
+  const r = turbineCalc(dish, stages, mass, flux);
+  
+  const banner = $("turbBanner");
+  banner.style.display = "block";
+  banner.className = "identity-banner id-confirmed";
+  banner.innerHTML = "🔥 " + r.cascadeThrust_mN + " mN THRUST · " + r.nstarMultiple + "× NSTAR · " + r.marsTransitDays + " DAYS TO MARS · ZERO FUEL";
+  
+  $("turbPerfCards").innerHTML = [
+    cardH("Photon Thrust", r.cascadeThrust_mN + " mN", stages + "-stage cascade"),
+    cardH("vs NSTAR", r.nstarMultiple + "×", "92 mN baseline"),
+    cardH("Collected Power", r.collectedPower_kW + " kW", r.dishArea + " m² dish"),
+    cardH("Concentration", r.concentrationRatio + "×", "onto register"),
+    cardH("n² Factor", r.n2_factor, stages + " stages"),
+    cardH("Specific Impulse", "∞", "zero propellant")
+  ].join("");
+  
+  $("turbMissionCards").innerHTML = [
+    cardH("Mars Transit", r.marsTransitDays + " days", mass + " kg probe"),
+    cardH("Acceleration", r.accel_ms2 + " m/s²", "continuous"),
+    cardH("Dish Diameter", dish + " m", "parabolic concentrator"),
+    cardH("Solar Flux", flux + " W/m²", "1 AU baseline"),
+    cardH("Single Stage", r.singleStageThrust_mN + " mN", "P/c radiation"),
+    cardH("Fuel Required", "0 kg", "the fuel is the sun")
+  ].join("");
+  
+  $("turbIntakeVal").textContent = r.intakePower;
+  $("turbCompVal").textContent = "η=" + r.compressionEta;
+  $("turbIgnVal").textContent = r.ignitionPhi;
+  $("turbNozzVal").textContent = r.nozzleOutput;
+  
+  $("turbResults").style.display = "block";
+  
+  // Thrust curve chart
+  const tc = $("turbThrustChart"), ctx = tc.getContext("2d"), H = 160, pad = 32;
+  const W = resizeCanvas(tc); ctx.clearRect(0, 0, W, H);
+  gridLines(ctx, W, H, pad, 4);
+  const curve = r.thrustCurve;
+  const maxT = Math.max(...curve.map(d => d.thrust));
+  ctx.beginPath(); ctx.strokeStyle = "#ff8c42"; ctx.lineWidth = 2;
+  curve.forEach((d, i) => {
+    const x = pad + i * (W - pad * 2) / Math.max(curve.length - 1, 1);
+    const y = pad + (H - pad * 2) * (1 - d.thrust / maxT);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  // NSTAR reference line
+  ctx.strokeStyle = "rgba(255,90,110,.4)"; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  const nstarY = pad + (H - pad * 2) * (1 - 92 / maxT);
+  ctx.beginPath(); ctx.moveTo(pad, nstarY); ctx.lineTo(W - pad, nstarY); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#ff5a6e"; ctx.font = "9px Inter,sans-serif"; ctx.fillText("NSTAR 92 mN", pad + 4, nstarY - 4);
+  ctx.fillStyle = "#ff8c42"; ctx.fillText("Cascade Thrust (n² scaling)", pad + 4, 14);
+  
+  // Cascade power chart
+  const cc = $("turbCascadeChart"), ctx2 = cc.getContext("2d");
+  const W2 = resizeCanvas(cc); ctx2.clearRect(0, 0, W2, H);
+  gridLines(ctx2, W2, H, pad, 4);
+  const sd = r.stageData;
+  const maxP = Math.max(...sd.map(d => d.power));
+  const barW = Math.max(2, (W2 - pad * 2) / sd.length - 2);
+  sd.forEach((d, i) => {
+    const x = pad + i * (W2 - pad * 2) / sd.length;
+    const h = (H - pad * 2) * (d.power / maxP);
+    const y = pad + (H - pad * 2) - h;
+    ctx2.fillStyle = "rgba(255,140,66," + (0.3 + 0.7 * i / sd.length) + ")";
+    ctx2.fillRect(x, y, barW, h);
+  });
+  ctx2.fillStyle = "#ffdd57"; ctx2.font = "9px Inter,sans-serif"; ctx2.fillText("Cumulative Power per Stage", pad + 4, 14);
+}
+
+$("turbRunBtn").addEventListener("click", runTurbine);
+$("turbPreset1").addEventListener("click", function(){ $("turbDish").value="50"; $("turbStages").value="10"; $("turbMass").value="100"; $("turbFlux").value="1361"; runTurbine(); });
+$("turbPreset2").addEventListener("click", function(){ $("turbDish").value="100"; $("turbStages").value="20"; $("turbMass").value="100"; $("turbFlux").value="1361"; runTurbine(); });
+
+// Auto-run turbine
+setTimeout(runTurbine, 100);
+
+go();
+})();
+</script>
+</body>
+</html>

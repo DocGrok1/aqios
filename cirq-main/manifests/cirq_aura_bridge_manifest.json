@@ -1,0 +1,86 @@
+{
+  "id": "cirq_aura_bridge",
+  "label": "Cirq ↔ Aura Bridge",
+  "version": "1.0.0",
+  "status": "active",
+  "discovery_date": "2026-05-18",
+  "system": "Aura115™ / Jupiter 9",
+  "governance_split": {
+    "planets": {
+      "powered_by": "Antikythera LCVS",
+      "authority": "Lopez Control-Invariant Viability System — 7 structural identifications",
+      "moon_role": "pin-and-slot admissible projection operator Π_K"
+    },
+    "cirq_nodes": {
+      "powered_by": "Aura LM (AURAL-M)",
+      "authority": "Aura115 intelligence layer — governed quantum circuit nodes"
+    }
+  },
+  "antikythera_mapping": {
+    "drive_train":     { "lcvs": "obligation_level",  "corollary": "Corollary 9 — Conservation of Obligation" },
+    "epicyclic_gears": { "lcvs": "tangent_cone_ok",   "corollary": "Nagumo tangent cone condition" },
+    "pin_and_slot":    { "lcvs": "moon_projection",   "corollary": "admissible projection operator Π_K" },
+    "saros_exeligmos": { "lcvs": "dual_loop_phase",   "corollary": "Corollary 4 — dual-loop small-gain regulator" },
+    "front_display":   { "lcvs": "conservation_E",    "corollary": "Master Unification — E_t = C_t + λO_t" },
+    "integer_teeth":   { "lcvs": "K_slack",           "corollary": "Corollary 7 — viability kernel K" },
+    "spiral_dials":    { "lcvs": "collapse_margin",   "corollary": "Corollary 2 — Collapse Theorem boundary" }
+  },
+  "endpoints": {
+    "bridge":   "/api/cirq-aura-bridge",
+    "router":   "/api/aura-llm-router",
+    "planets":  "/api/planet-registry",
+    "cirq_ext": "/api/cirq-extension"
+  },
+  "files": {
+    "api":      "api/cirq-aura-bridge.js",
+    "client":   "Aura115_CURRENT/cirq/engines/cirq_aura_bridge.py",
+    "manifest": "Aura115_CURRENT/cirq/manifests/cirq_aura_bridge_manifest.json"
+  },
+  "request_schema": {
+    "message":        "string — required — the message from the CIRQ node to Aura",
+    "cirq_node_id":   "string — optional — identifier of the calling CIRQ node",
+    "lcvs_state":     {
+      "Z_t":             "float — current state vector position",
+      "O_t":             "float — obligation level (drive train)",
+      "K_slack":         "float — viability margin (integer tooth constraint)",
+      "rescue_window":   "float — Rescue Operator engagement (Exeligmos)",
+      "tangent_cone_ok": "bool  — update direction in T_K(Z) (epicyclic gears)",
+      "collapse_margin": "float — distance to spiral dial collapse boundary",
+      "conservation_E":  "float — E_t = C_t + λO_t conserved quantity"
+    },
+    "planet_context": {
+      "planet_id":         "string — e.g. neptune, jupiter, saturn",
+      "planet_name":       "string",
+      "antikythera_phase": "string — current orbital phase label",
+      "moon_projection":   "float — Π_K scalar at current phase",
+      "dual_loop_phase":   "string — saros_fast_loop or exeligmos_slow_loop",
+      "obligation_level":  "float",
+      "saros_cycle_step":  "int",
+      "exeligmos_phase":   "float"
+    },
+    "provider": "string — optional — openai / xai / anthropic",
+    "model":    "string — optional — model override"
+  },
+  "boundaries": [
+    "Does not execute Python or quantum hardware.",
+    "Does not write files.",
+    "Does not expose secrets, API keys, or operator keys.",
+    "AUAC™ required for repository writes.",
+    "Aura LM governs CIRQ nodes. Antikythera LCVS governs planets. These layers are distinct."
+  ],
+  "lanes": ["quantum-extension", "cirq-aura-bridge", "governed-communication"],
+  "planets": {
+    "orchestrator": "Jupiter",
+    "memory":       "Neptune",
+    "boundary":     "Saturn",
+    "projection":   "Moon"
+  },
+  "official_checksum": {
+    "name": "antikythera",
+    "canonical_reference": "/home/runner/work/Aura115/Aura115/Aura115_CURRENT/docs/ANTIKYTHERA_RESOLUTION_LOPEZ_2026.md",
+    "registry_linkage": {
+      "file": "/home/runner/work/Aura115/Aura115/Aura115_CURRENT/Patent intake registry.md",
+      "intake_id": "P005"
+    }
+  }
+}

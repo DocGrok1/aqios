@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZK-SNARK Ledger Matrix · QHP · DCGP.AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+:root{--bg:#05080f;--panel:#0b1120;--border:rgba(99,242,255,0.12);--cyan:#63f2ff;--gold:#fbd975;--green:#4ade80;--red:#ff7f95;--violet:#a78bfa;--text:#e2e8f0;--muted:#5a7a96}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;padding:20px}
+.shell{max-width:1100px;margin:0 auto}
+header{border-bottom:1px solid var(--gold);padding:14px 0;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+header h1{font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--gold);letter-spacing:2px}
+header .badge{font-size:9px;padding:3px 10px;border:1px solid var(--cyan);color:var(--cyan);border-radius:3px;font-family:'IBM Plex Mono',monospace}
+.desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;max-width:800px}
+.pipeline-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px;font-family:'IBM Plex Mono',monospace;font-size:11px}
+.pipeline-flow .stage{background:var(--panel);border:1px solid var(--border);padding:6px 12px;border-radius:4px;color:var(--cyan)}
+.pipeline-flow .arrow{color:var(--gold)}
+.controls{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:flex-end}
+.control-group{display:flex;flex-direction:column;gap:4px}
+.control-group label{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.5px}
+.control-group input{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;border-radius:4px;width:140px}
+button.run{background:var(--gold);color:#05080f;border:none;padding:10px 24px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px;border-radius:4px;cursor:pointer;letter-spacing:1px;align-self:flex-end}
+button.run:disabled{opacity:0.4}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px}
+.result-card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:12px}
+.result-card .label{font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:0.5px}
+.result-card .value{font-size:16px;font-family:'IBM Plex Mono',monospace;font-weight:700;margin-top:4px}
+.result-card.pass .value{color:var(--green)}
+.result-card.fail .value{color:var(--red)}
+.result-card.metric .value{color:var(--cyan)}
+.result-card.gold .value{color:var(--gold)}
+.plot-area{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:20px;text-align:center;min-height:200px}
+.plot-area img{max-width:100%;border-radius:4px}
+.plot-area .loading{color:var(--muted);font-size:12px;font-family:'IBM Plex Mono',monospace;padding:40px}
+.proof-block{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;overflow-x:auto;white-space:pre-wrap;color:var(--muted)}
+.proof-block .key{color:var(--cyan)}
+.proof-block .val{color:var(--gold)}
+footer{text-align:center;padding:24px 0;border-top:1px solid var(--border);font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;line-height:1.8}
+footer a{color:var(--cyan);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <h1>ZK-SNARK LEDGER MATRIX</h1>
+  <div class="badge">QHP · DCGP.AI · CIP USPTO 19/555,951</div>
+</header>
+
+<div class="desc">Cryptographic Extra-Atmospheric Consensus Matrix. Zero-knowledge state commitments through a governed planetary pipeline — Jupiter intake processing, Mercury-Californium boundary verification, Groth16 proof generation, Saturn execution sink. Every transaction is constitutionally governed before ledger commitment.</div>
+
+<div class="pipeline-flow">
+  <span class="stage">⚡ JUPITER INTAKE</span><span class="arrow">→</span>
+  <span class="stage">🔬 MERCURY-CALIFORNIUM</span><span class="arrow">→</span>
+  <span class="stage">🔒 ZK-SNARK PROOF</span><span class="arrow">→</span>
+  <span class="stage">🪐 SATURN SINK</span>
+</div>
+
+<div class="controls">
+  <div class="control-group"><label>Agent ID</label><input id="agentId" type="number" value="3"></div>
+  <div class="control-group"><label>Staked Balance</label><input id="staked" type="number" value="750"></div>
+  <div class="control-group"><label>Gamma Recovery</label><input id="gamma" type="number" value="3.5" step="0.1"></div>
+  <div class="control-group"><label>Plasma Flare (ms)</label><input id="flare" type="number" value="4500"></div>
+  <button class="run" id="runBtn" onclick="runPipeline()">RUN PIPELINE</button>
+</div>
+
+<div class="results" id="results"></div>
+<div class="plot-area" id="plotArea"><div class="loading">Run the pipeline to generate analysis plots</div></div>
+<div class="proof-block" id="proofBlock" style="display:none"></div>
+
+<footer>
+  DCGP.AI LLC · Joshua Lopez · Sole Inventor<br>
+  USPTO 19/555,951 · Contact Hamiltonian Constitutional Gate<br>
+  ZK-SNARK Ledger Matrix · Mercury-Californium Interface · Tantalum NTE<br>
+  <a href="/qhp/">← QHP Index</a> · <a href="https://aura115.ai">aura115.ai</a>
+</footer>
+</div>
+
+<script>
+async function runPipeline() {
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.textContent = 'RUNNING...';
+  document.getElementById('plotArea').innerHTML = '<div class="loading">Executing planetary pipeline — generating ZK-SNARK proofs and matplotlib analysis...</div>';
+
+  try {
+    const params = {
+      agent_id: document.getElementById('agentId').value,
+      staked_balance: document.getElementById('staked').value,
+      gamma_recovery: document.getElementById('gamma').value,
+      plasma_flare_ms: document.getElementById('flare').value
+    };
+
+    const r = await fetch('/api/zk-snark-ledger', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(params)
+    });
+    const d = await r.json();
+
+    if (!d.ok) throw new Error(d.error || 'Pipeline failed');
+
+    const res = d.result;
+    const pass = res.cord_intact;
+
+    document.getElementById('results').innerHTML = `
+      <div class="result-card ${pass ? 'pass' : 'fail'}"><div class="label">Boundary Cord</div><div class="value">${pass ? 'INTACT' : 'BROKEN'}</div></div>
+      <div class="result-card ${pass ? 'pass' : 'fail'}"><div class="label">ZK Verification</div><div class="value">${res.saturn_payload.ledger_commitment.verification_status}</div></div>
+      <div class="result-card gold"><div class="label">B_free (tokens)</div><div class="value">${res.B_free}</div></div>
+      <div class="result-card metric"><div class="label">dΘ/dt Stress</div><div class="value">${res.dTheta_dt.toLocaleString()}</div></div>
+      <div class="result-card metric"><div class="label">Actual π</div><div class="value">${res.actual_pi}</div></div>
+      <div class="result-card metric"><div class="label">Required π</div><div class="value">${res.required_pi}</div></div>
+      <div class="result-card gold"><div class="label">Volume Ratio</div><div class="value">${res.structural_volume_ratio}</div></div>
+      <div class="result-card metric"><div class="label">Pipeline Status</div><div class="value">${res.saturn_payload.pipeline_routing_status}</div></div>
+    `;
+
+    if (res.plot_base64) {
+      document.getElementById('plotArea').innerHTML = '<img src="data:image/png;base64,' + res.plot_base64 + '" alt="ZK-SNARK Pipeline Analysis">';
+    } else {
+      document.getElementById('plotArea').innerHTML = '<div class="loading">Matplotlib not available on server — install matplotlib for full graphs</div>';
+    }
+
+    const proof = res.saturn_payload.ledger_commitment;
+    document.getElementById('proofBlock').style.display = 'block';
+    document.getElementById('proofBlock').innerHTML =
+      '<span class="key">ZK-SNARK PROOF</span>\n' +
+      '<span class="key">proof_string:</span> <span class="val">' + proof.proof_string + '</span>\n' +
+      '<span class="key">hashed_agent_id:</span> <span class="val">' + proof.public_inputs.hashed_agent_id + '</span>\n' +
+      '<span class="key">hashed_gamma:</span> <span class="val">' + proof.public_inputs.hashed_gamma_recovery + '</span>\n' +
+      '<span class="key">threshold:</span> <span class="val">' + proof.public_inputs.adapted_required_threshold + '</span>\n' +
+      '<span class="key">sink_node:</span> <span class="val">' + res.saturn_payload.sink_node + '</span>\n' +
+      '<span class="key">routing:</span> <span class="val">' + res.saturn_payload.pipeline_routing_status + '</span>';
+
+  } catch (err) {
+    document.getElementById('plotArea').innerHTML = '<div class="loading" style="color:var(--red)">Error: ' + err.message + '</div>';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'RUN PIPELINE';
+  }
+}
+</script>
+</body>
+</html>

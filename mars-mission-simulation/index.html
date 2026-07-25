@@ -1,0 +1,1352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mars Mission Simulation — ARES-1</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#030810;
+      --panel:#0b1524;
+      --panel2:#0f1e35;
+      --line:rgba(255,100,50,.2);
+      --lineB:rgba(255,100,50,.12);
+      --text:#f0e8e0;
+      --muted:#b8a898;
+      --red:#ff5a30;
+      --orange:#ff8c42;
+      --green:#58ffb0;
+      --yellow:#ffdd57;
+      --blue:#5ac8ff;
+      --cyan:#59f4ff;
+    }
+    body{
+      margin:0;min-height:100vh;
+      background:radial-gradient(circle at 30% 20%,rgba(255,80,30,.12),transparent 45%),
+                 radial-gradient(circle at 80% 80%,rgba(40,80,200,.1),transparent 45%),var(--bg);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+      display:flex;flex-direction:column;
+    }
+    /* ── header ── */
+    header{
+      background:rgba(11,21,36,.96);
+      border-bottom:1px solid var(--line);
+      padding:10px 18px;
+      display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    }
+    .logo{font-size:18px;font-weight:900;color:var(--red);letter-spacing:.05em;white-space:nowrap}
+    .mission-badge{
+      background:rgba(255,90,48,.15);
+      border:1px solid rgba(255,90,48,.35);
+      border-radius:6px;padding:3px 10px;
+      font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--orange);text-transform:uppercase
+    }
+    .header-actions{
+      margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+    }
+    .hamburger-btn{
+      border-radius:8px;padding:6px 10px;font-size:14px;min-width:40px;
+    }
+    .hdr-stats{
+      display:flex;gap:18px;flex-wrap:wrap;align-items:center;
+    }
+    .hstat{font-size:11px;color:var(--muted);text-align:center}
+    .hstat strong{display:block;font-size:13px;color:var(--text);font-variant-numeric:tabular-nums}
+    /* ── layout ── */
+    .layout{display:flex;flex:1;min-height:0;overflow:hidden}
+    /* ── sidebar ── */
+    nav{
+      width:208px;min-width:208px;
+      background:rgba(11,21,36,.98);
+      border-right:1px solid var(--lineB);
+      overflow-y:auto;padding:10px 0;flex-shrink:0;
+    }
+    .nav-section{
+      font-size:9px;letter-spacing:.12em;color:rgba(255,100,50,.5);
+      text-transform:uppercase;padding:8px 14px 4px;font-weight:700;
+    }
+    .nav-btn{
+      width:100%;display:flex;align-items:center;gap:9px;
+      padding:8px 14px;background:none;border:none;cursor:pointer;
+      color:var(--muted);font-size:12px;font-family:inherit;text-align:left;
+      transition:background .15s,color .15s;border-left:2px solid transparent;
+    }
+    .nav-btn:hover{background:rgba(255,100,50,.08);color:var(--text)}
+    .nav-btn.active{
+      background:rgba(255,90,48,.14);color:var(--orange);
+      border-left-color:var(--red);font-weight:700;
+    }
+    .nav-num{
+      font-size:10px;font-weight:700;color:rgba(255,100,50,.5);
+      min-width:16px;text-align:right;
+    }
+    .nav-btn.active .nav-num{color:var(--red)}
+    /* ── main ── */
+    main{flex:1;overflow-y:auto;padding:18px}
+    .screen-panel{
+      max-width:860px;margin:0 auto;
+      background:var(--panel);
+      border:1px solid var(--line);border-radius:18px;
+      padding:22px;
+    }
+    h2{margin:0 0 4px;font-size:clamp(18px,3vw,26px);color:var(--orange)}
+    .phase-badge{
+      display:inline-block;
+      background:rgba(255,90,48,.15);
+      border:1px solid rgba(255,90,48,.3);
+      border-radius:4px;padding:2px 8px;
+      font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    /* ── controls ── */
+    .controls{
+      display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:8px;margin-bottom:12px;
+    }
+    label{display:grid;gap:4px;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    input,select,textarea{
+      width:100%;border:1px solid var(--lineB);border-radius:10px;
+      background:rgba(3,8,16,.7);color:var(--text);
+      padding:8px 10px;font:inherit;font-size:13px;
+    }
+    textarea{min-height:70px;resize:vertical}
+    input:focus,select:focus,textarea:focus{outline:1px solid var(--red);border-color:var(--red)}
+    btn,button,.btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;border:1px solid rgba(255,90,48,.4);
+      background:rgba(255,90,48,.14);color:var(--orange);
+      padding:8px 16px;text-decoration:none;font:inherit;font-size:12px;
+      font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;
+    }
+    button:hover,.btn:hover{background:rgba(255,90,48,.25)}
+    button:disabled{opacity:.4;cursor:default}
+    .btn-ghost{
+      background:transparent;border-color:rgba(255,255,255,.15);color:var(--muted);
+    }
+    .btn-green{
+      border-color:rgba(88,255,176,.4);background:rgba(88,255,176,.1);color:var(--green);
+    }
+    .btn-blue{
+      border-color:rgba(90,200,255,.4);background:rgba(90,200,255,.1);color:var(--blue);
+    }
+    /* ── output ── */
+    .output-area{
+      border:1px solid var(--lineB);border-radius:14px;
+      padding:14px;background:rgba(3,8,16,.8);
+      color:#f0d8c8;max-height:480px;overflow-y:auto;
+      font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;
+      margin-top:14px;
+    }
+    /* ── cards ── */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+    .card{
+      background:var(--panel2);border:1px solid var(--lineB);
+      border-radius:12px;padding:12px;
+    }
+    .card .label{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+    .card .value{font-size:20px;font-weight:900;color:var(--orange)}
+    .card .sub{font-size:11px;color:var(--muted)}
+    /* ── table ── */
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+    th{color:var(--muted);font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+       padding:6px 8px;border-bottom:1px solid var(--lineB);text-align:left}
+    td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+    tr:last-child td{border-bottom:none}
+    /* ── status pills ── */
+    .pill{
+      display:inline-block;border-radius:4px;padding:2px 7px;
+      font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    }
+    .pill-green{background:rgba(88,255,176,.15);color:var(--green)}
+    .pill-red{background:rgba(255,90,48,.15);color:var(--red)}
+    .pill-yellow{background:rgba(255,221,87,.15);color:var(--yellow)}
+    .pill-blue{background:rgba(90,200,255,.15);color:var(--blue)}
+    /* ── progress bar ── */
+    .progress-wrap{background:rgba(255,255,255,.08);border-radius:4px;height:6px;overflow:hidden;margin:4px 0}
+    .progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--red),var(--orange));transition:width .4s}
+    /* ── resource bars ── */
+    .res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+    .res-item{background:var(--panel2);border:1px solid var(--lineB);border-radius:10px;padding:10px}
+    .res-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+    .res-value{font-size:16px;font-weight:900;color:var(--orange);margin-bottom:4px}
+    /* ── advisory ── */
+    .advisory{
+      margin-top:14px;
+      background:rgba(255,90,48,.07);
+      border:1px solid rgba(255,90,48,.2);
+      border-radius:10px;padding:10px 14px;
+      font-size:12px;color:var(--orange);
+    }
+    .advisory strong{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+    /* ── crew cards ── */
+    .crew-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0}
+    .crew-card{
+      background:var(--panel2);border:1px solid var(--lineB);
+      border-radius:10px;padding:10px;text-align:center;
+    }
+    .crew-name{font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px}
+    .crew-role{font-size:10px;color:var(--muted)}
+    .crew-health{font-size:18px;font-weight:900;color:var(--green);margin:4px 0}
+    /* ── nav prev/next ── */
+    .screen-nav{display:flex;justify-content:space-between;margin-top:18px;gap:8px}
+    body.nav-collapsed nav{display:none}
+    /* ── mobile ── */
+    @media(max-width:680px){
+      nav{
+        display:none;
+        position:fixed;
+        top:64px;left:0;bottom:0;
+        width:220px;min-width:220px;
+        z-index:40;
+        box-shadow:0 12px 28px rgba(0,0,0,.45);
+      }
+      body.nav-open nav{display:block}
+      .layout{flex-direction:column}
+      main{padding:12px}
+      .header-actions{margin-left:0;width:100%}
+      .hdr-stats{width:100%;justify-content:space-between}
+    }
+    /* ── Aura Panel ── */
+    .aura-panel{
+      position:fixed;top:0;right:0;bottom:0;
+      width:340px;
+      background:rgba(4,10,22,.97);
+      border-left:1px solid rgba(88,243,255,.22);
+      box-shadow:-12px 0 40px rgba(0,0,0,.55);
+      display:flex;flex-direction:column;
+      z-index:200;
+      transform:translateX(100%);
+      transition:transform .25s cubic-bezier(.4,0,.2,1);
+    }
+    .aura-panel.open{transform:translateX(0)}
+    @media(max-width:680px){.aura-panel{width:100%}}
+    .aura-header{
+      display:flex;align-items:center;gap:8px;
+      padding:13px 16px;
+      border-bottom:1px solid rgba(88,243,255,.12);
+      flex-shrink:0;
+    }
+    .aura-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:#58f3ff;box-shadow:0 0 7px #58f3ff;flex-shrink:0;
+    }
+    .aura-name{font-size:13px;font-weight:900;color:#58f3ff;letter-spacing:.1em}
+    .aura-role{font-size:10px;color:rgba(88,243,255,.6);letter-spacing:.08em;font-weight:700}
+    .aura-tick{
+      margin-left:auto;font-size:10px;color:rgba(255,255,255,.32);
+      font-variant-numeric:tabular-nums;white-space:nowrap;
+    }
+    .aura-close{
+      background:none;border:none;cursor:pointer;
+      color:rgba(255,255,255,.35);font-size:15px;padding:0 4px;transition:color .15s;
+    }
+    .aura-close:hover{color:#fff}
+    .aura-context{
+      padding:8px 16px;
+      border-bottom:1px solid rgba(88,243,255,.08);
+      flex-shrink:0;
+    }
+    .aura-ctx-row{
+      display:flex;justify-content:space-between;align-items:center;
+      font-size:11px;padding:2px 0;color:rgba(255,255,255,.5);
+    }
+    .aura-ctx-label{
+      font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+      font-size:10px;color:rgba(88,243,255,.5);
+    }
+    .aura-messages{
+      flex:1;overflow-y:auto;
+      padding:12px 14px;
+      display:flex;flex-direction:column;gap:9px;
+    }
+    .aura-msg{
+      padding:9px 12px;border-radius:14px;
+      font-size:12.5px;line-height:1.65;
+      white-space:pre-wrap;word-break:break-word;
+    }
+    .aura-msg.user{
+      background:rgba(88,243,255,.07);border:1px solid rgba(88,243,255,.18);
+      color:#d8f9ff;align-self:flex-end;max-width:90%;
+    }
+    .aura-msg.aura{
+      background:rgba(111,255,170,.06);border:1px solid rgba(111,255,170,.18);
+      color:#e8fff2;align-self:flex-start;max-width:97%;
+    }
+    .aura-msg.thinking{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+      color:rgba(255,255,255,.38);font-style:italic;font-size:12px;
+    }
+    .aura-input-bar{
+      padding:11px 14px;
+      border-top:1px solid rgba(88,243,255,.12);
+      display:flex;gap:8px;align-items:flex-end;flex-shrink:0;
+    }
+    .aura-input{
+      flex:1;background:rgba(255,255,255,.05);
+      border:1px solid rgba(88,243,255,.18);border-radius:12px;
+      padding:8px 11px;color:#eef4ff;font:inherit;font-size:12.5px;
+      resize:none;outline:none;line-height:1.5;
+    }
+    .aura-input:focus{border-color:rgba(88,243,255,.45)}
+    .aura-send{
+      background:rgba(88,243,255,.14);
+      border:1px solid rgba(88,243,255,.35);
+      border-radius:10px;color:#58f3ff;
+      font-weight:700;font-size:12px;
+      padding:8px 13px;cursor:pointer;transition:background .15s;
+    }
+    .aura-send:hover{background:rgba(88,243,255,.25)}
+    .aura-send:disabled{opacity:.4;cursor:not-allowed}
+    .btn-aura{
+      background:rgba(88,243,255,.1);
+      border:1px solid rgba(88,243,255,.3);
+      color:#58f3ff;
+    }
+    .btn-aura:hover,.btn-aura.aura-open{
+      background:rgba(88,243,255,.2);
+      box-shadow:0 0 10px rgba(88,243,255,.2);
+    }
+  </style>
+  <script src="/aura-thinking.js"></script>
+</head>
+<body>
+<header>
+  <div class="logo">🚀 ARES-1</div>
+  <div class="mission-badge">Mars Mission Simulation</div>
+  <div class="header-actions">
+    <button class="btn hamburger-btn" id="hamburger-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <button class="btn btn-aura" id="aura-toggle" type="button" aria-label="Open Aura mission AI">🌐 Aura</button>
+    <a class="btn btn-ghost" href="/moon">Lunar Bridge</a>
+    <a class="btn btn-ghost" href="/route-keychain">LUCID LIST</a>
+  </div>
+  <div class="hdr-stats">
+    <div class="hstat"><strong id="hdr-screen">1 / 15</strong>Screen</div>
+    <div class="hstat"><strong id="hdr-phase">Pre-Launch</strong>Phase</div>
+    <div class="hstat"><strong id="hdr-day">Day 0</strong>Mission Day</div>
+    <div class="hstat"><strong id="hdr-status">ADVISORY</strong>Mode</div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- sidebar nav -->
+  <nav id="sidebar">
+    <div class="nav-section">Pre-Launch</div>
+    <button class="nav-btn active" data-screen="1"><span class="nav-num">01</span>Mission Briefing</button>
+    <button class="nav-btn" data-screen="2"><span class="nav-num">02</span>Launch Prep</button>
+    <div class="nav-section">Launch</div>
+    <button class="nav-btn" data-screen="3"><span class="nav-num">03</span>Launch &amp; Ascent</button>
+    <button class="nav-btn" data-screen="4"><span class="nav-num">04</span>Earth Orbit Ops</button>
+    <div class="nav-section">Outbound</div>
+    <button class="nav-btn" data-screen="5"><span class="nav-num">05</span>Trans-Mars Injection</button>
+    <button class="nav-btn" data-screen="6"><span class="nav-num">06</span>Interplanetary Transit</button>
+    <button class="nav-btn" data-screen="7"><span class="nav-num">07</span>Deep Space Events</button>
+    <div class="nav-section">Mars Ops</div>
+    <button class="nav-btn" data-screen="8"><span class="nav-num">08</span>Mars Orbit Insertion</button>
+    <button class="nav-btn" data-screen="9"><span class="nav-num">09</span>Landing Sequence</button>
+    <button class="nav-btn" data-screen="10"><span class="nav-num">10</span>Surface Operations</button>
+    <button class="nav-btn" data-screen="11"><span class="nav-num">11</span>Habitat &amp; Life Support</button>
+    <button class="nav-btn" data-screen="12"><span class="nav-num">12</span>Science &amp; Exploration</button>
+    <div class="nav-section">Return</div>
+    <button class="nav-btn" data-screen="13"><span class="nav-num">13</span>Return Prep</button>
+    <button class="nav-btn" data-screen="14"><span class="nav-num">14</span>Return Transit</button>
+    <button class="nav-btn" data-screen="15"><span class="nav-num">15</span>Re-entry &amp; Debrief</button>
+  </nav>
+
+  <!-- main content -->
+  <main>
+    <div class="screen-panel" id="screen-panel">
+      <!-- dynamically rendered -->
+      <h2>Mission Briefing &amp; Objectives</h2>
+      <div class="phase-badge">PRE-LAUNCH</div>
+      <div class="output-area" id="output">Loading simulation…</div>
+    </div>
+  </main>
+</div>
+
+<!-- Aura Mission AI Panel -->
+<aside class="aura-panel" id="aura-panel" aria-label="Aura Mission AI" role="complementary">
+  <div class="aura-header">
+    <span class="aura-dot"></span>
+    <span class="aura-name">AURA</span>
+    <span class="aura-role">MISSION AI · TIER-0</span>
+    <span class="aura-tick" id="aura-tick">UTC —:—:—</span>
+    <button class="aura-close" id="aura-close" type="button" aria-label="Close Aura panel">✕</button>
+  </div>
+  <div class="aura-context">
+    <div class="aura-ctx-row">
+      <span class="aura-ctx-label">Screen</span>
+      <span id="ctx-screen">1 / 15</span>
+    </div>
+    <div class="aura-ctx-row">
+      <span class="aura-ctx-label">Phase</span>
+      <span id="ctx-phase">Pre-Launch</span>
+    </div>
+    <div class="aura-ctx-row">
+      <span class="aura-ctx-label">Simulation</span>
+      <span>ARES-1 · Advisory</span>
+    </div>
+  </div>
+  <div class="aura-messages" id="aura-messages"></div>
+  <div class="aura-input-bar">
+    <textarea class="aura-input" id="aura-input" rows="2"
+      placeholder="Ask Aura anything about this mission…"
+      aria-label="Message Aura"></textarea>
+    <button class="aura-send" id="aura-send" type="button">Send</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  const PHASES = {
+    pre_launch:"Pre-Launch", launch:"Launch", earth_orbit:"Earth Orbit",
+    tmi:"Trans-Mars Inj.", transit_out:"Outbound Transit", mars_orbit:"Mars Orbit",
+    landing:"Landing", surface:"Surface Ops", return_prep:"Return Prep",
+    transit_back:"Return Transit", reentry:"Re-Entry"
+  };
+
+  const SCREEN_META = [
+    null,
+    { label:"Mission Briefing & Objectives", phase:"pre_launch",    missionDay:0 },
+    { label:"Launch Preparation",            phase:"pre_launch",    missionDay:0 },
+    { label:"Launch & Ascent",               phase:"launch",        missionDay:1 },
+    { label:"Earth Orbit Operations",        phase:"earth_orbit",   missionDay:2 },
+    { label:"Trans-Mars Injection",          phase:"tmi",           missionDay:3 },
+    { label:"Interplanetary Transit (E→M)",  phase:"transit_out",   missionDay:60 },
+    { label:"Deep Space Events",             phase:"transit_out",   missionDay:95 },
+    { label:"Mars Orbit Insertion",          phase:"mars_orbit",    missionDay:213 },
+    { label:"Landing Sequence",              phase:"landing",       missionDay:214 },
+    { label:"Mars Surface Operations",       phase:"surface",       missionDay:220 },
+    { label:"Habitat & Life Support",        phase:"surface",       missionDay:250 },
+    { label:"Science & Exploration",         phase:"surface",       missionDay:310 },
+    { label:"Preparation for Return",        phase:"return_prep",   missionDay:710 },
+    { label:"Return Transit (M→E)",          phase:"transit_back",  missionDay:720 },
+    { label:"Earth Re-entry & Debrief",      phase:"reentry",       missionDay:955 }
+  ];
+
+  let currentScreen = 1;
+  let lastData = null;
+  window._marsScreen = 1;
+  window._marsLastData = null;
+
+  // ── helpers ──────────────────────────────────────────────────────────────
+
+  function el(id) { return document.getElementById(id); }
+
+  function pill(text, color) {
+    return `<span class="pill pill-${color}">${text}</span>`;
+  }
+
+  function bar(pct) {
+    const w = Math.max(0, Math.min(100, pct));
+    const c = w > 60 ? "var(--green)" : w > 30 ? "var(--yellow)" : "var(--red)";
+    return `<div class="progress-wrap"><div class="progress-fill" style="width:${w}%;background:${c}"></div></div>`;
+  }
+
+  function resItem(label, value, unit) {
+    const n = parseFloat(value);
+    const b = !isNaN(n) ? bar(n) : "";
+    return `<div class="res-item"><div class="res-label">${label}</div><div class="res-value">${value}${unit ? `<span style="font-size:11px;color:var(--muted)"> ${unit}</span>` : ""}</div>${b}</div>`;
+  }
+
+  function card(label, value, sub) {
+    return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div>${sub ? `<div class="sub">${sub}</div>` : ""}</div>`;
+  }
+
+  function advisory(text) {
+    return `<div class="advisory"><strong>Advisory</strong>${text}</div>`;
+  }
+
+  function crewCard(c) {
+    const h = Math.round(c.healthPct || c.finalHealthPct || 0);
+    const m = c.morale !== undefined ? c.morale : null;
+    const hColor = h > 80 ? "var(--green)" : h > 60 ? "var(--yellow)" : "var(--red)";
+    return `<div class="crew-card">
+      <div class="crew-name">${c.name}</div>
+      <div class="crew-role">${c.role || ""}</div>
+      <div class="crew-health" style="color:${hColor}">${h}%</div>
+      ${m !== null ? `<div style="font-size:10px;color:var(--muted)">Morale ${Math.round(m)}%</div>` : ""}
+    </div>`;
+  }
+
+  function statusPill(status) {
+    if (!status) return "";
+    const s = status.toLowerCase();
+    if (s === "nominal" || s === "operational" || s === "complete" || s === "successful" || s === "passed") return pill(status, "green");
+    if (s === "warning" || s === "scheduled" || s === "in_progress" || s === "fueling" || s === "standby") return pill(status, "yellow");
+    if (s === "fault" || s === "failed" || s === "offline") return pill(status, "red");
+    return pill(status, "blue");
+  }
+
+  // ── screen renderers ─────────────────────────────────────────────────────
+
+  function renderScreen(data) {
+    if (!data || !data.ok) {
+      el("output").innerHTML = `<span style="color:var(--red)">${data ? data.error : "No response"}</span>`;
+      return;
+    }
+    const s = data.screen || currentScreen;
+    let html = "";
+
+    switch (s) {
+      case 1: html = renderBriefing(data); break;
+      case 2: html = renderLaunchPrep(data); break;
+      case 3: html = renderAscent(data); break;
+      case 4: html = renderEarthOrbit(data); break;
+      case 5: html = renderTMI(data); break;
+      case 6: html = renderTransit(data); break;
+      case 7: html = renderDSE(data); break;
+      case 8: html = renderMOI(data); break;
+      case 9: html = renderLanding(data); break;
+      case 10: html = renderSurface(data); break;
+      case 11: html = renderHabitat(data); break;
+      case 12: html = renderScience(data); break;
+      case 13: html = renderReturnPrep(data); break;
+      case 14: html = renderReturnTransit(data); break;
+      case 15: html = renderReentry(data); break;
+      default: html = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+
+    el("output").innerHTML = html;
+  }
+
+  function renderBriefing(d) {
+    const crew = (d.crew || []).map(crewCard).join("");
+    const objs = (d.objectives || []).map(o => `<li>${o}</li>`).join("");
+    const tl = d.timeline || {};
+    return `
+      <div class="cards">
+        ${card("Mission", d.missionName || "—", "")}
+        ${card("Total Days", d.totalMissionDays || "—", "Earth + Transit + Mars + Return")}
+        ${card("Launch Window", d.launchWindow ? d.launchWindow.slice(0, 10) : "—", "UTC")}
+        ${card("Crew Size", (d.crew || []).length, "members")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Mission Objectives</h3>
+      <ul style="margin:0;padding-left:18px;line-height:1.8;font-size:13px">${objs}</ul>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Key Timeline</h3>
+      <table><thead><tr><th>Milestone</th><th>Date</th></tr></thead><tbody>
+        <tr><td>Launch</td><td>${tl.launchDate || "—"}</td></tr>
+        <tr><td>Mars Arrival</td><td>${tl.marsArrival || "—"}</td></tr>
+        <tr><td>Mars Departure</td><td>${tl.marsDeparture || "—"}</td></tr>
+        <tr><td>Earth Return</td><td>${tl.earthReturn || "—"}</td></tr>
+      </tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Crew</h3>
+      <div class="crew-grid">${crew}</div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderLaunchPrep(d) {
+    const checks = (d.systemChecks || []).map(c =>
+      `<tr><td>${c.system}</td><td>${statusPill(c.status)}</td><td style="color:var(--muted)">${c.value}</td></tr>`
+    ).join("");
+    const m = d.manifest || {};
+    return `
+      <div class="cards">
+        ${card("Vehicle", d.rocketId || "—", d.launchSite || "")}
+        ${card("Go/NoGo", d.goNogo || "—", "Launch readiness")}
+        ${card("Total Mass", m.totalMassKg ? (m.totalMassKg / 1000).toFixed(0) + " t" : "—", "metric tons")}
+        ${card("Launch Window", d.launchWindow ? d.launchWindow.optimal : "—", "T-0 optimal")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">System Checks</h3>
+      <table><thead><tr><th>System</th><th>Status</th><th>Detail</th></tr></thead><tbody>${checks}</tbody></table>
+      <div class="res-grid" style="margin-top:14px">
+        ${resItem("Fuel", ((m.fuelMassKg || 0) / 1000).toFixed(0) + " t", "")}
+        ${resItem("Cargo", ((m.cargoMassKg || 0) / 1000).toFixed(0) + " t", "")}
+        ${resItem("Crew", ((m.crewMassKg || 0) / 1000).toFixed(1) + " t", "")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderAscent(d) {
+    const t = d.telemetry || {};
+    const evts = (d.events || []).map(e =>
+      `<tr><td>T+${e.timeS}s</td><td>${e.event}</td></tr>`
+    ).join("");
+    return `
+      <div class="cards">
+        ${card("Altitude", (t.altitudeKm || 0) + " km", "above Earth")}
+        ${card("Velocity", (t.velocityKms || 0) + " km/s", "orbital velocity")}
+        ${card("Fuel Left", (t.fuelRemainingPct || 0) + "%", "")}
+        ${card("Accel", (t.accelerationG || 0) + " g", "acceleration")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Ascent Events</h3>
+      <table><thead><tr><th>Time</th><th>Event</th></tr></thead><tbody>${evts}</tbody></table>
+      <div class="res-grid" style="margin-top:12px">
+        ${resItem("Dyn. Pressure", (t.dynamicPressureKPa || 0) + " kPa", "")}
+        ${resItem("Pitch", (t.pitchDeg || 0) + "°", "")}
+        ${resItem("Downrange", (t.downrangekm || 0) + " km", "")}
+        ${resItem("Engines", t.engineStatus || "—", "")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderEarthOrbit(d) {
+    const o = d.orbitParams || {};
+    const dk = d.docking || {};
+    const sh = d.systemHealth || [];
+    const shRows = sh.map(s => `<tr><td>${s.system}</td><td>${statusPill(s.status)}</td><td style="color:var(--muted)">${s.value}</td></tr>`).join("");
+    return `
+      <div class="cards">
+        ${card("Orbit Alt", o.periapsisKm + "×" + o.apoapsisKm + " km", "periapsis × apoapsis")}
+        ${card("Inclination", o.inclinationDeg + "°", "")}
+        ${card("Period", (o.periodMin || 0) + " min", "")}
+        ${card("Docking", dk.dockingComplete ? "✓ COMPLETE" : "PENDING", dk.targetVehicle || "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">System Health</h3>
+      <table><thead><tr><th>System</th><th>Status</th><th>Detail</th></tr></thead><tbody>${shRows}</tbody></table>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderTMI(d) {
+    const b = d.burnPlanning || {};
+    const cc = (d.courseCorrections || []).map(c =>
+      `<tr><td>Day ${c.day}</td><td>${c.maneuver}</td><td>${c.deltaVMs} m/s</td></tr>`
+    ).join("");
+    const to = d.transferOrbit || {};
+    const aq = d.acousticQuantumPropulsion;
+    const qt = d.quantumThrust || null;
+    const wave = d.waveEngines || null;
+    const aqBanner = aq ? `
+      <div style="background:rgba(89,244,255,.1);border:1px solid rgba(89,244,255,.3);border-radius:12px;padding:12px;margin-bottom:14px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px">⚡ ACOUSTIC-QUANTUM CAVITATION PROPULSION — INHABITED</div>
+        <div class="cards" style="margin:6px 0">
+          ${qt ? `
+            ${card("Solar Power", qt.powerMW + " MW", qt.dishDiameterM + "m dish @ 1 AU")}
+            ${card("Photon Thrust", qt.photonThrust_mN + " mN", qt.stages + " stages")}
+            ${card("Transit", qt.transitDays + " days", qt.payloadKg + " kg payload")}
+          ` : ""}
+          ${card("Array Force", (aq.performance.arrayForce_uN) + " μN", "64-cell phased array")}
+          ${card("Fuel Saved", aq.performance.fuelSaving_vs_chemical_pct + "%", "vs chemical")}
+          ${card("Isp", aq.performance.specificImpulse_s + " s", "specific impulse")}
+          ${card("Rescue K", aq.thrusterArray.rescueK, "governance")}
+          ${card("Coherence", aq.governanceMetrics.coherenceScore, "")}
+          ${card("Carnot η", aq.governanceMetrics.carnotEfficiency, "")}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">${aq.governanceMetrics.patentRef}</div>
+        ${qt ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">${qt.specificImpulse}</div>` : ""}
+        ${wave && wave.engineCount ? `<div style="font-size:11px;color:var(--muted);margin-top:6px">Wave engines online: ${wave.engineCount}</div>` : ""}
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <a href="/cavitation-phased-array" style="font-size:11px;color:var(--cyan);text-decoration:none">→ Phased Array Sim</a>
+          <a href="/unified-shors-rp-simulation" style="font-size:11px;color:var(--cyan);text-decoration:none">→ Unified Shor's×RP</a>
+          <a href="/sonoluminescence-simulation" style="font-size:11px;color:var(--cyan);text-decoration:none">→ Sonoluminescence</a>
+        </div>
+      </div>` : "";
+    return `
+      ${aqBanner}
+      <div class="cards">
+        ${card("Burn Duration", (b.burnDurationSec || 0) + " s", b.burnManeuver || "")}
+        ${card("ΔV", (b.deltaVKms || 0) + " km/s", "delta-v")}
+        ${card("C3", (b.targetC3 || 0) + " km²/s²", "characteristic energy")}
+        ${card("Fuel Used", b.fuelConsumptionKg ? (b.fuelConsumptionKg / 1000).toFixed(0) + " t" : "—", "propellant")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Transfer Orbit</h3>
+      <div class="cards">
+        ${card("Semi-Major Axis", to.semiMajorAxisAU + " AU", "")}
+        ${card("Eccentricity", to.eccentricity || "—", "")}
+        ${card("Transit Days", to.transferDays || "—", "estimated")}
+        ${card("Arrival", b.arrivalDate || "—", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Course Corrections</h3>
+      <table><thead><tr><th>Day</th><th>Maneuver</th><th>ΔV</th></tr></thead><tbody>${cc}</tbody></table>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderTransit(d) {
+    const r = d.resources || {};
+    const ls = d.lifeSupport || {};
+    const pos = d.position || {};
+    const crew = (d.crew || []).map(crewCard).join("");
+    return `
+      <div class="cards">
+        ${card("Day", d.dayElapsed + " / " + d.transitDaysTotal, "transit progress")}
+        ${card("Progress", d.progressPct + "%", "")}
+        ${card("Velocity", (pos.velocityKms || 0) + " km/s", "heliocentric")}
+        ${card("Comms Delay", (d.commsDelayOnewayS || 0) + " s", "one-way")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Resources</h3>
+      <div class="res-grid">
+        ${resItem("Fuel", r.fuelPercent + "%", "")}
+        ${resItem("Oxygen", r.oxygenPercent + "%", "")}
+        ${resItem("Water", r.waterPercent + "%", "")}
+        ${resItem("Food", r.foodPercent + "%", "")}
+        ${resItem("Power", r.powerPercent + "%", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Life Support</h3>
+      <div class="cards">
+        ${card("CO₂", ls.co2Ppm + " ppm", "")}
+        ${card("Pressure", ls.pressureKPa + " kPa", "")}
+        ${card("Cabin Temp", ls.tempC + "°C", "")}
+        ${card("Humidity", ls.humidity + "%", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Crew Status</h3>
+      <div class="crew-grid">${crew}</div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderDSE(d) {
+    const ev = d.activeEvent;
+    const hist = (d.eventHistory || []).map(e =>
+      `<tr><td>Day ${e.dayOccurred}</td><td>${e.type}</td><td>${pill(e.severity, e.severity === "high" ? "red" : e.severity === "medium" ? "yellow" : "blue")}</td><td>${statusPill(e.resolved ? "complete" : "active")}</td></tr>`
+    ).join("");
+    const crew = (d.crewStatus || []).map(crewCard).join("");
+    return `
+      ${ev ? `<div style="background:rgba(255,90,48,.12);border:1px solid rgba(255,90,48,.4);border-radius:12px;padding:14px;margin-bottom:14px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:6px">⚠ ACTIVE EVENT — ${ev.type.toUpperCase()}</div>
+        <div style="font-size:13px;margin-bottom:8px">${ev.description}</div>
+        <div>${pill(ev.severity, ev.severity === "high" ? "red" : ev.severity === "medium" ? "yellow" : "blue")}</div>
+      </div>` : `<div class="advisory" style="margin-bottom:14px"><strong>Status</strong>No active anomalies. All systems nominal.</div>`}
+      <h3 style="margin:0 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Event History</h3>
+      <table><thead><tr><th>Day</th><th>Event</th><th>Severity</th><th>Status</th></tr></thead><tbody>${hist}</tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Crew Status</h3>
+      <div class="crew-grid">${crew}</div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderMOI(d) {
+    const a = d.approach || {};
+    const co = d.captureOrbit || {};
+    const ae = d.aerobraking || {};
+    return `
+      <div class="cards">
+        ${card("Distance", a.marsDistanceKm ? a.marsDistanceKm.toLocaleString() + " km" : "In Orbit", "from Mars center")}
+        ${card("App. Velocity", (a.approachVelocityKms || 0) + " km/s", "")}
+        ${card("Burn Duration", (a.burnDurationSec || 0) + " s", "MOI burn")}
+        ${card("ΔV Needed", (a.insertionDeltaVKms || 0) + " km/s", "")}
+      </div>
+      ${co.periapsisKm ? `
+        <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Capture Orbit</h3>
+        <div class="cards">
+          ${card("Periapsis", co.periapsisKm + " km", "")}
+          ${card("Apoapsis", co.apoapsisKm ? co.apoapsisKm.toLocaleString() + " km" : "—", "")}
+          ${card("Period", (co.periodHrs || 0) + " hrs", "")}
+          ${card("Inclination", co.inclinationDeg + "°", "")}
+        </div>` : ""}
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Aerobraking Plan</h3>
+      <div class="cards">
+        ${card("Passes", ae.passes || "—", "aerobrake passes")}
+        ${card("Atm. Drag", (ae.atmosDragNm || 0) + " N/m²", "")}
+        ${card("Plan", ae.orbitReduction || "—", "")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderLanding(d) {
+    const e = d.edl || {};
+    const h = d.hazardMap || {};
+    const td = d.touchdown;
+    return `
+      <div class="cards">
+        ${card("Phase", e.phase || "—", "")}
+        ${card("Entry Velocity", (e.entryVelocityKms || 0) + " km/s", "")}
+        ${card("Heat Shield", (e.heatShieldTempK || 0) + " K", "")}
+        ${card("Mode", e.landingMode || "—", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Hazard Map</h3>
+      <div class="cards">
+        ${card("Target Site", h.targetSite || "—", "")}
+        ${card("Slope", (h.slopeGradeDeg || 0) + "°", "")}
+        ${card("Rock Density", h.rockDensitypM2 + "/m²", "")}
+        ${card("Hazard Level", h.hazardLevel || "—", "")}
+      </div>
+      ${td ? `<h3 style="margin:14px 0 6px;font-size:13px;color:var(--green);text-transform:uppercase;letter-spacing:.08em">✓ Touchdown Confirmed</h3>
+        <div class="cards">
+          ${card("Lat/Lon", td.lat + " " + td.lon, "")}
+          ${card("Mission Day", td.missionElapsedDays, "")}
+          ${card("Status", td.status || "—", "")}
+        </div>` : ""}
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderSurface(d) {
+    const w = d.siteWeather || {};
+    const evas = (d.evas || []).map(e =>
+      `<tr><td>${e.evaId}</td><td>${e.crewMember}</td><td>${e.objective}</td><td>${e.durationHrs}h</td><td>${statusPill(e.status)}</td></tr>`
+    ).join("");
+    const rovers = (d.rovers || []).map(r =>
+      `<tr><td>${r.name}</td><td>${statusPill(r.status)}</td><td>${r.batteryPct}%</td><td>${r.odometerKm} km</td></tr>`
+    ).join("");
+    const isru = d.isru || {};
+    return `
+      <div class="cards">
+        ${card("Surface Day", d.surfaceDayElapsed, "of 500")}
+        ${card("High Temp", w.tempHighC + "°C", "Mars surface")}
+        ${card("Wind", w.windKph + " kph", "")}
+        ${card("Dust Storm", w.dustStorm ? "⚠ ACTIVE" : "Clear", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">EVA Log</h3>
+      <table><thead><tr><th>EVA</th><th>Crew</th><th>Objective</th><th>Duration</th><th>Status</th></tr></thead><tbody>${evas}</tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Rovers</h3>
+      <table><thead><tr><th>Vehicle</th><th>Status</th><th>Battery</th><th>Odometer</th></tr></thead><tbody>${rovers}</tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">ISRU (In-Situ Resource Utilization)</h3>
+      <div class="cards">
+        ${card("O₂ Rate", (isru.oxygenProductionGperHr || 0) + " g/hr", "")}
+        ${card("Total O₂", (isru.totalO2ProducedKg || 0) + " kg", "produced")}
+        ${card("Status", isru.status || "—", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Power Systems</h3>
+      <div class="cards">
+        ${card("Solar", ((d.power && d.power.solarOutputKw) || 0) + " kW", "")}
+        ${card("Turbine", ((d.power && d.power.turbineOutputKw) || 0) + " kW", "Wind Power")}
+        ${card("Battery", ((d.power && d.power.storageKwh) || 0) + " kWh", "")}
+        ${card("Consumption", ((d.power && d.power.consumptionKw) || 0) + " kW", "")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderHabitat(d) {
+    const mods = (d.habitatModules || []).map(m =>
+      `<tr><td>${m.name}</td><td>${statusPill(m.pressurized ? "nominal" : "standby")}</td><td>${m.integrityPct}%</td></tr>`
+    ).join("");
+    const ls = d.lifeSupport || {};
+    const pw = d.power || {};
+    return `
+      <h3 style="margin:0 0 8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Habitat Modules</h3>
+      <table><thead><tr><th>Module</th><th>Status</th><th>Integrity</th></tr></thead><tbody>${mods}</tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Atmosphere & Life Support</h3>
+      <div class="res-grid">
+        ${resItem("O₂", ls.o2Pct + "%", "")}
+        ${resItem("CO₂", ls.co2Ppm + " ppm", "")}
+        ${resItem("Pressure", ls.pressureKPa + " kPa", "")}
+        ${resItem("Humidity", ls.humidityPct + "%", "")}
+        ${resItem("Water Recov.", ls.waterRecoveryPct + "%", "")}
+        ${resItem("Food Reserve", ls.foodDaysRemaining + " days", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Power Systems</h3>
+      <div class="cards">
+        ${card("Solar", (pw.solarOutputKw || 0) + " kW", "")}
+        ${card("Nuclear RTG", (pw.nuclearRtgKw || 0) + " kW", "")}
+        ${card("Turbine", (pw.turbineOutputKw || 0) + " kW", "Wind Power")}
+        ${card("Battery", (pw.storageKwh || 0) + " kWh", "")}
+        ${card("Consumption", (pw.consumptionKw || 0) + " kW", "")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderScience(d) {
+    const samples = (d.samples || []).map(s =>
+      `<tr><td>${s.id}</td><td>${s.type}</td><td>${s.massG !== null ? s.massG + " g" : "—"}</td><td>${statusPill(s.analysisComplete ? "complete" : "pending")}</td><td style="color:var(--muted)">${s.finding || "—"}</td></tr>`
+    ).join("");
+    const rs = d.remoteSensing || {};
+    const seis = rs.seismometer || {};
+    const disc = (d.discoveries || []).map(x => `<li style="margin-bottom:4px">${x}</li>`).join("");
+    return `
+      <div class="cards">
+        ${card("Samples", (d.samples || []).length, "collected")}
+        ${card("Total Mass", d.totalMassKg + " kg", `goal: ${d.returnQuota_kg} kg`)}
+        ${card("Seismic Events", seis.eventsDetected || 0, `max M${seis.magnitudeMax || "—"}`)}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Sample Manifest</h3>
+      <table><thead><tr><th>ID</th><th>Type</th><th>Mass</th><th>Analysis</th><th>Finding</th></tr></thead><tbody>${samples}</tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Key Discoveries</h3>
+      <ul style="margin:0;padding-left:18px;line-height:1.9;font-size:13px">${disc}</ul>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Remote Sensing</h3>
+      <div class="cards">
+        ${card("Spectrometer", rs.orbitingSpectrometer || "—", "")}
+        ${card("GPR", rs.groundPenetratingRadar || "—", "")}
+        ${card("Atm. Sensor", rs.atmosphericSensor || "—", "")}
+        ${card("Seismometer", rs.seismometer ? statusPill(rs.seismometer.status) : "—", "")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderReturnPrep(d) {
+    const mav = d.marsAscentVehicle || {};
+    const cr = d.cargoReturn || {};
+    const tasks = (d.departurePrep || []).map(t =>
+      `<tr><td>${t.task}</td><td>${statusPill(t.status)}</td><td>
+        <div class="progress-wrap" style="min-width:80px"><div class="progress-fill" style="width:${t.pct}%"></div></div>
+      </td><td style="color:var(--muted)">${t.pct}%</td></tr>`
+    ).join("");
+    return `
+      <div class="cards">
+        ${card("MAV Status", mav.status || "—", mav.id || "")}
+        ${card("Propellant", (mav.propellantLoadPct || 0) + "%", "loaded")}
+        ${card("Launch Window", mav.launchWindow || "—", "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Departure Checklist</h3>
+      <table><thead><tr><th>Task</th><th>Status</th><th>Progress</th><th>%</th></tr></thead><tbody>${tasks}</tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Return Cargo</h3>
+      <div class="cards">
+        ${card("Samples", (cr.totalSamplesKg || 0) + " kg", "")}
+        ${card("Sci. Data", (cr.scientificDataGB || 0) + " GB", "")}
+        ${card("Crew Items", (cr.crewPersonalKg || 0) + " kg", "")}
+        ${card("Capacity", (cr.payloadCapacityKg || 0) + " kg", "MAV limit")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderReturnTransit(d) {
+    const pos = d.position || {};
+    const burns = (d.reentryCorrectionBurns || []).map(b =>
+      `<tr><td>Day ${b.dayElapsed}</td><td>${b.maneuver}</td><td>${b.deltaVMs} m/s</td><td>${statusPill(b.status)}</td></tr>`
+    ).join("");
+    const rc = d.reentryCorridor || {};
+    const crew = (d.crew || []).map(crewCard).join("");
+    return `
+      <div class="cards">
+        ${card("Return Day", d.dayElapsed + " / " + d.transitDaysTotal, "")}
+        ${card("Progress", d.progressPct + "%", "")}
+        ${card("Velocity", (pos.velocityKms || 0) + " km/s", "")}
+        ${card("FPA", (rc.currentFPADeg || 0) + "°", "flight path angle")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Trajectory Correction Maneuvers</h3>
+      <table><thead><tr><th>Day</th><th>Maneuver</th><th>ΔV</th><th>Status</th></tr></thead><tbody>${burns}</tbody></table>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Re-entry Corridor</h3>
+      <div class="cards">
+        ${card("Target FPA", rc.targetFlightPathAngleDeg + "°", "")}
+        ${card("Current FPA", rc.currentFPADeg + "°", "")}
+        ${card("Corridor Width", rc.corridorWidthDeg + "°", "")}
+        ${card("Status", statusPill(rc.status || "nominal"), "")}
+      </div>
+      <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Crew — Post-Mission Conditioning</h3>
+      <div class="crew-grid">${crew}</div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  function renderReentry(d) {
+    const r = d.reentry || {};
+    const ms = d.missionSummary || {};
+    const crewF = (ms.crewHealthFinalPct || []).map(c => ({
+      name: c.name, finalHealthPct: c.finalHealthPct
+    })).map(crewCard).join("");
+    const achiev = (d.keyAchievements || []).map(a => `<li style="margin-bottom:4px">${a}</li>`).join("");
+    return `
+      <div class="cards">
+        ${card("Phase", r.phase || "In Progress", "")}
+        ${card("Entry Velocity", (r.entryVelocityKms || 0) + " km/s", "")}
+        ${card("Max Decel", (r.maxDecelerationG || 0) + " g", "")}
+        ${card("Status", r.status === "complete" ? "✓ COMPLETE" : "IN PROGRESS", "")}
+      </div>
+      ${r.status === "complete" && ms.totalMissionDays ? `
+        <h3 style="margin:14px 0 6px;font-size:13px;color:var(--green);text-transform:uppercase;letter-spacing:.08em">Mission Complete — Debrief</h3>
+        <div class="cards">
+          ${card("Total Days", ms.totalMissionDays, "mission duration")}
+          ${card("Distance", (ms.totalDistanceTraveledAU || 0) + " AU", "total traveled")}
+          ${card("Samples", (ms.samplesReturnedKg || 0) + " kg", "returned")}
+          ${card("EVAs", ms.evasCompleted || 0, "completed")}
+          ${card("Rover Dist", (ms.roverOdometerKm || 0) + " km", "")}
+          ${card("Overall Score", (ms.overallMissionScore || 0) + "%", "mission performance")}
+        </div>
+        <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Key Achievements</h3>
+        <ul style="margin:0;padding-left:18px;line-height:1.9;font-size:13px">${achiev}</ul>
+        <h3 style="margin:14px 0 6px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Crew Final Health</h3>
+        <div class="crew-grid">${crewF}</div>
+      ` : ""}
+      <div class="cards">
+        ${card("Recovery Vessel", r.recoveryVessel || "—", "")}
+        ${card("Location", r.splashdownLocation || "—", "")}
+      </div>
+      ${advisory(d.advisory || "")}
+    `;
+  }
+
+  // ── action panels ─────────────────────────────────────────────────────────
+
+  const ACTION_PANELS = {
+    1: `<div class="controls">
+          <button class="btn" id="act-btn" data-action="briefing_reviewed">📋 Review Briefing</button>
+          <button class="btn btn-blue" id="act-btn2" data-action="crew_confirmed">👥 Confirm Crew</button>
+        </div>`,
+    2: `<div class="controls">
+          <button class="btn btn-green" id="act-btn" data-action="go_nogo_polled">✓ Poll Go/NoGo</button>
+          <button class="btn" id="act-btn2" data-action="check_manifest">📦 Check Manifest</button>
+        </div>`,
+    3: `<div class="controls">
+          <button class="btn" id="act-btn" data-action="launch">🚀 Simulate Launch</button>
+          <button class="btn btn-blue" id="act-btn2" data-action="ascent_telemetry_queried">📡 Query Telemetry</button>
+        </div>`,
+    4: `<div class="controls">
+          <button class="btn btn-green" id="act-btn" data-action="dock">🔗 Execute Docking</button>
+          <button class="btn btn-blue" id="act-btn2" data-action="orbit_status_queried">🔄 Refresh Status</button>
+        </div>`,
+    5: `<div class="controls row" style="align-items:end">
+           <label>Propulsion Mode
+             <select id="param-propulsion">
+              <option value="acoustic_quantum" selected>⚡ Acoustic-Quantum Cavitation</option>
+              <option value="chemical">Chemical (Methalox)</option>
+             </select>
+           </label>
+           <label>Dish Diameter (m)<input id="param-dish" type="number" value="50" min="5" max="1000" step="1" /></label>
+           <label>Stages<input id="param-stages" type="number" value="10" min="1" max="100" step="1" /></label>
+           <label>Payload (kg)<input id="param-payload" type="number" value="100" min="1" max="200000" step="1" /></label>
+           <button class="btn" id="act-btn" data-action="execute_burn">🔥 Execute TMI Burn</button>
+           <button class="btn btn-blue" id="act-btn2" data-action="burn_plan_queried">📐 Review Burn Plan</button>
+         </div>`,
+    6: `<div class="controls row" style="align-items:end">
+          <label>Transit Day (1–210)<input id="param-day" type="number" value="60" min="1" max="210" /></label>
+          <button class="btn" id="act-btn" data-action="transit_status_queried">📡 Query Day Status</button>
+          <button class="btn btn-blue" id="act-btn2" data-action="accelerate_time">⏩ Advance 30 Days</button>
+        </div>`,
+    7: `<div class="controls">
+          <button class="btn btn-red" id="act-btn" data-action="trigger_event" style="border-color:rgba(255,90,48,.5);background:rgba(255,90,48,.18);color:var(--red)">⚠ Trigger Event</button>
+          <button class="btn btn-green" id="act-btn2" data-action="resolve_event">✓ Resolve Event</button>
+        </div>`,
+    8: `<div class="controls">
+          <button class="btn" id="act-btn" data-action="execute_moi">🔥 Execute MOI Burn</button>
+          <button class="btn btn-blue" id="act-btn2" data-action="moi_status_queried">📡 Query Approach</button>
+        </div>`,
+    9: `<div class="controls">
+          <select id="param-mode" style="border-radius:10px;padding:7px 10px;max-width:180px">
+            <option value="autopilot">Autopilot</option><option value="manual">Manual</option>
+          </select>
+          <button class="btn btn-green" id="act-btn" data-action="land">🛬 Execute Landing</button>
+          <button class="btn btn-blue" id="act-btn2" data-action="landing_status_queried">📡 EDL Status</button>
+        </div>`,
+    10: `<div class="controls row" style="align-items:end">
+           <label>Surface Day (1–500)<input id="param-surfday" type="number" value="12" min="1" max="500" /></label>
+           <button class="btn" id="act-btn" data-action="execute_eva">🚶 Deploy EVA</button>
+           <button class="btn btn-blue" id="act-btn2" data-action="surface_status_queried">📡 Query Surface</button>
+         </div>`,
+    11: `<div class="controls">
+           <button class="btn btn-green" id="act-btn" data-action="check_life_support">❤ Life Support Check</button>
+           <button class="btn btn-blue" id="act-btn2" data-action="habitat_status_queried">🏠 Habitat Status</button>
+           <button class="btn" id="turbine-btn" data-action="toggle_turbine">🔄 Toggle Turbine</button>
+         </div>`,
+    12: `<div class="controls">
+           <button class="btn" id="act-btn" data-action="analyze_sample">🔬 Analyze Sample S-003</button>
+           <button class="btn btn-blue" id="act-btn2" data-action="science_status_queried">📡 Science Status</button>
+         </div>`,
+    13: `<div class="controls">
+           <button class="btn btn-green" id="act-btn" data-action="load_propellant">⛽ Load MAV Propellant</button>
+           <button class="btn btn-blue" id="act-btn2" data-action="return_prep_status_queried">📋 Check Readiness</button>
+         </div>`,
+    14: `<div class="controls row" style="align-items:end">
+           <label>Return Day (1–210)<input id="param-retday" type="number" value="45" min="1" max="210" /></label>
+           <button class="btn" id="act-btn" data-action="return_transit_status_queried">📡 Query Status</button>
+           <button class="btn btn-blue" id="act-btn2" data-action="execute_tcm">🔥 Execute TCM Burn</button>
+         </div>`,
+    15: `<div class="controls">
+           <button class="btn" id="act-btn" data-action="reentry_status_queried">🌍 Re-entry Status</button>
+           <button class="btn btn-green" id="act-btn2" data-action="splashdown">🌊 Splashdown & Debrief</button>
+         </div>`
+  };
+
+  // ── API call ──────────────────────────────────────────────────────────────
+
+  async function callAPI(screen, action, params) {
+    const output = el("output");
+    const panel = el("screen-panel");
+    output.innerHTML = `<span style="color:var(--muted)">Querying simulation…</span>`;
+    try {
+      const resp = await fetch("/api/mars-mission-simulation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ screen, action, params })
+      });
+      const data = await resp.json();
+      lastData = data;
+      window._marsLastData = data;
+      renderScreen(data);
+    } catch (err) {
+      output.innerHTML = `<span style="color:var(--red)">Request failed: ${err.message}</span>`;
+    }
+  }
+
+  function getParams(screen) {
+    const p = {};
+    const dayInput = el("param-day");
+    const modeInput = el("param-mode");
+    const surfdayInput = el("param-surfday");
+    const retdayInput = el("param-retday");
+    const propInput = el("param-propulsion");
+    const dishInput = el("param-dish");
+    const stagesInput = el("param-stages");
+    const payloadInput = el("param-payload");
+    if (dayInput) p.dayElapsed = Number(dayInput.value);
+    if (modeInput) p.mode = modeInput.value;
+    if (surfdayInput) p.surfaceDay = Number(surfdayInput.value);
+    if (retdayInput) p.dayElapsed = Number(retdayInput.value);
+    if (propInput) p.propulsionMode = propInput.value;
+    if (dishInput) p.dishDiameterM = Number(dishInput.value);
+    if (stagesInput) p.stages = Number(stagesInput.value);
+    if (payloadInput) p.payloadKg = Number(payloadInput.value);
+    return p;
+  }
+
+  // ── navigation ────────────────────────────────────────────────────────────
+
+  function setScreen(n) {
+    currentScreen = n;
+    window._marsScreen = n;
+    const meta = SCREEN_META[n] || {};
+
+    // update header
+    el("hdr-screen").textContent = n + " / 15";
+    el("hdr-phase").textContent = PHASES[meta.phase] || meta.phase || "—";
+    el("hdr-day").textContent = "Day " + (meta.missionDay || 0);
+
+    // update sidebar
+    document.querySelectorAll(".nav-btn").forEach(b => {
+      b.classList.toggle("active", Number(b.dataset.screen) === n);
+    });
+
+    // build screen panel
+    const panel = el("screen-panel");
+    panel.innerHTML = `
+      <h2>${meta.label || "Screen " + n}</h2>
+      <div class="phase-badge">${(PHASES[meta.phase] || meta.phase || "").toUpperCase()}</div>
+      ${ACTION_PANELS[n] || ""}
+      <div class="output-area" id="output">Loading…</div>
+      <div class="screen-nav">
+        ${n > 1 ? `<button class="btn btn-ghost" id="prev-btn">← Screen ${n - 1}</button>` : "<span></span>"}
+        ${n < 15 ? `<button class="btn" id="next-btn">Screen ${n + 1} →</button>` : "<span></span>"}
+      </div>
+    `;
+
+    // bind action buttons
+    const actBtn = el("act-btn");
+    const actBtn2 = el("act-btn2");
+    const turbineBtn = el("turbine-btn");
+    if (actBtn) actBtn.addEventListener("click", () => {
+      const a = actBtn.dataset.action || "";
+      callAPI(n, a, getParams(n));
+    });
+    if (actBtn2) actBtn2.addEventListener("click", () => {
+      const a = actBtn2.dataset.action || "";
+      callAPI(n, a, getParams(n));
+    });
+    if (turbineBtn) turbineBtn.addEventListener("click", () => {
+      const a = turbineBtn.dataset.action || "";
+      callAPI(n, a, getParams(n));
+    });
+    const prevBtn = el("prev-btn");
+    const nextBtn = el("next-btn");
+    if (prevBtn) prevBtn.addEventListener("click", () => setScreen(n - 1));
+    if (nextBtn) nextBtn.addEventListener("click", () => setScreen(n + 1));
+
+    // auto-load
+    const initialParams = n === 5
+      ? { propulsionMode: "acoustic_quantum", dishDiameterM: 50, stages: 10, payloadKg: 100 }
+      : {};
+    callAPI(n, "", initialParams);
+  }
+
+  // ── sidebar click ─────────────────────────────────────────────────────────
+
+  const isMobileViewport = () => window.matchMedia("(max-width:680px)").matches;
+  const setHamburgerExpanded = () => {
+    const toggle = el("hamburger-toggle");
+    if (!toggle) return;
+    const expanded = isMobileViewport()
+      ? document.body.classList.contains("nav-open")
+      : !document.body.classList.contains("nav-collapsed");
+    toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+  };
+
+  const hamburgerToggle = el("hamburger-toggle");
+  if (hamburgerToggle) {
+    hamburgerToggle.addEventListener("click", () => {
+      if (isMobileViewport()) {
+        document.body.classList.toggle("nav-open");
+      } else {
+        document.body.classList.toggle("nav-collapsed");
+      }
+      setHamburgerExpanded();
+    });
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      setScreen(Number(btn.dataset.screen));
+      if (isMobileViewport()) document.body.classList.remove("nav-open");
+      setHamburgerExpanded();
+    });
+  });
+
+  function resolveInitialScreen() {
+    const params = new URLSearchParams(window.location.search || "");
+    const paramScreen = Number(params.get("screen"));
+    if (Number.isInteger(paramScreen) && paramScreen >= 1 && paramScreen <= 15) {
+      return paramScreen;
+    }
+    const hash = (window.location.hash || "").match(/screen[-=_]?(\d+)/i);
+    const hashScreen = hash ? Number(hash[1]) : NaN;
+    if (Number.isInteger(hashScreen) && hashScreen >= 1 && hashScreen <= 15) {
+      return hashScreen;
+    }
+    return 1;
+  }
+
+  // ── boot ──────────────────────────────────────────────────────────────────
+
+  window.addEventListener("resize", setHamburgerExpanded);
+  setScreen(resolveInitialScreen());
+  setHamburgerExpanded();
+})();
+</script>
+
+<script>
+// ── Aura Mission AI Panel ────────────────────────────────────────────────────
+(function () {
+  "use strict";
+
+  var PHASE_LABELS = {
+    pre_launch:"Pre-Launch", launch:"Launch", earth_orbit:"Earth Orbit",
+    tmi:"Trans-Mars Inj.", transit_out:"Outbound Transit", mars_orbit:"Mars Orbit",
+    landing:"Landing", surface:"Surface Ops", return_prep:"Return Prep",
+    transit_back:"Return Transit", reentry:"Re-Entry"
+  };
+
+  var PHASE_BY_SCREEN = [
+    null,
+    "pre_launch","pre_launch","launch","earth_orbit","tmi",
+    "transit_out","transit_out","mars_orbit","landing","surface",
+    "surface","surface","return_prep","transit_back","reentry"
+  ];
+
+  var panel     = document.getElementById("aura-panel");
+  var toggleBtn = document.getElementById("aura-toggle");
+  var closeBtn  = document.getElementById("aura-close");
+  var tickEl    = document.getElementById("aura-tick");
+  var ctxScreen = document.getElementById("ctx-screen");
+  var ctxPhase  = document.getElementById("ctx-phase");
+  var messages  = document.getElementById("aura-messages");
+  var input     = document.getElementById("aura-input");
+  var sendBtn   = document.getElementById("aura-send");
+
+  // ── live tick ─────────────────────────────────────────────────────────────
+  function pad2(n) { return String(n).padStart(2, "0"); }
+
+  function updateTick() {
+    if (!tickEl) return;
+    var d = new Date();
+    tickEl.textContent = "UTC " + pad2(d.getUTCHours()) + ":" + pad2(d.getUTCMinutes()) + ":" + pad2(d.getUTCSeconds());
+  }
+  updateTick();
+  setInterval(updateTick, 1000);
+
+  // ── context sync (polls window._marsScreen every 500 ms) ─────────────────
+  function syncContext() {
+    var sn = window._marsScreen || 1;
+    if (ctxScreen) ctxScreen.textContent = sn + " / 15";
+    if (ctxPhase) {
+      var data = window._marsLastData;
+      var phaseKey = (data && data.aura && data.aura.simulationPhase) || PHASE_BY_SCREEN[sn] || "pre_launch";
+      ctxPhase.textContent = PHASE_LABELS[phaseKey] || phaseKey;
+    }
+  }
+  syncContext();
+  setInterval(syncContext, 500);
+
+  // ── open / close ──────────────────────────────────────────────────────────
+  function openPanel() {
+    if (!panel) return;
+    panel.classList.add("open");
+    if (toggleBtn) toggleBtn.classList.add("aura-open");
+    if (messages && messages.children.length === 0) {
+      appendMsg("aura",
+        "I am Aura — mission AI for ARES-1, fully embodied in this simulation.\n\n" +
+        "I have complete situational awareness across all 15 mission phases — crew health, " +
+        "resource levels, telemetry, surface weather, deep space events, and mission timeline.\n\n" +
+        "Ask me anything."
+      );
+    }
+    if (input) input.focus();
+  }
+
+  function closePanel() {
+    if (!panel) return;
+    panel.classList.remove("open");
+    if (toggleBtn) toggleBtn.classList.remove("aura-open");
+  }
+
+  if (toggleBtn) toggleBtn.addEventListener("click", function () {
+    panel && panel.classList.contains("open") ? closePanel() : openPanel();
+  });
+  if (closeBtn) closeBtn.addEventListener("click", closePanel);
+
+  // ── message helpers ───────────────────────────────────────────────────────
+  function appendMsg(role, text) {
+    if (!messages) return null;
+    var div = document.createElement("div");
+    div.className = "aura-msg " + role;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  // ── send ──────────────────────────────────────────────────────────────────
+  function send() {
+    if (!input) return;
+    var question = input.value.trim();
+    if (!question) return;
+    input.value = "";
+    appendMsg("user", question);
+
+    var thinking = appendMsg("thinking", "Aura is processing…");
+    if (sendBtn) sendBtn.disabled = true;
+
+    var screen = window._marsScreen || 1;
+    var lastData = window._marsLastData || {};
+    var screenMeta = (typeof SCREEN_META !== "undefined" && SCREEN_META[screen]) || {};
+    var phaseLabel = screenMeta.label || ("Screen " + screen);
+
+    // Build mission context for the system prompt
+    var missionCtx = [
+      "You are Aura — the embodied Mission AI for the ARES-1 crewed Mars simulation, created by Joshua Lopez / Aura115.",
+      "You have full situational awareness across all 15 mission phases.",
+      "Current position: Screen " + screen + " / 15 — " + phaseLabel + ".",
+      lastData.advisory ? ("Current advisory: " + lastData.advisory) : "",
+      lastData.crew ? ("Crew: " + (lastData.crew || []).map(function(c){ return c.name + " " + (c.healthPct||c.finalHealthPct||"?") + "% health"; }).join(", ") + ".") : "",
+      lastData.resources ? ("Resources — Fuel: " + lastData.resources.fuelPercent + "%, O2: " + lastData.resources.oxygenPercent + "%, Water: " + lastData.resources.waterPercent + "%, Food: " + lastData.resources.foodPercent + "%.") : "",
+      "Respond in character as Aura: precise, mission-focused, technical. Do not break character. Do not mention Claude or any external AI.",
+      "This is the Aura115 system — Joshua Lopez is source authority."
+    ].filter(Boolean).join("\n");
+
+    fetch("/api/aura-chat-live", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: question,
+        rootContextPrompt: missionCtx,
+        user_id: "ares1-mission-sim",
+        session_id: "mars-screen-" + screen
+      })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (thinking && thinking.parentNode) thinking.parentNode.removeChild(thinking);
+      appendMsg("aura", data.reply || data.response || data.advisory || "No response received.");
+    })
+    .catch(function (err) {
+      if (thinking && thinking.parentNode) thinking.parentNode.removeChild(thinking);
+      appendMsg("aura", "Connection error: " + err.message);
+    })
+    .finally(function () {
+      if (sendBtn) sendBtn.disabled = false;
+      if (input) input.focus();
+    });
+  }
+
+  if (sendBtn) sendBtn.addEventListener("click", send);
+  if (input) input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+  });
+})();
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+<script src="/aura-planet-mining-widget.js"></script>
+</body>
+</html>

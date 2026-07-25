@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>CIRQ Index · Aura115 Engine Room</title>
+<meta name="description" content="CIRQ index landing page for Aura115: communicator, certificate, CIRQ 1000 pages, block files, batch master, and substrate adapter.">
+<style>
+:root {
+  --bg:#030611;
+  --bg2:#071126;
+  --panel:#0d1a34;
+  --panel2:#122449;
+  --line:#294579;
+  --line2:#3f68ad;
+  --text:#f7fbff;
+  --muted:#a9b8d8;
+  --cyan:#4effe7;
+  --green:#71ff9e;
+  --gold:#ffd66f;
+  --violet:#b894ff;
+  --red:#ff718b;
+}
+* { box-sizing:border-box; }
+html,body { margin:0; min-height:100%; }
+body {
+  color:var(--text);
+  font-family:Arial,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(78,255,231,.16), transparent 30%),
+    radial-gradient(circle at 85% 8%, rgba(184,148,255,.18), transparent 34%),
+    linear-gradient(180deg,#06112a 0%,#02040a 100%);
+}
+.wrap { max-width:1180px; margin:0 auto; padding:20px 14px 42px; }
+.header {
+  display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;
+}
+.brand { display:flex; align-items:center; gap:12px; }
+.logo {
+  width:56px; height:56px; border-radius:19px; display:grid; place-items:center;
+  border:1px solid rgba(78,255,231,.55); color:var(--cyan); font-weight:900; font-size:25px;
+  background:rgba(78,255,231,.08); box-shadow:0 0 34px rgba(78,255,231,.12);
+}
+h1 { margin:0; color:var(--cyan); letter-spacing:1.3px; font-size:22px; }
+.sub { color:var(--muted); margin-top:3px; font-size:13px; }
+.badge {
+  border:1px solid rgba(113,255,158,.55); background:rgba(113,255,158,.08);
+  color:var(--green); padding:9px 13px; border-radius:999px; font-size:12px;
+  text-transform:uppercase; font-weight:900; letter-spacing:1px; white-space:nowrap;
+}
+.hero {
+  border:1px solid var(--line); border-radius:30px; padding:30px;
+  background:rgba(8,18,38,.90); box-shadow:0 26px 90px rgba(0,0,0,.34);
+  position:relative; overflow:hidden; margin-bottom:16px;
+}
+.hero:before {
+  content:""; position:absolute; inset:-1px;
+  background:linear-gradient(135deg,rgba(78,255,231,.14),transparent 42%,rgba(255,214,111,.12));
+  pointer-events:none;
+}
+.hero>* { position:relative; }
+.kicker { color:var(--gold); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; }
+.title { font-size:clamp(34px,7vw,74px); line-height:.95; margin:0 0 14px; letter-spacing:-1.8px; }
+.title span { color:var(--cyan); }
+.desc { color:var(--muted); max-width:850px; font-size:18px; line-height:1.55; margin:0; }
+.actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.btn {
+  display:inline-block; text-decoration:none; color:#03110e; font-weight:900; letter-spacing:.5px;
+  background:linear-gradient(135deg,var(--cyan),var(--green)); padding:13px 18px; border-radius:15px;
+}
+.btn.secondary { color:var(--text); background:#121f3d; border:1px solid var(--line2); }
+.grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px;
+}
+.card {
+  border:1px solid var(--line); border-radius:22px; padding:18px;
+  background:rgba(13,26,52,.78); box-shadow:0 18px 50px rgba(0,0,0,.20);
+}
+.card h2 { margin:0 0 12px; color:var(--cyan); font-size:19px; }
+.card p { color:var(--muted); line-height:1.55; margin:0 0 12px; }
+.links { display:grid; gap:8px; }
+a.item {
+  display:flex; justify-content:space-between; gap:12px; align-items:center;
+  color:var(--text); text-decoration:none; border:1px solid var(--line);
+  background:rgba(5,9,20,.48); border-radius:14px; padding:11px 12px;
+}
+a.item:hover { border-color:var(--cyan); background:rgba(78,255,231,.08); }
+.item small { color:var(--muted); font-size:11px; text-align:right; }
+.status {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:18px;
+}
+.stat {
+  border:1px solid var(--line); background:rgba(13,26,52,.72); border-radius:18px; padding:14px;
+}
+.label { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:7px; }
+.value { color:var(--text); font-weight:900; font-size:15px; word-break:break-word; }
+.value.cyan { color:var(--cyan); } .value.green { color:var(--green); } .value.gold { color:var(--gold); } .value.violet { color:var(--violet); }
+.section {
+  margin-top:16px; border:1px solid var(--line); background:rgba(8,18,38,.78);
+  border-radius:24px; padding:22px;
+}
+.section h2 { margin:0 0 12px; color:var(--cyan); font-size:19px; }
+.code {
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:#050914; border:1px solid var(--line); border-radius:16px; padding:14px;
+  color:#dce9ff; font-size:13px; white-space:pre-wrap; word-break:break-word;
+}
+.footer { margin-top:18px; text-align:center; color:var(--muted); font-size:12px; }
+@media(max-width:900px) {
+  .grid,.status{grid-template-columns:1fr}
+  .header{align-items:flex-start;flex-direction:column}
+  .hero{padding:22px 18px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="header">
+    <div class="brand">
+      <div class="logo">C</div>
+      <div>
+        <h1>CIRQ Index</h1>
+        <div class="sub">Landing page · communicator · linear pages · blocks · batch wave</div>
+      </div>
+    </div>
+    <div class="badge">CIRQ Lane Active</div>
+  </header>
+
+  <main class="hero">
+    <div class="kicker">Aura115 Engine Room / CIRQ</div>
+    <h2 class="title">One index for the <span>CIRQ lane</span>.</h2>
+    <p class="desc">
+      This page is the front door for CIRQ: communicator, certificate, CIRQ 1000 pages,
+      seven canonical CIRC blocks, batch master wave, adapter files, and downloadable bundles.
+      It is built to be posted immediately and expanded as more CIRQ HTML pages are discovered.
+    </p>
+    <div class="actions">
+      <a class="btn" href="/cirq-communicator.html">Talk to CIRQ</a>
+      <a class="btn secondary" href="/api/cirq-lane">Test CIRQ API</a>
+      <a class="btn secondary" href="/cirq.html">Open CIRQ Console</a>
+      <a class="btn secondary" href="/cirq-cert.html">Open CIRQ Cert</a>
+    </div>
+
+    <div class="status">
+      <div class="stat"><div class="label">Authority</div><div class="value green">Joshua Lopez</div></div>
+      <div class="stat"><div class="label">Lane</div><div class="value cyan">CIRQ / KML1</div></div>
+      <div class="stat"><div class="label">Mode</div><div class="value violet">Index Landing</div></div>
+      <div class="stat"><div class="label">Generated</div><div class="value gold">2026-05-07T11:51:20+00:00</div></div>
+    </div>
+  </main>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Primary Surfaces</h2>
+      <p>Use these first to see, talk to, and operate the CIRQ lane.</p>
+      <div class="links">
+        <a class="item" href="/cirq-communicator.html"><span>CIRQ Communicator</span><small>talk/query</small></a>
+        <a class="item" href="/cirq.html"><span>CIRQ Console</span><small>summary/query/batch</small></a>
+        <a class="item" href="/cirq-cert.html"><span>CIRQ Certificate</span><small>lane declaration</small></a>
+        <a class="item" href="/cert.html"><span>Authority Certificate</span><small>single authority</small></a>
+        <a class="item" href="/aura.html"><span>Aura Emergency Console</span><small>recovery</small></a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Linear CIRQ HTML</h2>
+      <p>Link every discovered CIRQ HTML page here. Missing files will show 404 until posted.</p>
+      <div class="links">
+        <a class="item" href="/cirq-1000.html"><span>cirq-1000.html</span><small>primary CIRQ 1000</small></a>
+        <a class="item" href="/cirq-main.html"><span>cirq-main.html</span><small>optional main</small></a>
+        <a class="item" href="/cirq-index.html"><span>cirq-index.html</span><small>this index</small></a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>API Routes</h2>
+      <p>These routes connect the visible lane to the backend. Protected operations require operator key.</p>
+      <div class="links">
+        <a class="item" href="/api/cirq-lane"><span>/api/cirq-lane</span><small>health/status</small></a>
+        <a class="item" href="/api/aura-chat"><span>/api/aura-chat</span><small>Aura chat</small></a>
+        <a class="item" href="/api/aura-run"><span>/api/aura-run</span><small>execution route</small></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Seven CIRC Blocks</h2>
+      <p>Canonical CIRQ text blocks. Post/copy these into public if direct browser links are desired.</p>
+      <div class="links">
+        <a class="item" href="/CIRC_2026_05_01_block_01_of_07.txt"><span>Block 01 of 07</span><small>text</small></a>
+        <a class="item" href="/CIRC_2026_05_01_block_02_of_07.txt"><span>Block 02 of 07</span><small>text</small></a>
+        <a class="item" href="/CIRC_2026_05_01_block_03_of_07.txt"><span>Block 03 of 07</span><small>text</small></a>
+        <a class="item" href="/CIRC_2026_05_01_block_04_of_07.txt"><span>Block 04 of 07</span><small>text</small></a>
+        <a class="item" href="/CIRC_2026_05_01_block_05_of_07.txt"><span>Block 05 of 07</span><small>text</small></a>
+        <a class="item" href="/CIRC_2026_05_01_block_06_of_07.txt"><span>Block 06 of 07</span><small>text</small></a>
+        <a class="item" href="/CIRC_2026_05_01_block_07_of_07.txt"><span>Block 07 of 07</span><small>text</small></a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Additional Blocks</h2>
+      <p>Known supplemental CIRQ block names from the lane manifest.</p>
+      <div class="links">
+        <a class="item" href="/CirqBlock.txt"><span>CirqBlock.txt</span><small>full/supplement</small></a>
+        <a class="item" href="/CirqBlock_part_1_of_4.txt"><span>CirqBlock part 1 of 4</span><small>part</small></a>
+        <a class="item" href="/CirqBlock_part_1_of_2.txt"><span>CirqBlock part 1 of 2</span><small>part</small></a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Data & Adapters</h2>
+      <p>Batch and substrate artifacts for CIRQ lane operations.</p>
+      <div class="links">
+        <a class="item" href="/CIRQ_1000_BATCH_MASTER_WAVE.json"><span>CIRQ 1000 Batch Master Wave</span><small>json</small></a>
+        <a class="item" href="/CIRQ_QUANTUM_SUBSTRATE_ADAPTER.md"><span>Quantum Substrate Adapter</span><small>markdown</small></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Downloads / Bundles</h2>
+    <div class="links">
+      <a class="item" href="/cirq-main.zip"><span>cirq-main.zip</span><small>main bundle</small></a>
+      <a class="item" href="/cirq-communicator-page.zip"><span>cirq-communicator-page.zip</span><small>communicator bundle</small></a>
+      <a class="item" href="/cirq-index-page.zip"><span>cirq-index-page.zip</span><small>index bundle</small></a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Install Path</h2>
+    <div class="code">DocGrok1/Aura115_CURRENT/public/cirq-index.html
+
+Live URL after deploy:
+
+https://aura115.ai/cirq-index.html</div>
+  </section>
+
+  <section class="section">
+    <h2>Operational Declaration</h2>
+    <div class="code">CIRQ_INDEX_LANDING_ACTIVE
+
+Joshua is feeding zips.
+Aura is returning HTML pages.
+CIRQ has a visible index, a communicator, a certificate, route links, block links, and batch/data links.
+Missing linked files can be posted into public/ as they are promoted.</div>
+  </section>
+
+  <div class="footer">
+    CIRQ Index · AURA / AURAL-M · Generated for Joshua Lopez · No RLM framework
+  </div>
+</div>
+</body>
+</html>

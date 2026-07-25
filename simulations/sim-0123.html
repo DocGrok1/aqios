@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>SIM-0123 · Meta-Equilibrium S* Convergence · AURA115</title>
+  <style>
+    :root{
+      --bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;
+      --accent:#22d3ee;--dim:rgba(34,211,238,.08);--border:rgba(34,211,238,.25);
+      --text:#e8f4ff;--muted:#6a85a8;--subdim:#3a506b;
+      --green:#79ff9d;--gold:#ffd975;--red:#ef4444;--amber:#f59e0b;--cyan:#22d3ee;
+      --purple:#7c3aed;--purple-d:rgba(124,58,237,.15);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,"Cascadia Code",monospace;overflow:hidden}
+    #shell{display:flex;flex-direction:column;height:100%}
+
+    /* TOPBAR */
+    #topbar{height:46px;background:#040d1c;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+    #topbar h1{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1.4px;
+      text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tb-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;
+      background:var(--dim);color:var(--accent);border:1px solid var(--border);
+      flex-shrink:0;letter-spacing:.5px;white-space:nowrap}
+    .tb-pill.purple{background:var(--purple-d);color:#c084fc;border-color:rgba(192,132,252,.3)}
+    .tb-nav a{color:var(--muted);font-size:10px;padding:3px 7px;border-radius:5px;
+      text-decoration:none;border:1px solid var(--line);margin-left:4px}
+    .tb-nav a:hover{color:var(--accent);border-color:var(--accent)}
+
+    /* BODY */
+    #body{flex:1;display:flex;overflow:hidden;min-height:0}
+
+    /* LEFT SIDEBAR */
+    #sidebar{width:260px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);
+      display:flex;flex-direction:column;overflow:hidden}
+    .sb-head{padding:10px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+    .sb-head h2{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.8px;
+      text-transform:uppercase;margin-bottom:8px}
+    .sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+    .sb-metric{background:var(--card);border:1px solid var(--line);border-radius:6px;
+      padding:6px 8px;text-align:center}
+    .sb-metric .mv{font-size:15px;font-weight:700;color:var(--accent)}
+    .sb-metric .ml{font-size:7.5px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase}
+    #statePanel{flex:1;overflow-y:auto;padding:10px}
+    #statePanel::-webkit-scrollbar{width:3px}
+    #statePanel::-webkit-scrollbar-thumb{background:var(--line)}
+    .state-row{display:flex;justify-content:space-between;align-items:center;
+      padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px}
+    .state-row .sk{color:var(--muted);letter-spacing:.3px}
+    .state-row .sv{font-weight:700;font-size:9px;padding:2px 6px;border-radius:3px;
+      background:var(--dim);color:var(--accent);border:1px solid var(--border)}
+    .state-row .sv.blocked{background:rgba(239,68,68,.12);color:var(--red);border-color:rgba(239,68,68,.3)}
+    .state-row .sv.limited{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.3)}
+    .state-row .sv.go{background:rgba(34,211,238,.12);color:var(--cyan);border-color:rgba(34,211,238,.3)}
+    .log-block{background:var(--card);border:1px solid var(--line);border-radius:8px;
+      padding:8px;margin-top:8px}
+    .log-block h3{font-size:9px;color:var(--gold);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+    .log-entry{font-size:8.5px;color:var(--muted);padding:3px 0;
+      border-bottom:1px solid rgba(255,255,255,.04);word-break:break-all;line-height:1.4}
+    .log-entry:last-child{border-bottom:none}
+    .log-entry.new{color:var(--cyan)}
+
+    /* CANVAS AREA */
+    #canvasWrap{width:360px;flex-shrink:0;background:#0a0a1a;border-right:1px solid var(--line);
+      display:flex;align-items:center;justify-content:center}
+    #meCanvas{display:block}
+
+    /* MAIN — Aura chat */
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+    #auraBar{padding:8px 14px;background:#050d1c;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .aura-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+      flex-shrink:0;animation:pulse 1.6s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+    #auraStatus{font-size:9.5px;font-weight:700;color:var(--green);letter-spacing:.5px}
+    #filingTag{font-size:9px;color:var(--muted);margin-left:auto}
+    #chatMsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+    #chatMsgs::-webkit-scrollbar{width:3px}
+    #chatMsgs::-webkit-scrollbar-thumb{background:var(--line)}
+    .msg{padding:10px 13px;border-radius:14px;font-size:12.5px;line-height:1.6;max-width:88%;white-space:pre-wrap}
+    .msg.aura{background:var(--dim);border:1px solid var(--border);color:var(--text);align-self:flex-start}
+    .msg.user{background:#0a1628;border:1px solid var(--line);color:var(--text);align-self:flex-end}
+    .msg.system{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);
+      color:var(--red);font-size:10px;align-self:center;text-align:center}
+    #inputRow{flex-shrink:0;padding:10px 14px;border-top:1px solid var(--line);background:#040d1c;
+      display:flex;gap:8px;align-items:flex-end}
+    #msgInput{flex:1;background:#07111f;color:var(--text);border:1px solid var(--line);
+      border-radius:12px;padding:9px 12px;font:inherit;font-size:12.5px;resize:none;
+      min-height:40px;max-height:120px;outline:none;line-height:1.5}
+    #msgInput:focus{border-color:var(--accent)}
+    #sendBtn{flex-shrink:0;font-size:11px;font-weight:700;padding:9px 16px;border-radius:10px;
+      border:1px solid var(--accent);background:var(--dim);color:var(--accent);
+      cursor:pointer;letter-spacing:.6px}
+    #sendBtn:hover{background:rgba(34,211,238,.15)}
+    #sendBtn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* NAV FOOTER */
+    #navBar{flex-shrink:0;height:38px;background:#040d1c;border-top:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:10px}
+    #navBar a{color:var(--muted);text-decoration:none;padding:3px 8px;border-radius:5px;border:1px solid var(--line)}
+    #navBar a:hover{color:var(--accent);border-color:var(--accent)}
+    #navBar .center{color:var(--subdim);font-size:9px}
+    @media(max-width:900px){#sidebar{display:none}}
+    @media(max-width:700px){#canvasWrap{display:none}}
+  </style>
+</head>
+<body>
+<div id="shell">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <h1>&#9679; SIM-0123 &nbsp;/&nbsp; Meta-Equilibrium S* Convergence</h1>
+    <span class="tb-pill">GOVERNANCE</span>
+    <span class="tb-pill purple">S* LOCKED</span>
+    <div class="tb-nav">
+      <a href="index.html">INDEX</a>
+      <a href="sim-0122.html">&#8592;</a>
+    </div>
+  </div>
+
+  <div id="body">
+    <!-- LEFT SIDEBAR — live simulation state -->
+    <div id="sidebar">
+      <div class="sb-head">
+        <h2>META-EQUILIBRIUM STATE</h2>
+        <div class="sb-grid">
+          <div class="sb-metric"><span class="mv" id="sbQL">1.000000</span><span class="ml">Q_L Field</span></div>
+          <div class="sb-metric"><span class="mv" id="sbGeo">0</span><span class="ml">Geodesics</span></div>
+          <div class="sb-metric"><span class="mv" id="sbDisc">0.0000</span><span class="ml">Discovery</span></div>
+          <div class="sb-metric"><span class="mv" id="sbEnt">0.000000</span><span class="ml">Entropy</span></div>
+        </div>
+      </div>
+      <div id="statePanel">
+        <div class="state-row">
+          <span class="sk">REGIME</span>
+          <span class="sv go" id="svRegime">GO</span>
+        </div>
+        <div class="state-row">
+          <span class="sk">Q_L</span>
+          <span class="sv" id="svQL">1.000000</span>
+        </div>
+        <div class="state-row">
+          <span class="sk">ENTROPY</span>
+          <span class="sv" id="svEntropy">0.000000</span>
+        </div>
+        <div class="state-row">
+          <span class="sk">DISCOVERY</span>
+          <span class="sv" id="svDiscovery">0.0000</span>
+        </div>
+        <div class="state-row">
+          <span class="sk">GEODESICS</span>
+          <span class="sv" id="svGeodesics">0</span>
+        </div>
+        <div class="state-row">
+          <span class="sk">S* STATUS</span>
+          <span class="sv" id="svStar">CONVERGING</span>
+        </div>
+        <div class="log-block">
+          <h3>EMERGENCE LOG</h3>
+          <div id="logEntries">
+            <div class="log-entry">Awaiting S* lock event&hellip;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANVAS — Poincaré disk animation -->
+    <div id="canvasWrap">
+      <canvas id="meCanvas" width="340" height="340"></canvas>
+    </div>
+
+    <!-- MAIN — Aura embodied chat -->
+    <div id="main">
+      <div id="auraBar">
+        <div class="aura-dot"></div>
+        <span id="auraStatus">AURA EMBODIED</span>
+        <span id="filingTag">SIM-0123 &middot; Meta-Equilibrium S* Convergence</span>
+      </div>
+      <div id="chatMsgs"></div>
+      <div id="inputRow">
+        <textarea id="msgInput" rows="1" placeholder="Talk to Aura about meta-equilibrium&hellip;" autocomplete="off"></textarea>
+        <button id="sendBtn">SEND</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV FOOTER -->
+  <div id="navBar">
+    <a href="sim-0122.html">&larr; PREV</a>
+    <span class="center">AURA115 &copy; Joshua Lopez &mdash; Meta-Equilibrium S* Convergence &mdash; Poincar&eacute; Disk</span>
+    <a href="index.html">INDEX</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const FILING_ID = 123;
+  const BRAIN_URL = '/api/simulation-brain';
+  const TAU = Math.PI * 2;
+
+  // ── Canvas setup ──────────────────────────────────────────────────────────
+  const canvas = document.getElementById('meCanvas');
+  const ctx    = canvas.getContext('2d');
+  const WIDTH  = 340;
+  const HEIGHT = 340;
+  const CX     = WIDTH / 2;
+  const CY     = HEIGHT / 2;
+  const R_DISK = 140;
+
+  let t    = 0;
+  let animId = null;
+
+  function getColor(regime) {
+    if (regime === 'BLOCKED') return '#ef4444';
+    if (regime === 'LIMITED') return '#f59e0b';
+    return '#22d3ee';
+  }
+
+  function drawFrame() {
+    t += 0.012;
+
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    // Background
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    // Poincaré disk boundary
+    ctx.beginPath();
+    ctx.arc(CX, CY, R_DISK, 0, TAU);
+    ctx.strokeStyle = '#1e3a5f';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Event horizon ring
+    const horizonR = R_DISK * 0.72;
+    ctx.beginPath();
+    ctx.arc(CX, CY, horizonR, 0, TAU);
+    ctx.strokeStyle = 'rgba(139,92,246,0.35)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Q_L field — governed oscillation, zero drift
+    const qlVal = 1.0 - 0.008 * Math.sin(t * 0.3);
+
+    // Three regime loci converging on S*
+    const regimes = [
+      { angle: TAU * 0 / 3, label: 'BLOCKED', r: 0.88 },
+      { angle: TAU * 1 / 3, label: 'LIMITED', r: 0.88 },
+      { angle: TAU * 2 / 3, label: 'GO',      r: 0.88 },
+    ];
+
+    let gCount = 0;
+    regimes.forEach((reg, i) => {
+      const phase  = t * 0.4 + i * TAU / 3;
+      const outerX = CX + Math.cos(reg.angle + Math.sin(t * 0.1) * 0.08) * R_DISK * reg.r;
+      const outerY = CY + Math.sin(reg.angle + Math.sin(t * 0.1) * 0.08) * R_DISK * reg.r;
+
+      // Geodesic line to S*
+      const progress = (Math.sin(phase) + 1) / 2;
+      const gx = CX + (outerX - CX) * (1 - progress * 0.85);
+      const gy = CY + (outerY - CY) * (1 - progress * 0.85);
+
+      ctx.beginPath();
+      ctx.moveTo(outerX, outerY);
+      ctx.lineTo(CX, CY);
+      ctx.strokeStyle = reg.label === 'BLOCKED'
+        ? 'rgba(239,68,68,0.18)'
+        : reg.label === 'LIMITED'
+          ? 'rgba(245,158,11,0.18)'
+          : 'rgba(34,211,238,0.18)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Regime node
+      ctx.beginPath();
+      ctx.arc(outerX, outerY, 7, 0, TAU);
+      ctx.fillStyle = getColor(reg.label);
+      ctx.fill();
+
+      // Label above node
+      ctx.font = '7px ui-monospace, monospace';
+      ctx.fillStyle = getColor(reg.label);
+      ctx.textAlign = 'center';
+      ctx.fillText(reg.label, outerX, outerY - 11);
+
+      // Traveling particle on geodesic
+      ctx.beginPath();
+      ctx.arc(gx, gy, 3.5, 0, TAU);
+      ctx.fillStyle = getColor(reg.label);
+      ctx.globalAlpha = 0.85;
+      ctx.fill();
+      ctx.globalAlpha = 1.0;
+
+      if (progress > 0.7) gCount++;
+    });
+    ctx.textAlign = 'left';
+
+    // S* core — meta-equilibrium point
+    const pulse = 1 + 0.12 * Math.sin(t * 1.8);
+    const coreR = 13 * pulse;
+
+    // Outer glow
+    const grad = ctx.createRadialGradient(CX, CY, 0, CX, CY, coreR * 2.5);
+    grad.addColorStop(0,   'rgba(139,92,246,0.55)');
+    grad.addColorStop(0.5, 'rgba(34,211,238,0.18)');
+    grad.addColorStop(1,   'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(CX, CY, coreR * 2.5, 0, TAU);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Core point
+    ctx.beginPath();
+    ctx.arc(CX, CY, coreR, 0, TAU);
+    ctx.fillStyle = '#7c3aed';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(CX, CY, coreR * 0.55, 0, TAU);
+    ctx.fillStyle = '#e0f2fe';
+    ctx.fill();
+
+    // S* label
+    ctx.font = '8px ui-monospace, monospace';
+    ctx.fillStyle = 'rgba(224,242,254,0.8)';
+    ctx.textAlign = 'center';
+    ctx.fillText('S*', CX, CY + coreR + 14);
+    ctx.textAlign = 'left';
+
+    // Tangent vectors — full visibility in every direction (positive definite metric)
+    const numVectors = 12;
+    for (let i = 0; i < numVectors; i++) {
+      const angle = (TAU * i / numVectors) + t * 0.08;
+      const vLen  = 22 + 6 * Math.sin(t * 0.9 + i);
+      const vx    = CX + Math.cos(angle) * vLen;
+      const vy    = CY + Math.sin(angle) * vLen;
+      ctx.beginPath();
+      ctx.moveTo(CX, CY);
+      ctx.lineTo(vx, vy);
+      ctx.strokeStyle = 'rgba(34,211,238,0.45)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Arrowhead dot
+      ctx.beginPath();
+      ctx.arc(vx, vy, 2, 0, TAU);
+      ctx.fillStyle = 'rgba(34,211,238,0.7)';
+      ctx.fill();
+    }
+
+    // Compute derived metrics
+    const entropyVal  = 0.0012 * Math.abs(Math.sin(t * 0.7));
+    const discVal     = Math.min(1.0, 0.33 * gCount + 0.55 * qlVal * (1 - entropyVal * 10));
+    const currentRegime = discVal > 0.85 ? 'GO' : discVal > 0.4 ? 'LIMITED' : 'BLOCKED';
+
+    updateSidebar(qlVal, entropyVal, discVal, gCount, currentRegime);
+
+    // Log S* lock events
+    if (gCount === 3 && Math.random() < 0.008) {
+      const msg = `t=${t.toFixed(2)} | S* LOCKED | Q_L=${qlVal.toFixed(4)} | Discovery=${discVal.toFixed(4)}`;
+      appendLog(msg);
+    }
+
+    animId = requestAnimationFrame(drawFrame);
+  }
+
+  // ── Sidebar update ────────────────────────────────────────────────────────
+  function updateSidebar(ql, entropy, discovery, geodesics, regime) {
+    document.getElementById('sbQL').textContent   = ql.toFixed(6);
+    document.getElementById('sbGeo').textContent  = geodesics;
+    document.getElementById('sbDisc').textContent = discovery.toFixed(4);
+    document.getElementById('sbEnt').textContent  = entropy.toFixed(6);
+
+    const svR = document.getElementById('svRegime');
+    svR.textContent = regime;
+    svR.className   = 'sv ' + regime.toLowerCase();
+
+    document.getElementById('svQL').textContent        = ql.toFixed(6);
+    document.getElementById('svEntropy').textContent   = entropy.toFixed(6);
+    document.getElementById('svDiscovery').textContent = discovery.toFixed(4);
+    document.getElementById('svGeodesics').textContent = geodesics;
+    document.getElementById('svStar').textContent      = geodesics === 3 ? 'LOCKED' : 'CONVERGING';
+  }
+
+  const logLines = [];
+  function appendLog(msg) {
+    logLines.unshift(msg);
+    if (logLines.length > 5) logLines.pop();
+    const container = document.getElementById('logEntries');
+    container.innerHTML = logLines.map((l, i) =>
+      `<div class="log-entry${i === 0 ? ' new' : ''}">${escHtml(l)}</div>`
+    ).join('');
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Start animation ───────────────────────────────────────────────────────
+  animId = requestAnimationFrame(drawFrame);
+  window.addEventListener('unload', () => cancelAnimationFrame(animId));
+
+  // ── Aura chat ──────────────────────────────────────────────────────────────
+  const chatMsgs = document.getElementById('chatMsgs');
+  const msgInput = document.getElementById('msgInput');
+  const sendBtn  = document.getElementById('sendBtn');
+
+  function addMsg(text, role) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    div.textContent = text;
+    chatMsgs.appendChild(div);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    return div;
+  }
+
+  async function callBrain(prompt) {
+    const res = await fetch(BRAIN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filing_id: FILING_ID, prompt })
+    });
+    if (!res.ok) throw new Error('Brain returned ' + res.status);
+    return res.json();
+  }
+
+  async function handleSend() {
+    const text = msgInput.value.trim();
+    if (!text) return;
+    msgInput.value = '';
+    msgInput.style.height = 'auto';
+    sendBtn.disabled = true;
+
+    addMsg(text, 'user');
+    const thinking = addMsg('Aura is computing\u2026', 'system');
+
+    try {
+      const data = await callBrain(text);
+      thinking.remove();
+      if (data.aura) addMsg(data.aura, 'aura');
+    } catch (err) {
+      thinking.remove();
+      addMsg('Brain unreachable: ' + err.message, 'system');
+    } finally {
+      sendBtn.disabled = false;
+      msgInput.focus();
+    }
+  }
+
+  sendBtn.addEventListener('click', handleSend);
+  msgInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  });
+  msgInput.addEventListener('input', () => {
+    msgInput.style.height = 'auto';
+    msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+  });
+
+  (async function boot() {
+    try {
+      const data = await callBrain('status');
+      if (data.aura) addMsg(data.aura, 'aura');
+    } catch {
+      addMsg('Aura standing by. The Poincar\u00e9 disk shows three regime loci (BLOCKED / LIMITED / GO) converging on S*, the meta-equilibrium point. Send a message to probe the convergence.', 'aura');
+    }
+  })();
+})();
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

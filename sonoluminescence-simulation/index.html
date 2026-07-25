@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Governed Acoustic Cavitation — Sonoluminescence Simulation</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#03050f;
+      --panel:#0a1020;
+      --line:rgba(180,120,255,.22);
+      --lineB:rgba(180,120,255,.12);
+      --text:#ede8ff;
+      --muted:#a090c0;
+      --purple:#c87aff;
+      --violet:#9f60ff;
+      --cyan:#59f4ff;
+      --green:#74ffb8;
+      --yellow:#ffdd57;
+      --red:#ff5a6e;
+    }
+    body{
+      margin:0;min-height:100vh;
+      background:
+        radial-gradient(circle at 25% 30%,rgba(160,80,255,.18),transparent 40%),
+        radial-gradient(circle at 75% 75%,rgba(89,244,255,.10),transparent 40%),
+        var(--bg);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+      display:grid;place-items:start center;padding:24px;
+    }
+    .shell{
+      width:min(980px,100%);
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:26px;
+    }
+    /* ── header ── */
+    .hdr{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+    .hdr-left h1{
+      margin:0 0 5px;
+      font-size:clamp(20px,3.5vw,30px);
+      background:linear-gradient(90deg,var(--purple),var(--cyan));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hdr-left p{margin:0;color:var(--muted);font-size:13px;line-height:1.55;max-width:560px}
+    .badge{
+      display:inline-block;margin-top:8px;
+      background:rgba(160,80,255,.15);
+      border:1px solid rgba(160,80,255,.35);
+      border-radius:5px;padding:3px 10px;
+      font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--purple);text-transform:uppercase
+    }
+    /* ── circuit source ── */
+    .circuit-src{
+      background:rgba(3,5,15,.85);
+      border:1px solid var(--lineB);
+      border-radius:14px;
+      padding:14px 16px;
+      font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+      color:#d4c8ff;
+      margin-bottom:20px;
+      overflow-x:auto;
+    }
+    .circuit-src .kw{color:var(--purple)}
+    .circuit-src .fn{color:var(--cyan)}
+    .circuit-src .num{color:var(--yellow)}
+    .circuit-src .cmt{color:#5a5070}
+    /* ── controls ── */
+    .controls{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:10px;margin-bottom:14px;
+    }
+    label{display:grid;gap:5px;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+    input,select,textarea{
+      width:100%;border:1px solid var(--lineB);border-radius:11px;
+      background:rgba(3,5,15,.75);color:var(--text);
+      padding:9px 11px;font:inherit;font-size:13px;
+    }
+    input[type=range]{padding:6px 0;cursor:pointer}
+    input:focus,select:focus{outline:1px solid var(--purple);border-color:var(--purple)}
+    textarea{min-height:72px;resize:vertical}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    button,.btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;border:1px solid rgba(180,120,255,.4);
+      background:rgba(180,120,255,.13);color:var(--purple);
+      padding:9px 18px;font:inherit;font-size:12px;
+      font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;
+    }
+    button:hover{background:rgba(180,120,255,.24)}
+    button:disabled{opacity:.4;cursor:default}
+    .btn-cyan{border-color:rgba(89,244,255,.35);background:rgba(89,244,255,.1);color:var(--cyan)}
+    .btn-green{border-color:rgba(116,255,184,.35);background:rgba(116,255,184,.1);color:var(--green)}
+    /* ── tabs ── */
+    .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:0;border-bottom:1px solid var(--lineB);padding-bottom:0}
+    .tab{
+      padding:7px 14px;font-size:12px;font-weight:700;
+      background:none;border:none;border-bottom:2px solid transparent;
+      color:var(--muted);cursor:pointer;border-radius:0;margin-bottom:-1px;transition:color .15s;
+    }
+    .tab.active{color:var(--purple);border-bottom-color:var(--purple)}
+    .tab:hover{color:var(--text)}
+    .tab-panel{display:none;padding-top:14px}
+    .tab-panel.active{display:block}
+    /* ── metric cards ── */
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:12px 0}
+    .card{background:rgba(3,5,15,.7);border:1px solid var(--lineB);border-radius:12px;padding:12px}
+    .card .lbl{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+    .card .val{font-size:20px;font-weight:900;color:var(--purple)}
+    .card .sub{font-size:11px;color:var(--muted);margin-top:2px}
+    /* ── flash result ── */
+    .flash-result{
+      border-radius:14px;padding:16px;margin:14px 0;text-align:center;
+      font-size:16px;font-weight:900;letter-spacing:.05em;
+      transition:all .3s;
+    }
+    .flash-yes{
+      background:rgba(255,221,87,.12);border:1px solid rgba(255,221,87,.4);color:var(--yellow);
+    }
+    .flash-no{
+      background:rgba(90,90,120,.15);border:1px solid var(--lineB);color:var(--muted);
+    }
+    /* ── progress bar ── */
+    .bar-wrap{background:rgba(255,255,255,.07);border-radius:4px;height:6px;overflow:hidden;margin:4px 0}
+    .bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--violet),var(--purple));transition:width .4s}
+    /* ── table ── */
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th{color:var(--muted);font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--lineB);text-align:left}
+    td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.04);font-variant-numeric:tabular-nums}
+    tr:last-child td{border-bottom:none}
+    /* ── chart ── */
+    .chart-wrap{margin:12px 0;overflow-x:auto}
+    canvas{display:block;border-radius:10px;background:rgba(3,5,15,.8)}
+    /* ── step log ── */
+    .step-log{
+      max-height:320px;overflow-y:auto;
+      border:1px solid var(--lineB);border-radius:12px;
+      font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;
+      color:#c8b8ff;
+      padding:12px;background:rgba(3,5,15,.8);
+    }
+    .step-row{display:grid;grid-template-columns:32px 70px 70px 70px 70px 70px 70px 70px;gap:4px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+    .step-row:last-child{border:none}
+    .step-hdr{color:var(--muted);font-weight:700}
+    .rescue{color:var(--yellow)}
+    /* ── advisory ── */
+    .advisory{
+      margin-top:14px;
+      background:rgba(160,80,255,.07);
+      border:1px solid rgba(160,80,255,.22);
+      border-radius:10px;padding:10px 14px;
+      font-size:12px;color:var(--purple);
+    }
+    .advisory strong{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);margin-bottom:3px}
+    /* ── output raw ── */
+    .raw-out{
+      border:1px solid var(--lineB);border-radius:14px;padding:14px;
+      background:rgba(3,5,15,.85);color:#c8b8ff;
+      max-height:440px;overflow:auto;
+      font:11px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;
+    }
+    @media(max-width:640px){
+      .step-row{grid-template-columns:24px 60px 60px 60px 60px;font-size:10px}
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="hdr">
+    <div class="hdr-left">
+      <h1>⚡ Governed Acoustic Cavitation</h1>
+      <p>Rayleigh-Plesset Cirq circuit — Rx acoustic driving at 25 kHz + Lindblad depolarizing (K=0.93 rescue) → <strong style="color:var(--purple)">sonoluminescence_flash</strong> measurement. Executes in the <strong style="color:var(--cyan)">Willow meta-layer</strong>.</p>
+      <span class="badge">Advisory Simulated · No Python Executed</span>
+    </div>
+  </div>
+
+  <!-- circuit source display -->
+  <div class="circuit-src">
+<span class="kw">import</span> cirq<br>
+<span class="kw">import</span> numpy <span class="kw">as</span> np<br><br>
+<span class="kw">def</span> <span class="fn">governed_rayleigh_plesset_circuit</span>(steps=<span class="num">50</span>, acoustic_drive=<span class="num">0.8</span>):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;q_bubble = cirq.<span class="fn">NamedQubit</span>(<span style="color:#a0ffa0">'bubble_mode'</span>)&nbsp;&nbsp;<span class="cmt"># Bosonic mode approximation</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;circuit = cirq.<span class="fn">Circuit</span>()<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> t <span class="kw">in</span> <span class="fn">range</span>(steps):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;circuit.<span class="fn">append</span>(cirq.<span class="fn">rx</span>(acoustic_drive * np.<span class="fn">sin</span>(<span class="num">2</span> * np.pi * t / <span class="num">25</span>))(q_bubble))&nbsp;&nbsp;<span class="cmt"># 25 kHz analog</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;circuit.<span class="fn">append</span>(cirq.<span class="fn">depolarize</span>(<span class="num">0.01</span> * (<span class="num">1</span> - <span class="num">0.93</span>))(q_bubble))&nbsp;&nbsp;<span class="cmt"># K=0.93 rescue</span><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;circuit.<span class="fn">append</span>(cirq.<span class="fn">measure</span>(q_bubble, key=<span style="color:#a0ffa0">'sonoluminescence_flash'</span>))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> circuit<br><br>
+<span class="cmt"># Execute in Willow meta-layer</span><br>
+circ = <span class="fn">governed_rayleigh_plesset_circuit</span>()<br>
+<span class="fn">print</span>(<span style="color:#a0ffa0">"Governed Acoustic Cavitation Circuit Ready for Sonoluminescence Ignition"</span>)
+  </div>
+
+  <!-- parameter controls -->
+  <div class="controls">
+    <label>Steps (circuit depth)
+      <input id="steps" type="number" value="50" min="1" max="500" />
+    </label>
+    <label>Acoustic Drive (0.01–2.0)
+      <input id="acousticDrive" type="number" value="0.8" min="0.01" max="2.0" step="0.05" />
+    </label>
+    <label>Rescue K (0.5–1.0)
+      <input id="rescueK" type="number" value="0.93" min="0.5" max="1.0" step="0.01" />
+    </label>
+    <label>Scenario / Prompt
+      <input id="message" type="text" placeholder="Describe scenario or leave blank…" />
+    </label>
+  </div>
+
+  <div class="btn-row">
+    <button id="runBtn">⚡ Run Simulation</button>
+    <button id="flashBtn" class="btn-yellow" style="border-color:rgba(255,221,87,.4);background:rgba(255,221,87,.1);color:var(--yellow)">🔥 Max Flash Mode</button>
+    <button id="resetBtn" class="btn-cyan">↺ Reset Defaults</button>
+    <a href="/api/sonoluminescence-simulation" target="_blank" rel="noreferrer" class="btn" style="text-decoration:none">API status</a>
+    <a href="/cirq-runtime-simulation" rel="noreferrer" class="btn btn-cyan" style="text-decoration:none">Cirq+QML</a>
+  </div>
+
+  <!-- flash outcome -->
+  <div id="flashResult" class="flash-result flash-no" style="display:none"></div>
+
+  <!-- metric cards -->
+  <div class="cards" id="metricCards" style="display:none">
+    <div class="card"><div class="lbl">Coherence Score</div><div class="val" id="m-coherence">—</div></div>
+    <div class="card"><div class="lbl">Flash Probability</div><div class="val" id="m-flashprob">—</div><div class="sub">P(|1⟩) final</div></div>
+    <div class="card"><div class="lbl">Gov. Stability</div><div class="val" id="m-stability">—</div></div>
+    <div class="card"><div class="lbl">Mean Purity</div><div class="val" id="m-purity">—</div></div>
+    <div class="card"><div class="lbl">Rescue Events</div><div class="val" id="m-rescue">—</div></div>
+    <div class="card"><div class="lbl">Flash Temp</div><div class="val" id="m-temp">—</div><div class="sub">est. K</div></div>
+  </div>
+
+  <!-- tabs -->
+  <div id="resultTabs" style="display:none">
+    <div class="tabs">
+      <button class="tab active" data-tab="chart">Bloch / Intensity Chart</button>
+      <button class="tab" data-tab="circuit">Circuit Moments</button>
+      <button class="tab" data-tab="dynamics">Bubble Dynamics</button>
+      <button class="tab" data-tab="steplog">Step Log</button>
+      <button class="tab" data-tab="raw">Raw JSON</button>
+    </div>
+
+    <div id="tab-chart" class="tab-panel active">
+      <div class="chart-wrap">
+        <canvas id="blochCanvas" width="900" height="260"></canvas>
+      </div>
+      <div class="chart-wrap" style="margin-top:10px">
+        <canvas id="intensityCanvas" width="900" height="160"></canvas>
+      </div>
+    </div>
+
+    <div id="tab-circuit" class="tab-panel">
+      <table id="circuitTable">
+        <thead><tr><th>Moment</th><th>Gate</th><th>Noise</th></tr></thead>
+        <tbody id="circuitBody"></tbody>
+      </table>
+    </div>
+
+    <div id="tab-dynamics" class="tab-panel">
+      <div class="cards" id="dynamicsCards"></div>
+      <div id="dynamicsNotes" style="margin-top:14px"></div>
+    </div>
+
+    <div id="tab-steplog" class="tab-panel">
+      <div class="step-log" id="stepLogWrap">
+        <div class="step-row step-hdr">
+          <span>T</span><span>Rx(θ)</span><span>Bx</span><span>By</span><span>Bz</span><span>Purity</span><span>P(|1⟩)</span><span>Intensity</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-raw" class="tab-panel">
+      <div class="raw-out" id="rawOut">—</div>
+    </div>
+  </div>
+
+  <div class="advisory" id="advisoryBox" style="display:none">
+    <strong>Advisory</strong>
+    <span id="advisoryText"></span>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  let lastData = null;
+
+  // ── tab switching ──────────────────────────────────────────────────────────
+  document.querySelectorAll(".tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+      if (btn.dataset.tab === "chart" && lastData) drawCharts(lastData);
+    });
+  });
+
+  // ── quick presets ──────────────────────────────────────────────────────────
+  $("flashBtn").addEventListener("click", () => {
+    $("steps").value = "80";
+    $("acousticDrive").value = "1.4";
+    $("rescueK").value = "0.97";
+    $("message").value = "max sonoluminescence ignition";
+    runSim();
+  });
+
+  $("resetBtn").addEventListener("click", () => {
+    $("steps").value = "50";
+    $("acousticDrive").value = "0.8";
+    $("rescueK").value = "0.93";
+    $("message").value = "";
+  });
+
+  $("runBtn").addEventListener("click", runSim);
+
+  // ── run simulation ─────────────────────────────────────────────────────────
+  async function runSim() {
+    $("runBtn").disabled = true;
+    $("runBtn").textContent = "Simulating…";
+    $("flashResult").style.display = "none";
+    $("metricCards").style.display = "none";
+    $("resultTabs").style.display = "none";
+    $("advisoryBox").style.display = "none";
+
+    try {
+      const resp = await fetch("/api/sonoluminescence-simulation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          steps: Number($("steps").value),
+          acousticDrive: Number($("acousticDrive").value),
+          rescueK: Number($("rescueK").value),
+          message: $("message").value || ""
+        })
+      });
+      const data = await resp.json();
+      lastData = data;
+      renderResults(data);
+    } catch (err) {
+      const fr = $("flashResult");
+      fr.className = "flash-result flash-no";
+      fr.textContent = "Request failed: " + err.message;
+      fr.style.display = "block";
+    } finally {
+      $("runBtn").disabled = false;
+      $("runBtn").textContent = "⚡ Run Simulation";
+    }
+  }
+
+  // ── render ─────────────────────────────────────────────────────────────────
+  function renderResults(data) {
+    if (!data || !data.ok) {
+      const fr = $("flashResult");
+      fr.className = "flash-result flash-no";
+      fr.textContent = data ? data.error : "Unknown error";
+      fr.style.display = "block";
+      return;
+    }
+
+    // Flash outcome
+    const meas = data.measurementResult || {};
+    const fr = $("flashResult");
+    fr.style.display = "block";
+    if (meas.outcome === 1) {
+      fr.className = "flash-result flash-yes";
+      fr.innerHTML = "⚡ SONOLUMINESCENCE FLASH DETECTED &nbsp;·&nbsp; key='sonoluminescence_flash' → <strong>1</strong> &nbsp;·&nbsp; P(|1⟩) = " + meas.p1;
+    } else {
+      fr.className = "flash-result flash-no";
+      fr.innerHTML = "◯ No flash &nbsp;·&nbsp; key='sonoluminescence_flash' → <strong>0</strong> &nbsp;·&nbsp; P(|1⟩) = " + meas.p1;
+    }
+
+    // Metric cards
+    const gm = data.governedMetrics || {};
+    const bd = data.bubbleDynamics || {};
+    $("m-coherence").textContent = gm.coherenceScore !== undefined ? gm.coherenceScore : "—";
+    $("m-flashprob").textContent = meas.p1 !== undefined ? meas.p1 : "—";
+    $("m-stability").textContent = gm.governanceStability !== undefined ? gm.governanceStability : "—";
+    $("m-purity").textContent = gm.meanPurity !== undefined ? gm.meanPurity : "—";
+    $("m-rescue").textContent = gm.rescueInterventions !== undefined ? gm.rescueInterventions : "—";
+    $("m-temp").textContent = bd.estimatedFlashTempK ? bd.estimatedFlashTempK.toLocaleString() : "—";
+    $("metricCards").style.display = "grid";
+
+    // Tabs
+    $("resultTabs").style.display = "block";
+    renderCircuitMoments(data.circuitSummary || {});
+    renderDynamics(bd);
+    renderStepLog(data.sampledStepLog || []);
+    $("rawOut").textContent = JSON.stringify(data, null, 2);
+    drawCharts(data);
+
+    // Advisory
+    if (data.recommendations && data.recommendations.length) {
+      $("advisoryText").innerHTML = data.recommendations.map(r => `• ${r}`).join("<br>");
+      $("advisoryBox").style.display = "block";
+    }
+  }
+
+  // ── circuit moments table ──────────────────────────────────────────────────
+  function renderCircuitMoments(cs) {
+    const body = $("circuitBody");
+    body.innerHTML = "";
+    (cs.moments || []).forEach(m => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td style="color:var(--muted)">${m.moment}</td>
+        <td style="color:var(--cyan)">${m.gate || ""}</td>
+        <td style="color:var(--purple)">${m.depolarize || ""}</td>`;
+      body.appendChild(tr);
+    });
+  }
+
+  // ── bubble dynamics ────────────────────────────────────────────────────────
+  function renderDynamics(bd) {
+    const dc = $("dynamicsCards");
+    dc.innerHTML = [
+      cardHtml("Ambient Radius", (bd.ambientRadiusUm || "—") + " μm", ""),
+      cardHtml("Acoustic Pressure", (bd.acousticPressureKPa || "—") + " kPa", ""),
+      cardHtml("Collapse Factor", bd.collapseFactor || "—", ""),
+      cardHtml("Flash Duration", (bd.flashDurationPs || "—") + " ps", ""),
+      cardHtml("Lindblad Rate", bd.lindbladDampingRate || "—", ""),
+      cardHtml("Analog", bd.wilsonChamberAnalog || "—", "")
+    ].join("");
+
+    const dn = $("dynamicsNotes");
+    if (bd.notes && bd.notes.length) {
+      dn.innerHTML = `<div class="advisory"><strong>Physics Notes</strong>${bd.notes.map(n => `• ${n}`).join("<br>")}</div>`;
+    }
+  }
+
+  function cardHtml(lbl, val, sub) {
+    return `<div class="card"><div class="lbl">${lbl}</div><div class="val" style="font-size:15px">${val}</div>${sub ? `<div class="sub">${sub}</div>` : ""}</div>`;
+  }
+
+  // ── step log ───────────────────────────────────────────────────────────────
+  function renderStepLog(log) {
+    const wrap = $("stepLogWrap");
+    const header = wrap.querySelector(".step-hdr");
+    wrap.innerHTML = "";
+    if (header) wrap.appendChild(header.cloneNode(true));
+    log.forEach(s => {
+      const div = document.createElement("div");
+      div.className = "step-row" + (s.rescueApplied ? " rescue" : "");
+      div.innerHTML = [
+        s.t, s.rxAngle, s.blochX, s.blochY, s.blochZ, s.purity, s.collapseProb, s.intensityProxy
+      ].map(v => `<span>${v}</span>`).join("");
+      wrap.appendChild(div);
+    });
+  }
+
+  // ── charts ─────────────────────────────────────────────────────────────────
+  function drawCharts(data) {
+    const log = data.sampledStepLog || [];
+    if (!log.length) return;
+    drawBlochChart(log);
+    drawIntensityChart(log);
+  }
+
+  function drawBlochChart(log) {
+    const canvas = $("blochCanvas");
+    const ctx = canvas.getContext("2d");
+    const W = canvas.offsetWidth || 900;
+    canvas.width = W;
+    ctx.clearRect(0, 0, W, 260);
+
+    const pad = 44, h = 260, ph = h - pad * 2;
+    const n = log.length;
+    const xScale = n > 1 ? (W - pad * 2) / (n - 1) : 1;
+
+    // grid
+    ctx.strokeStyle = "rgba(255,255,255,.05)";
+    ctx.lineWidth = 1;
+    for (let g = 0; g <= 4; g++) {
+      const y = pad + (g / 4) * ph;
+      ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+    }
+    // zero line
+    ctx.strokeStyle = "rgba(255,255,255,.12)";
+    const zy = pad + ph / 2;
+    ctx.beginPath(); ctx.moveTo(pad, zy); ctx.lineTo(W - pad, zy); ctx.stroke();
+
+    function plotLine(key, color) {
+      ctx.beginPath();
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+      log.forEach((s, i) => {
+        const x = pad + i * xScale;
+        const y = pad + ph * (1 - (s[key] + 1) / 2);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    plotLine("blochZ", "#c87aff");
+    plotLine("blochY", "#59f4ff");
+    plotLine("blochX", "#74ffb8");
+
+    // legend
+    [["Z", "#c87aff"], ["Y", "#59f4ff"], ["X", "#74ffb8"]].forEach(([label, color], i) => {
+      ctx.fillStyle = color;
+      ctx.fillRect(pad + i * 55, 8, 12, 3);
+      ctx.font = "10px Inter,system-ui,sans-serif";
+      ctx.fillStyle = color;
+      ctx.fillText("Bloch " + label, pad + i * 55 + 15, 12);
+    });
+
+    // y axis labels
+    ctx.fillStyle = "rgba(160,144,192,.6)";
+    ctx.font = "9px Inter,system-ui,sans-serif";
+    ["+1", "0", "−1"].forEach((lbl, i) => {
+      const y = pad + (i / 2) * ph;
+      ctx.fillText(lbl, 4, y + 4);
+    });
+  }
+
+  function drawIntensityChart(log) {
+    const canvas = $("intensityCanvas");
+    const ctx = canvas.getContext("2d");
+    const W = canvas.offsetWidth || 900;
+    canvas.width = W;
+    ctx.clearRect(0, 0, W, 160);
+
+    const pad = 44, h = 160, ph = h - pad;
+    const n = log.length;
+    const maxI = Math.max(...log.map(s => s.intensityProxy), 0.001);
+    const xScale = n > 1 ? (W - pad * 2) / (n - 1) : 1;
+
+    // fill
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(255,221,87,.1)";
+    log.forEach((s, i) => {
+      const x = pad + i * xScale;
+      const y = 10 + ph * (1 - s.intensityProxy / maxI);
+      i === 0 ? ctx.moveTo(x, h) : ctx.lineTo(x, y);
+    });
+    ctx.lineTo(pad + (n - 1) * xScale, h);
+    ctx.closePath(); ctx.fill();
+
+    // line
+    ctx.beginPath();
+    ctx.strokeStyle = "#ffdd57"; ctx.lineWidth = 1.5;
+    log.forEach((s, i) => {
+      const x = pad + i * xScale;
+      const y = 10 + ph * (1 - s.intensityProxy / maxI);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // rescue markers
+    log.forEach((s, i) => {
+      if (!s.rescueApplied) return;
+      const x = pad + i * xScale;
+      ctx.beginPath();
+      ctx.arc(x, 10 + ph * (1 - s.intensityProxy / maxI), 3, 0, Math.PI * 2);
+      ctx.fillStyle = "#9f60ff"; ctx.fill();
+    });
+
+    ctx.fillStyle = "rgba(160,144,192,.5)";
+    ctx.font = "9px Inter,system-ui,sans-serif";
+    ctx.fillText("Intensity Proxy (sonoluminescence)", pad, h - 4);
+    ctx.fillText("● rescue", W - 80, h - 4);
+    ctx.fillStyle = "#9f60ff";
+    ctx.fillText("●", W - 88, h - 4);
+  }
+
+  // ── initial GET status ─────────────────────────────────────────────────────
+  (async function loadStatus() {
+    try {
+      const resp = await fetch("/api/sonoluminescence-simulation");
+      const data = await resp.json();
+      if (data && data.ok) {
+        // auto-run default on load
+        runSim();
+      }
+    } catch (_) {}
+  })();
+
+})();
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

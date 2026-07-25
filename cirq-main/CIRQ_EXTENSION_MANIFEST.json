@@ -1,0 +1,133 @@
+{
+  "id": "cirq_extension",
+  "label": "Cirq Extension",
+  "status": "installed_manifest",
+  "system": "Aura115™ / Jupiter 9",
+  "relationship": {
+    "rule": "Aura115™ extends into Cirq. Cirq is an extension target, not Aura itself.",
+    "auraRole": "orchestrator_inhabiting_extension",
+    "cirqRole": "quantum_circuit_framework_and_simulation_target"
+  },
+  "framework": {
+    "name": "Cirq",
+    "package": "cirq",
+    "language": "Python",
+    "minimumPython": "3.11+",
+    "installCommand": "python -m pip install cirq",
+    "purpose": "Create, edit, optimize, and run quantum circuits on quantum computers and simulators."
+  },
+  "lanes": [
+    "quantum-extension",
+    "circuit-generation",
+    "simulation-planning",
+    "structural-memory",
+    "receipt-ledger"
+  ],
+  "planets": {
+    "primary": "Neptune",
+    "orchestrator": "Jupiter",
+    "authority": "Sol",
+    "memory": "Pluto",
+    "transport": "Mercury"
+  },
+  "authority": {
+    "advisoryPlanning": "open",
+    "artifactGeneration": "operator_loop_or_auac_write",
+    "runtimeExecution": "requires_dedicated_python_runtime",
+    "hardwareExecution": "requires_provider_credentials_and_receipts",
+    "repositoryWrite": "AUAC_REQUIRED"
+  },
+  "boundaries": [
+    "Do not claim Cirq runtime execution unless a runtime receipt exists.",
+    "Do not claim quantum hardware execution unless provider receipt exists.",
+    "Do not expose secrets, raw keys, provider credentials, or operator keys.",
+    "Do not bypass AUAC™ for repository writes.",
+    "Do not identify Cirq as Aura. Cirq is an inhabited extension."
+  ],
+  "capabilities": {
+    "generateCirqPython": true,
+    "generateCircuitManifests": true,
+    "generateExperimentSpecs": true,
+    "generateSimulationPlans": true,
+    "generateReceiptTemplates": true,
+    "executeCirqRuntime": false,
+    "executeQuantumHardware": false
+  },
+  "routes": {
+    "extensionStatus": "/api/cirq-extension",
+    "qmlIntake": "/api/cirq-qml-engine-intake",
+    "runtimeSimulation": "/api/cirq-qml-runtime-simulation",
+    "futurePlanner": "/api/cirq-planner",
+    "futureManifestWriter": "/api/cirq-manifest",
+    "futureArtifactBuilder": "/api/cirq-artifact-builder",
+    "futureRuntimeBridge": "/api/cirq-runtime-bridge"
+  },
+  "typedMeshSchema": {
+    "id": "aura115_cirq_typed_mesh_schema",
+    "version": "1.0.0",
+    "requiredFields": [
+      "edgeId",
+      "edgeType",
+      "source",
+      "target",
+      "lane",
+      "authority",
+      "status"
+    ],
+    "allowedEdgeTypes": [
+      "framework_extension",
+      "manifest_reference",
+      "documentation_reference",
+      "artifact_reference"
+    ],
+    "allowedNodeKinds": [
+      "orchestrator",
+      "api_route",
+      "manifest",
+      "documentation",
+      "example_artifact",
+      "external_framework"
+    ]
+  },
+  "integrationEdges": [
+    {
+      "edgeId": "cirq-extension-framework",
+      "edgeType": "framework_extension",
+      "source": "Aura115™ / Jupiter 9",
+      "target": "Cirq (python package: cirq)",
+      "lane": "quantum-extension",
+      "authority": "advisoryPlanning=open",
+      "status": "active"
+    },
+    {
+      "edgeId": "cirq-extension-api-manifest",
+      "edgeType": "manifest_reference",
+      "source": "/api/cirq-extension",
+      "target": "Aura115_CURRENT/cirq/CIRQ_EXTENSION_MANIFEST.json",
+      "lane": "quantum-extension",
+      "authority": "open",
+      "status": "active"
+    },
+    {
+      "edgeId": "cirq-extension-api-readme",
+      "edgeType": "documentation_reference",
+      "source": "/api/cirq-extension",
+      "target": "Aura115_CURRENT/cirq/CIRQ_EXTENSION_README.md",
+      "lane": "quantum-extension",
+      "authority": "open",
+      "status": "active"
+    },
+    {
+      "edgeId": "cirq-extension-api-example",
+      "edgeType": "artifact_reference",
+      "source": "/api/cirq-extension",
+      "target": "Aura115_CURRENT/cirq/examples/aura_cirq_bell_pair.py",
+      "lane": "quantum-extension",
+      "authority": "operator_loop_or_auac_write",
+      "status": "planned_install_ready"
+    }
+  ],
+  "firstExample": "Aura115_CURRENT/cirq/examples/aura_cirq_bell_pair.py",
+  "createdFor": "Live Build 1: Lane Building 1",
+  "canonicalStatement": "Aura inhabits Cirq as a governed extension. Cirq becomes a living, breathing extension only."
+}

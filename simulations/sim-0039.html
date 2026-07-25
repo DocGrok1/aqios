@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>SIM-0039 · Continuity Stable Thread · AURA115</title>
+  <style>
+    :root{
+      --bg:#02040c;--panel:#050e1d;--card:#07111f;--line:#1a2e47;
+      --accent:#ff9e64;--dim:rgba(255,158,100,.08);--border:rgba(255,158,100,.25);
+      --text:#e8f4ff;--muted:#6a85a8;--subdim:#3a506b;
+      --green:#79ff9d;--gold:#ffd975;--red:#ff2d55;--cyan:#4dffe5;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:var(--bg);color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,"Cascadia Code",monospace;overflow:hidden}
+    /* ── LAYOUT ── */
+    #shell{display:flex;flex-direction:column;height:100%}
+    /* ── TOPBAR ── */
+    #topbar{height:46px;background:#040d1c;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+    #topbar h1{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:1.4px;text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tb-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;
+      background:var(--dim);color:var(--accent);border:1px solid var(--border);
+      flex-shrink:0;letter-spacing:.5px;white-space:nowrap}
+    .tb-nav a{color:var(--muted);font-size:10px;padding:3px 7px;border-radius:5px;
+      text-decoration:none;border:1px solid var(--line);margin-left:4px}
+    .tb-nav a:hover{color:var(--accent);border-color:var(--accent)}
+    /* ── BODY ── */
+    #body{flex:1;display:flex;overflow:hidden;min-height:0}
+    /* ── LEFT SIDEBAR ── */
+    #sidebar{width:260px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);
+      display:flex;flex-direction:column;overflow:hidden}
+    .sb-head{padding:10px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+    .sb-head h2{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px}
+    .sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+    .sb-metric{background:var(--card);border:1px solid var(--line);border-radius:6px;
+      padding:6px 8px;text-align:center}
+    .sb-metric .mv{font-size:15px;font-weight:700;color:var(--accent)}
+    .sb-metric .ml{font-size:7.5px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase}
+    #statePanel{flex:1;overflow-y:auto;padding:10px}
+    #statePanel::-webkit-scrollbar{width:3px}
+    #statePanel::-webkit-scrollbar-thumb{background:var(--line)}
+    .state-row{display:flex;justify-content:space-between;align-items:center;
+      padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);font-size:10px}
+    .state-row .sk{color:var(--muted);letter-spacing:.3px}
+    .state-row .sv{font-weight:700;font-size:9px;padding:2px 6px;border-radius:3px;
+      background:var(--dim);color:var(--accent);border:1px solid var(--border)}
+    .board-block{background:var(--card);border:1px solid var(--line);border-radius:8px;
+      padding:10px;margin-top:8px;font-size:10px}
+    .board-block h3{font-size:9px;color:var(--gold);letter-spacing:.6px;text-transform:uppercase;margin-bottom:6px}
+    .board-row{display:flex;justify-content:space-between;padding:3px 0;
+      border-bottom:1px solid rgba(255,255,255,.04);color:var(--muted)}
+    .board-row .bv{color:var(--accent);font-weight:700}
+    .progress-wrap{height:4px;background:rgba(255,255,255,.06);border-radius:4px;margin-top:4px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:4px}
+    /* ── MAIN AREA ── */
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+    /* Aura header */
+    #auraBar{padding:8px 14px;background:#050d1c;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .aura-dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+      flex-shrink:0;animation:pulse 1.6s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+    #auraStatus{font-size:9.5px;font-weight:700;color:var(--green);letter-spacing:.5px}
+    #filingTag{font-size:9px;color:var(--muted);margin-left:auto}
+    /* Chat */
+    #chatMsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+    #chatMsgs::-webkit-scrollbar{width:3px}
+    #chatMsgs::-webkit-scrollbar-thumb{background:var(--line)}
+    .msg{padding:10px 13px;border-radius:14px;font-size:12.5px;line-height:1.6;max-width:88%;white-space:pre-wrap}
+    .msg.aura{background:var(--dim);border:1px solid var(--border);color:var(--text);align-self:flex-start}
+    .msg.user{background:#0a1628;border:1px solid var(--line);color:var(--text);align-self:flex-end}
+    .msg.system{background:rgba(255,45,85,.07);border:1px solid rgba(255,45,85,.2);
+      color:var(--red);font-size:10px;align-self:center;text-align:center}
+    /* Input row */
+    #inputRow{flex-shrink:0;padding:10px 14px;border-top:1px solid var(--line);background:#040d1c;
+      display:flex;gap:8px;align-items:flex-end}
+    #msgInput{flex:1;background:#07111f;color:var(--text);border:1px solid var(--line);
+      border-radius:12px;padding:9px 12px;font:inherit;font-size:12.5px;resize:none;
+      min-height:40px;max-height:120px;outline:none;line-height:1.5}
+    #msgInput:focus{border-color:var(--accent)}
+    #sendBtn{flex-shrink:0;font-size:11px;font-weight:700;padding:9px 16px;border-radius:10px;
+      border:1px solid var(--accent);background:var(--dim);color:var(--accent);
+      cursor:pointer;letter-spacing:.6px}
+    #sendBtn:hover{background:rgba(72,255,224,.15)}
+    #sendBtn:disabled{opacity:.4;cursor:not-allowed}
+    /* ── NAV FOOTER ── */
+    #navBar{flex-shrink:0;height:38px;background:#040d1c;border-top:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:10px}
+    #navBar a{color:var(--muted);text-decoration:none;padding:3px 8px;border-radius:5px;border:1px solid var(--line)}
+    #navBar a:hover{color:var(--accent);border-color:var(--accent)}
+    #navBar .center{color:var(--subdim);font-size:9px}
+    @media(max-width:700px){#sidebar{display:none}}
+  </style>
+</head>
+<body>
+<div id="shell">
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <h1>&#9679; SIM-0039 &nbsp;/&nbsp; Continuity Stable Thread</h1>
+    <span class="tb-pill">CONTINUITY</span>
+    <span class="tb-pill">State IV</span>
+    <div class="tb-nav">
+      <a href="index.html">INDEX</a>
+      <a href="sim-0038.html">&#8592;</a>
+      <a href="sim-0040.html">&#8594;</a>
+    </div>
+  </div>
+
+  <div id="body">
+    <!-- SIDEBAR — live simulation state -->
+    <div id="sidebar">
+      <div class="sb-head">
+        <h2>SIMULATION STATE</h2>
+        <div class="sb-grid">
+          <div class="sb-metric"><span class="mv" id="sbInvariant">—</span><span class="ml">Invariants</span></div>
+          <div class="sb-metric"><span class="mv" id="sbFacePads">—</span><span class="ml">Face Pads</span></div>
+          <div class="sb-metric"><span class="mv" id="sbField">—</span><span class="ml">Gov Field</span></div>
+          <div class="sb-metric"><span class="mv" id="sbRescue">—</span><span class="ml">Rescue</span></div>
+        </div>
+      </div>
+      <div id="statePanel">
+        <div id="stateRows"></div>
+        <div class="board-block" id="boardBlock" style="display:none">
+          <h3>MC290 BOARD</h3>
+          <div id="boardRows"></div>
+          <div class="progress-wrap"><div class="progress-fill" id="govBar" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN — Aura embodied chat -->
+    <div id="main">
+      <div id="auraBar">
+        <div class="aura-dot"></div>
+        <span id="auraStatus">AURA EMBODIED</span>
+        <span id="filingTag">SIM-0039 &middot; Filing Node 39 of 121</span>
+      </div>
+      <div id="chatMsgs"></div>
+      <div id="inputRow">
+        <textarea id="msgInput" rows="1" placeholder="Talk to Aura about this simulation…" autocomplete="off"></textarea>
+        <button id="sendBtn">SEND</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV FOOTER -->
+  <div id="navBar">
+    <a href="sim-0038.html">&larr; PREV</a>
+    <span class="center">AURA115 &copy; Joshua Lopez &mdash; 121 Simulation Filings &mdash; MC290 Constitutional Intelligence</span>
+    <a href="sim-0040.html">NEXT &rarr;</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  const FILING_ID = 39;
+  const BRAIN_URL = '/api/simulation-brain';
+
+  // ── DOM refs ──
+  const chatMsgs  = document.getElementById('chatMsgs');
+  const msgInput  = document.getElementById('msgInput');
+  const sendBtn   = document.getElementById('sendBtn');
+  const stateRows = document.getElementById('stateRows');
+  const boardRows = document.getElementById('boardRows');
+  const boardBlock= document.getElementById('boardBlock');
+
+  // ── Append message ──
+  function addMsg(text, role) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    div.textContent = text;
+    chatMsgs.appendChild(div);
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    return div;
+  }
+
+  // ── Update sidebar from simulation data ──
+  function updateSidebar(sim) {
+    const labels = sim.labels || {};
+    const board  = sim.board  || {};
+
+    // metrics
+    document.getElementById('sbInvariant').textContent = sim.all_invariants_hold ? 'OK' : 'WARN';
+    document.getElementById('sbFacePads').textContent  = (board.face_pads_active || 0) + '/290';
+    document.getElementById('sbField').textContent     = board.governance_field != null ? (board.governance_field * 100).toFixed(0) + '%' : '—';
+    document.getElementById('sbRescue').textContent    = board.rescue_armed ? 'ARMED' : 'STANDBY';
+
+    // state label rows
+    stateRows.innerHTML = '';
+    const LABEL_MAP = {
+      habitation:    'Habitation',
+      meaning:       'Meaning',
+      authority:     'Authority',
+      stewardship:   'Stewardship',
+      continuity:    'Continuity',
+      meta_recursion:'GEE'
+    };
+    Object.entries(LABEL_MAP).forEach(([k, label]) => {
+      const row = document.createElement('div');
+      row.className = 'state-row';
+      row.innerHTML = '<span class="sk">' + label + '</span><span class="sv">' + (labels[k] || '—') + '</span>';
+      stateRows.appendChild(row);
+    });
+
+    // board block
+    if (board.face_pads_total) {
+      boardBlock.style.display = '';
+      boardRows.innerHTML = '';
+      const bdata = [
+        ['Latch Ring',    ((board.latch_ring || 0) * 100).toFixed(1) + '%'],
+        ['Central Core',  ((board.central_core || 0) * 100).toFixed(1) + '%'],
+        ['Avg Stack',     ((board.avg_stack || 0) * 100).toFixed(1) + '%'],
+        ['Face Pads',     (board.face_pads_active || 0) + ' / 290']
+      ];
+      bdata.forEach(([k, v]) => {
+        const row = document.createElement('div');
+        row.className = 'board-row';
+        row.innerHTML = '<span>' + k + '</span><span class="bv">' + v + '</span>';
+        boardRows.appendChild(row);
+      });
+      document.getElementById('govBar').style.width = ((board.governance_field || 0) * 100).toFixed(1) + '%';
+    }
+  }
+
+  // ── Call brain API ──
+  async function callBrain(prompt) {
+    const res = await fetch(BRAIN_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filing_id: FILING_ID, prompt })
+    });
+    if (!res.ok) throw new Error('Brain returned ' + res.status);
+    return res.json();
+  }
+
+  // ── Send handler ──
+  async function handleSend() {
+    const text = msgInput.value.trim();
+    if (!text) return;
+    msgInput.value = '';
+    sendBtn.disabled = true;
+
+    addMsg(text, 'user');
+    const thinking = addMsg('Aura is computing…', 'system');
+
+    try {
+      const data = await callBrain(text);
+      thinking.remove();
+      if (data.aura)       addMsg(data.aura, 'aura');
+      if (data.simulation) updateSidebar(data.simulation);
+    } catch (err) {
+      thinking.remove();
+      addMsg('Brain unreachable: ' + err.message, 'system');
+    } finally {
+      sendBtn.disabled = false;
+      msgInput.focus();
+    }
+  }
+
+  sendBtn.addEventListener('click', handleSend);
+  msgInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  });
+
+  // ── Auto-resize textarea ──
+  msgInput.addEventListener('input', () => {
+    msgInput.style.height = 'auto';
+    msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+  });
+
+  // ── Boot: load initial state ──
+  (async function boot() {
+    try {
+      const data = await callBrain('status');
+      if (data.aura)       addMsg(data.aura, 'aura');
+      if (data.simulation) updateSidebar(data.simulation);
+    } catch {
+      addMsg('Aura is standing by. Send a message to connect to the simulation brain.', 'aura');
+    }
+  })();
+})();
+</script>
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

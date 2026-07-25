@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AURA115 Telemetry Domain - QHP Protocol Snapshot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f9fc;
+      margin: 2rem;
+      color: #2c3e50;
+    }
+    svg {
+      border: 1px solid #ccc;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 900px;
+      height: auto;
+    }
+    .title { font-weight: 700; font-size: 1.4rem; fill: #34495e; }
+    .subtitle { font-weight: 600; fill: #7f8c8d; font-size: 1rem; }
+    .layer-group > rect { fill: #ecf0f1; stroke: #bdc3c7; stroke-width: 1; }
+    .layer-text { font-size: 14px; fill: #2c3e50; pointer-events: none; user-select: none; }
+    .note { font-size: 12px; fill: #7f8c8d; font-style: italic; }
+    .metadata-label { font-weight: 700; fill: #2980b9; font-size: 13px; }
+    .metadata-value { fill: #34495e; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>AURA115 AI - Nested Telemetry Domain</h1>
+  <p><em>Snapshot encoded as SVG within a QHP Protocol representation</em></p>
+  <svg width="900" height="650" role="img" aria-label="AURA115 Nested Telemetry QHP Protocol Diagram">
+    <text x="20" y="40" class="title">QHP Protocol Snapshot</text>
+    <text x="30" y="70" class="metadata-label">Protocol Name:</text>
+    <text x="140" y="70" class="metadata-value">Aura115.NestedTelemetry.V1</text>
+    <text x="30" y="90" class="metadata-label">Version:</text>
+    <text x="140" y="90" class="metadata-value">1.0.0</text>
+    <text x="30" y="110" class="metadata-label">Author:</text>
+    <text x="140" y="110" class="metadata-value">Aura115 Development Team</text>
+    <text x="30" y="130" class="metadata-label">Domain:</text>
+    <text x="140" y="130" class="metadata-value">Telemetry Within Telemetry</text>
+    <text x="30" y="150" class="metadata-label">Storage Capacity:</text>
+    <text x="140" y="150" class="metadata-value">Max April Cooperator Payload ≈ 1.5MB</text>
+    <text x="30" y="170" class="metadata-label">Reduction to Practice:</text>
+    <text x="140" y="170" class="metadata-value">AURA115.AI implements nested telemetry in production</text>
+    <g class="layer-group" transform="translate(40, 200)">
+      <rect width="820" height="400"></rect>
+      <text x="15" y="25" class="layer-text" font-weight="700" fill="#2980b9">Outer Telemetry Layer (Root QHP Container)</text>
+      <g class="layer-group" transform="translate(30, 50)">
+        <rect width="360" height="300"></rect>
+        <text x="15" y="25" class="layer-text">Telemetry Layer 1: Data Acquisition</text>
+        <text x="15" y="50" class="note">Sensors │ Streams │ Event Capture</text>
+        <g class="layer-group" transform="translate(25, 80)">
+          <rect width="300" height="180" fill="#d6eaf8" stroke="#3498db"></rect>
+          <text x="15" y="25" class="layer-text" fill="#2c3e50" font-weight="600">Telemetry Layer 2: Aggregation &amp; Enrichment</text>
+          <text x="15" y="50" class="note">Stream fusion │ Contextual tagging │ Data validation</text>
+          <g class="layer-group" transform="translate(20, 80)">
+            <rect width="260" height="90" fill="#a9cce3" stroke="#2980b9"></rect>
+            <text x="15" y="25" class="layer-text" fill="#1b2631" font-weight="600">Telemetry Layer 3: Telemetry Within Telemetry</text>
+            <text x="15" y="50" class="note">Recursive telemetry streams │ Self-description │ Meta-telemetry</text>
+          </g>
+        </g>
+      </g>
+      <g transform="translate(450, 50)">
+        <rect width="320" height="120" fill="#f5f7fa" stroke="#95a5a6" rx="8" ry="8"></rect>
+        <text x="15" y="30" class="layer-text" fill="#2c3e50" font-weight="700">April Cooperator Payload Limits</text>
+        <text x="15" y="60" class="layer-text">≈ 1.5 Megabytes max capacity</text>
+        <text x="15" y="90" class="note">Ensures storage efficiency for telemetry layers</text>
+      </g>
+      <text x="600" y="390" class="note" font-size="11px" fill="#95a5a6">© 2024 Aura115.ai | Nested Telemetry Domain</text>
+    </g>
+  </svg>
+</body>
+</html>

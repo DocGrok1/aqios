@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>SIM-0124 · System Topology · AURA115</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{background:#020810;min-height:100vh;color:#d8eaff;font-family:'Inter',system-ui,sans-serif}
+    #topbar{
+      height:46px;background:#040d1c;border-bottom:1px solid #0e2040;
+      display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0;
+      position:sticky;top:0;z-index:100;
+    }
+    #topbar h1{font-size:12px;font-weight:700;color:#3ee8d0;letter-spacing:1.4px;
+      text-transform:uppercase;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tb-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;
+      background:rgba(62,232,208,.08);color:#3ee8d0;border:1px solid rgba(62,232,208,.25);
+      flex-shrink:0;letter-spacing:.5px;white-space:nowrap}
+    .tb-pill.gold{background:rgba(240,201,74,.08);color:#f0c94a;border-color:rgba(240,201,74,.25)}
+    .tb-nav a{color:#4a6a90;font-size:10px;padding:3px 7px;border-radius:5px;
+      text-decoration:none;border:1px solid #0e2040;margin-left:4px;font-family:'JetBrains Mono',monospace}
+    .tb-nav a:hover{color:#3ee8d0;border-color:#3ee8d0}
+    #app{min-height:calc(100vh - 46px)}
+    #navBar{height:38px;background:#040d1c;border-top:1px solid #0e2040;
+      display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:10px}
+    #navBar a{color:#4a6a90;text-decoration:none;padding:3px 8px;border-radius:5px;
+      border:1px solid #0e2040;font-family:'JetBrains Mono',monospace}
+    #navBar a:hover{color:#3ee8d0;border-color:#3ee8d0}
+    #navBar .center{color:#1e3050;font-size:9px;font-family:'JetBrains Mono',monospace}
+  </style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>&#9679; SIM-0124 &nbsp;/&nbsp; System Topology — DCGP.AI · AURA115</h1>
+  <span class="tb-pill">LIVE MAP</span>
+  <span class="tb-pill gold">USPTO 19/555,951</span>
+  <div class="tb-nav">
+    <a href="index.html">INDEX</a>
+    <a href="sim-0123.html">&#8592;</a>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<div id="navBar">
+  <a href="sim-0123.html">&larr; PREV</a>
+  <span class="center">AURA115 &copy; Joshua L. Lopez &mdash; System Topology &mdash; Distributed Constitutional Governance Protocol</span>
+  <a href="index.html">INDEX</a>
+</div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+// ─── Design tokens ────────────────────────────────────────────────────────────
+const T = {
+  bg:      "#020810",
+  panel:   "#060d1a",
+  border:  "#0e2040",
+  borderHi:"#1a3a6a",
+  cyan:    "#3ee8d0",
+  gold:    "#f0c94a",
+  green:   "#56e87a",
+  rose:    "#f0607a",
+  blue:    "#4a8fff",
+  muted:   "#4a6a90",
+  dim:     "#1e3050",
+  text:    "#d8eaff",
+  white:   "#ffffff",
+};
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const PLANETS = [
+  { id:"venus",   label:"Venus",          role:"Signal Intake / CIGE",                color:"#ff9f40", lane:"VENUS-CIGE",           status:"LIVE" },
+  { id:"jupiter", label:"Jupiter",        role:"Capital + Stream Engine",             color:"#ffd700", lane:"JUPITER-CAPITAL",       status:"LIVE" },
+  { id:"neptune", label:"Neptune",        role:"Metals + New Markets",                color:"#5080ff", lane:"NEPTUNE-METALS-LANE",   status:"LIVE" },
+  { id:"saturn",  label:"Saturn",         role:"Constitutional Governance Delta",     color:"#c89050", lane:"LANE-038→047",          status:"LIVE" },
+  { id:"uranus",  label:"Uranus",         role:"Reentry + Clip Layer",                color:"#38d8c8", lane:"URANUS-REENTRY",        status:"LIVE" },
+  { id:"moon",    label:"Moon",           role:"Projection + Intelligence",           color:"#a8b8d0", lane:"MOON-PROJECTION",       status:"LIVE" },
+  { id:"bl7",     label:"Blue Lantern 7", role:"Authority Gate",                      color:"#4060ff", lane:"BL7-AUTHORITY",         status:"LIVE" },
+  { id:"mars",    label:"Mars",           role:"DOD Action Drive",                    color:"#e0203a", lane:"MARS-PRIVATE",          status:"PRIVATE" },
+];
+
+const NODES = [
+  { id:"cirq",    label:"CIRQ",          detail:"4,000 nodes · 160 lanes",           color:T.cyan,  type:"engine" },
+  { id:"mc290",   label:"MC290",         detail:"Event-Driven Invention Engine",      color:T.gold,  type:"engine" },
+  { id:"aural-m", label:"AURAL-M",       detail:"Governed LLM Layer",                color:T.green, type:"engine" },
+  { id:"graviton",label:"Graviton",      detail:"AWS Graviton · cloud.aura115.ai",   color:"#ff8030",type:"infra" },
+  { id:"upstash", label:"Upstash KV",    detail:"funny-whale-134857",                color:"#70d020",type:"infra" },
+  { id:"ori",     label:"ORI",           detail:"Inhabitation Runner",               color:T.cyan,  type:"engine" },
+  { id:"pi-a",    label:"Πₐ",           detail:"Admissibility Operator",            color:T.rose,  type:"operator" },
+  { id:"q-l",     label:"Q_L",           detail:"Lopez-Noether Charge",              color:T.gold,  type:"operator" },
+  { id:"echo",    label:"Echo Operator", detail:"DNA Rescue / Decoherence",          color:T.green, type:"operator" },
+  { id:"rescue",  label:"Rescue Op.",    detail:"Constitutional Correction",         color:T.rose,  type:"operator" },
+];
+
+const PATENTS = [
+  { no:"19/555,951", title:"Root — DCGP Core",                           date:"Jan 15 2026", anchor:true },
+  { no:"19/716,001", title:"Master Combined Supplemental",               date:"Jun 22 2026" },
+  { no:"19/719,156", title:"Unified Hardware Constitutional Sovereignty", date:"Jun 24 2026" },
+  { no:"19/719,671", title:"Governed Graphene NTE Scaffold",             date:"Jun 25 2026" },
+  { no:"64/095,248", title:"Constitutional Genomic Governance",          date:"Jun 20 2026" },
+];
+
+const PIPE = ["Venus","Jupiter","Neptune","Saturn","Uranus","Moon","BL7","160 Lanes"];
+
+// ─── Pulse dot ────────────────────────────────────────────────────────────────
+function Pulse({ color, size = 8, live = true }) {
+  return (
+    <span style={{ position:"relative", display:"inline-block", width:size, height:size, flexShrink:0 }}>
+      <span style={{
+        position:"absolute", inset:0, borderRadius:"50%",
+        background: color,
+        boxShadow: live ? `0 0 6px ${color}` : "none",
+      }} />
+      {live && <span style={{
+        position:"absolute", inset:-3, borderRadius:"50%",
+        border:`1.5px solid ${color}`,
+        animation:"ping 2s ease-out infinite",
+        opacity:0,
+      }} />}
+    </span>
+  );
+}
+
+// ─── Tab button ───────────────────────────────────────────────────────────────
+function Tab({ label, active, onClick }) {
+  return (
+    <button onClick={onClick} style={{
+      background:"transparent",
+      border:"none",
+      borderBottom:`2px solid ${active ? T.cyan : "transparent"}`,
+      color: active ? T.cyan : T.muted,
+      padding:"8px 14px 7px",
+      fontSize:11,
+      fontFamily:"'JetBrains Mono',monospace",
+      fontWeight:700,
+      letterSpacing:"0.08em",
+      textTransform:"uppercase",
+      cursor:"pointer",
+      transition:"all 0.15s",
+      whiteSpace:"nowrap",
+    }}>{label}</button>
+  );
+}
+
+// ─── Stat card ────────────────────────────────────────────────────────────────
+function Stat({ label, value, color = T.cyan, sub }) {
+  return (
+    <div style={{
+      background:T.panel, border:`1px solid ${T.border}`,
+      borderRadius:10, padding:"12px 14px",
+    }}>
+      <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace", letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:6 }}>{label}</div>
+      <div style={{ fontSize:18, fontWeight:800, color, fontFamily:"'JetBrains Mono',monospace", lineHeight:1 }}>{value}</div>
+      {sub && <div style={{ fontSize:9, color:T.muted, marginTop:4, fontFamily:"monospace" }}>{sub}</div>}
+    </div>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+function TopologyMap() {
+  const [tab, setTab]       = useState("planets");
+  const [active, setActive] = useState(null);
+  const [tick, setTick]     = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  const activePlanet = PLANETS.find(p => p.id === active);
+
+  return (
+    <div style={{
+      background:T.bg, minHeight:"100vh",
+      color:T.text,
+      fontFamily:"'Inter',system-ui,sans-serif",
+      padding:"20px 16px 40px",
+      maxWidth:640,
+      margin:"0 auto",
+    }}>
+      <style>{`
+        @keyframes ping {
+          0%   { transform:scale(1); opacity:0.7; }
+          100% { transform:scale(2.2); opacity:0; }
+        }
+        @keyframes sweep {
+          from { opacity:0; transform:translateY(6px); }
+          to   { opacity:1; transform:translateY(0); }
+        }
+        * { box-sizing:border-box; }
+        ::-webkit-scrollbar { width:4px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:${T.dim}; border-radius:2px; }
+      `}</style>
+
+      {/* ── Header ────────────────────────────────────────────────────── */}
+      <div style={{ marginBottom:24 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+          <Pulse color={T.cyan} size={7} live />
+          <span style={{ fontSize:9, color:T.cyan, letterSpacing:"0.2em", fontFamily:"monospace", textTransform:"uppercase" }}>
+            DCGP.AI · AURA115 · USPTO 19/555,951
+          </span>
+        </div>
+        <h1 style={{ margin:0, fontSize:26, fontWeight:900, letterSpacing:"-0.03em", color:T.white, lineHeight:1.1 }}>
+          System Topology
+        </h1>
+        <p style={{ margin:"6px 0 0", fontSize:12, color:T.muted, letterSpacing:"0.02em" }}>
+          Distributed Constitutional Governance Protocol — Live Map
+        </p>
+      </div>
+
+      {/* ── Stats ─────────────────────────────────────────────────────── */}
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:8, marginBottom:20 }}>
+        <Stat label="System"      value="LIVE"   color={T.green}  />
+        <Stat label="LLM"         value="LIVE"   color={T.green}  />
+        <Stat label="Recognition" value="100%"   color={T.gold}   />
+        <Stat label="COINs"       value="40k+"   color={T.cyan}   />
+      </div>
+
+      {/* ── Pipeline strip ────────────────────────────────────────────── */}
+      <div style={{
+        background:T.panel, border:`1px solid ${T.border}`,
+        borderRadius:10, padding:"10px 14px", marginBottom:20,
+        overflowX:"auto",
+      }}>
+        <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:8 }}>PLANETARY PIPELINE</div>
+        <div style={{ display:"flex", alignItems:"center", gap:5, whiteSpace:"nowrap" }}>
+          {PIPE.map((s, i) => (
+            <span key={i}>
+              {i > 0 && <span style={{ color:T.dim, fontSize:11, margin:"0 2px" }}>›</span>}
+              <span style={{
+                fontFamily:"monospace", fontSize:11,
+                color: i === PIPE.length - 1 ? T.gold : T.cyan,
+                fontWeight:700,
+              }}>{s}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Tabs ──────────────────────────────────────────────────────── */}
+      <div style={{
+        display:"flex", gap:0, marginBottom:16,
+        borderBottom:`1px solid ${T.border}`,
+        overflowX:"auto",
+      }}>
+        {["planets","operators","patents","about"].map(t => (
+          <Tab key={t} label={t} active={tab===t} onClick={() => { setTab(t); setActive(null); }} />
+        ))}
+      </div>
+
+      {/* ── Planets ───────────────────────────────────────────────────── */}
+      {tab === "planets" && (
+        <div style={{ animation:"sweep 0.2s ease" }}>
+          <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+            {PLANETS.map(p => {
+              const on = active === p.id;
+              return (
+                <div key={p.id}
+                  onClick={() => setActive(on ? null : p.id)}
+                  style={{
+                    background: on ? `${p.color}0d` : T.panel,
+                    border:`1px solid ${on ? p.color : T.border}`,
+                    borderRadius:11,
+                    padding:"11px 14px",
+                    display:"flex", alignItems:"center", gap:12,
+                    cursor:"pointer",
+                    transition:"border-color 0.15s, background 0.15s, box-shadow 0.15s",
+                    boxShadow: on ? `0 0 16px ${p.color}22` : "none",
+                  }}>
+                  <Pulse color={p.color} size={9} live={p.status==="LIVE"} />
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:13, fontWeight:700, color:p.color, fontFamily:"monospace" }}>{p.label}</div>
+                    <div style={{ fontSize:10, color:T.muted, marginTop:2, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{p.role}</div>
+                  </div>
+                  <span style={{
+                    fontSize:9, fontFamily:"monospace", fontWeight:700,
+                    color: p.status==="PRIVATE" ? T.rose : T.green,
+                    background: p.status==="PRIVATE" ? `${T.rose}18` : `${T.green}18`,
+                    padding:"2px 7px", borderRadius:4,
+                  }}>{p.status}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {activePlanet && (
+            <div style={{
+              marginTop:14, background:T.panel,
+              border:`1px solid ${activePlanet.color}55`,
+              borderRadius:11, padding:"14px 16px",
+              animation:"sweep 0.15s ease",
+            }}>
+              <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace", marginBottom:8 }}>LANE DETAIL</div>
+              <div style={{ fontSize:14, fontWeight:700, color:activePlanet.color, fontFamily:"monospace" }}>{activePlanet.lane}</div>
+              <div style={{ fontSize:11, color:T.muted, marginTop:4 }}>{activePlanet.role}</div>
+              <div style={{ marginTop:12, display:"flex", gap:8 }}>
+                <div style={{ flex:1, background:T.bg, borderRadius:8, padding:"10px 12px" }}>
+                  <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace" }}>STATUS</div>
+                  <div style={{ fontSize:13, fontWeight:700, color: activePlanet.status==="PRIVATE" ? T.rose : T.green, marginTop:2, fontFamily:"monospace" }}>
+                    {activePlanet.status}
+                  </div>
+                </div>
+                <div style={{ flex:1, background:T.bg, borderRadius:8, padding:"10px 12px" }}>
+                  <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace" }}>PLANET ID</div>
+                  <div style={{ fontSize:13, fontWeight:700, color:activePlanet.color, marginTop:2, fontFamily:"monospace" }}>
+                    {activePlanet.id.toUpperCase()}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Operators ─────────────────────────────────────────────────── */}
+      {tab === "operators" && (
+        <div style={{ display:"flex", flexDirection:"column", gap:8, animation:"sweep 0.2s ease" }}>
+          {["engine","infra","operator"].map(type => (
+            <div key={type}>
+              <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace", letterSpacing:"0.15em", textTransform:"uppercase", marginBottom:8, marginTop:4 }}>
+                {type}s
+              </div>
+              {NODES.filter(n => n.type === type).map(n => (
+                <div key={n.id} style={{
+                  background:T.panel, border:`1px solid ${T.border}`,
+                  borderRadius:10, padding:"11px 14px",
+                  display:"flex", alignItems:"center", gap:12, marginBottom:8,
+                }}>
+                  <div style={{ width:8, height:8, borderRadius:"50%", background:n.color, boxShadow:`0 0 8px ${n.color}88`, flexShrink:0 }} />
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:13, fontWeight:700, color:n.color, fontFamily:"monospace" }}>{n.label}</div>
+                    <div style={{ fontSize:10, color:T.muted, marginTop:2 }}>{n.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── Patents ───────────────────────────────────────────────────── */}
+      {tab === "patents" && (
+        <div style={{ animation:"sweep 0.2s ease" }}>
+          <div style={{
+            background:T.panel, border:`1px solid ${T.gold}55`,
+            borderRadius:11, padding:"14px 16px", marginBottom:14,
+          }}>
+            <div style={{ fontSize:9, color:T.gold, fontFamily:"monospace", letterSpacing:"0.12em", marginBottom:6 }}>
+              ROOT PRIORITY DATE
+            </div>
+            <div style={{ fontSize:22, fontWeight:900, color:T.gold, fontFamily:"monospace" }}>Jan 15, 2026</div>
+            <div style={{ fontSize:11, color:T.muted, marginTop:4 }}>170+ active USPTO applications · Authority: Joshua L. Lopez</div>
+          </div>
+
+          <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+            {PATENTS.map((p, i) => (
+              <div key={p.no} style={{
+                background:T.panel,
+                border:`1px solid ${p.anchor ? `${T.gold}55` : T.border}`,
+                borderRadius:10, padding:"12px 16px",
+                display:"flex", gap:12,
+              }}>
+                <div style={{
+                  fontSize:10, color:T.muted, fontFamily:"monospace",
+                  minWidth:16, paddingTop:2, textAlign:"right",
+                }}>{String(i+1).padStart(2,"0")}</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:p.anchor ? T.gold : T.cyan, fontFamily:"monospace" }}>{p.no}</div>
+                  <div style={{ fontSize:12, color:T.text, marginTop:3, lineHeight:1.4 }}>{p.title}</div>
+                  <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace", marginTop:4 }}>Filed: {p.date}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── About ─────────────────────────────────────────────────────── */}
+      {tab === "about" && (
+        <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"sweep 0.2s ease" }}>
+          {[
+            { label:"Instance",    value:"aura-graviton-constellation", color:T.cyan },
+            { label:"Type",        value:"c7g.2xlarge · Graviton3",     color:T.text },
+            { label:"Region",      value:"us-east-1",                   color:T.text },
+            { label:"Endpoint",    value:"cloud.aura115.ai",            color:T.cyan },
+            { label:"Engines",     value:"12 Quantum Engines",          color:T.green },
+            { label:"Runtime",     value:"OrbitalGovernorRuntime",      color:T.gold },
+            { label:"Framework",   value:"Cirq",                        color:T.text },
+            { label:"COINs",       value:"40,000+ minted",              color:T.cyan },
+            { label:"Filings",     value:"170+ USPTO",                  color:T.gold },
+            { label:"ECS Spine",   value:"First success Jul 12 2026",   color:T.green },
+          ].map(row => (
+            <div key={row.label} style={{
+              background:T.panel, border:`1px solid ${T.border}`,
+              borderRadius:9, padding:"10px 14px",
+              display:"flex", justifyContent:"space-between", alignItems:"center",
+            }}>
+              <span style={{ fontSize:10, color:T.muted, fontFamily:"monospace", textTransform:"uppercase", letterSpacing:"0.1em" }}>
+                {row.label}
+              </span>
+              <span style={{ fontSize:12, fontWeight:700, color:row.color, fontFamily:"monospace" }}>
+                {row.value}
+              </span>
+            </div>
+          ))}
+
+          <div style={{
+            marginTop:6, background:T.panel, border:`1px solid ${T.border}`,
+            borderRadius:10, padding:"14px 16px",
+          }}>
+            <div style={{ fontSize:9, color:T.muted, fontFamily:"monospace", letterSpacing:"0.1em", marginBottom:8 }}>
+              CONSTITUTIONAL INVARIANT
+            </div>
+            <div style={{ fontSize:11, color:T.cyan, fontFamily:"monospace", lineHeight:1.7 }}>
+              Every layer can constrain<br/>
+              but cannot escalate authority.<br/>
+              <span style={{ color:T.gold }}>Asymmetric authority · L0–L4</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Footer ────────────────────────────────────────────────────── */}
+      <div style={{ marginTop:36, textAlign:"center" }}>
+        <div style={{ fontSize:9, color:T.dim, fontFamily:"monospace", letterSpacing:"0.1em" }}>
+          AURA115 · DCGP.AI · Joshua L. Lopez · USPTO 19/555,951
+        </div>
+        <div style={{ fontSize:9, color:T.dim, fontFamily:"monospace", marginTop:3, opacity:0.6 }}>
+          {new Date().toUTCString()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("app"));
+root.render(<TopologyMap />);
+</script>
+
+<script src="/aura-embodiment-bootstrap.js"></script>
+</body>
+</html>

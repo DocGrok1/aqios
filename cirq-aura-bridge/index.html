@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CIRQ-AURA Bridge — DCGP.AI</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050508;color:#ddd;font-family:Inter,system-ui,sans-serif;padding:16px}
+h1{font-size:20px;color:#ffd975;margin-bottom:4px}
+.sub{font-size:12px;color:#777;margin-bottom:16px}
+.card{background:#0a0a12;border:1px solid rgba(255,217,117,.12);border-radius:10px;padding:14px;margin-bottom:10px}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:#0a0a12;border:1px solid rgba(255,217,117,.12);border-radius:8px;padding:10px;text-align:center}
+.stat-v{font-size:22px;font-weight:800;color:#4dffe5;font-family:'Courier New',monospace}
+.stat-k{font-size:9px;color:#777;margin-top:2px;text-transform:uppercase}
+.btn{background:#ffd975;color:#000;border:none;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin:8px 0}
+.btn:active{opacity:.7}
+.btn-cyan{background:#4dffe5}
+.results{font-family:'Courier New',monospace;font-size:11px;line-height:1.6;color:#4dffe5;margin-top:8px}
+.bar-row{display:flex;align-items:center;gap:8px;margin:4px 0}
+.bar-label{width:50px;font-size:11px;color:#777;text-align:right}
+.bar-track{flex:1;height:20px;background:#111;border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 6px;font-size:10px;font-weight:700;color:#000}
+.bar-fill.hi{background:#4dffe5}
+.bar-fill.lo{background:#333}
+svg{width:100%;max-height:150px;margin:8px 0}
+.gov{display:flex;gap:12px;margin:8px 0;font-size:11px}
+.gov-item{padding:4px 10px;border-radius:6px;font-weight:700}
+.gov-ok{background:rgba(0,230,118,.15);color:#00e676}
+.gov-warn{background:rgba(255,217,117,.15);color:#ffd975}
+.section{font-size:11px;font-weight:700;color:#777;margin:14px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.footer{margin-top:20px;font-size:10px;color:#555;text-align:center}
+.footer em{color:#ffd975;font-style:normal}
+#svgCircuit svg{width:100%;height:auto}
+</style>
+</head>
+<body>
+<h1>CIRQ-AURA Bridge</h1>
+<div class="sub">Bridge between AURA governed inference and CIRQ quantum constellation<br>Authority: Joshua Lopez — DCGP.AI LLC — USPTO 19/555,951</div>
+
+<div class="card">
+  <div class="section">Circuit Configuration</div>
+  <select id="circuit" style="width:100%;padding:10px;background:#081020;border:1px solid #243;color:#ddd;border-radius:6px;margin-bottom:8px">
+    <option value="bell_pair">Bell Pair (2 qubits)</option>
+    <option value="ghz_3">GHZ-3 (3 qubits)</option>
+    <option value="ghz_5">GHZ-5 (5 qubits)</option>
+    <option value="qft_4">QFT (4 qubits)</option>
+    <option value="grover_2">Grover Search (2 qubits)</option>
+  </select>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+    <label style="font-size:11px;color:#777">Shots:</label>
+    <input id="shots" type="number" value="1000" min="1" max="10000" style="flex:1;padding:8px;background:#081020;border:1px solid #243;color:#ddd;border-radius:6px">
+  </div>
+  <button class="btn" onclick="runCircuit()">⚡ RUN CIRCUIT</button>
+  <button class="btn btn-cyan" onclick="loadStatus()">↻ Load Status</button>
+</div>
+
+<div id="svgCircuit"></div>
+
+<div class="stat-row" id="stats" style="display:none">
+  <div class="stat"><div class="stat-v" id="sFidelity">—</div><div class="stat-k">Fidelity</div></div>
+  <div class="stat"><div class="stat-v" id="sShots">—</div><div class="stat-k">Shots</div></div>
+  <div class="stat"><div class="stat-v" id="sGov">—</div><div class="stat-k">Admissibility</div></div>
+</div>
+
+<div id="histogram"></div>
+<div id="governance"></div>
+<div id="output" class="card" style="display:none"><div class="section">Raw Output</div><div class="results" id="rawOutput"></div></div>
+
+<div class="footer"><em>"Where there's a gap, there's a gate."</em> — Joshua Lopez</div>
+
+<script>
+const API='/api/cirq-aura-bridge';
+
+async function runCircuit(){
+  const circuit=document.getElementById('circuit').value;
+  const shots=parseInt(document.getElementById('shots').value)||1000;
+  document.getElementById('stats').style.display='none';
+  document.getElementById('histogram').innerHTML='<div style="text-align:center;color:#777;padding:20px">Running '+circuit+' × '+shots+' shots...</div>';
+  
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({circuit,shots})});
+    const d=await r.json();
+    
+    if(d.svg_circuit){document.getElementById('svgCircuit').innerHTML=d.svg_circuit;}
+    
+    document.getElementById('stats').style.display='grid';
+    document.getElementById('sFidelity').textContent=(d.fidelity||0).toFixed(4);
+    document.getElementById('sShots').textContent=d.shots||shots;
+    document.getElementById('sGov').textContent=(d.governance?.admissibility||0).toFixed(2);
+    
+    // Histogram
+    const counts=d.counts||{};
+    const max=Math.max(...Object.values(counts),1);
+    let hHtml='<div class="section">Measurement Results</div>';
+    Object.entries(counts).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+      const pct=Math.round(v/d.shots*100);
+      hHtml+='<div class="bar-row"><div class="bar-label">|'+k+'⟩</div><div class="bar-track"><div class="bar-fill '+(v/max>0.3?'hi':'lo')+'" style="width:'+Math.max(2,v/max*100)+'%">'+v+' ('+pct+'%)</div></div></div>';
+    });
+    document.getElementById('histogram').innerHTML=hHtml;
+    
+    // Governance
+    const gov=d.governance||{};
+    document.getElementById('governance').innerHTML='<div class="gov"><span class="gov-item gov-ok">Admissibility: '+(gov.admissibility||'?')+'</span><span class="gov-item gov-ok">Coherence: '+(gov.coherence||'?')+'</span><span class="gov-item gov-warn">'+( gov.recommendation||'HOLD')+'</span></div>';
+    
+    // Raw
+    document.getElementById('output').style.display='block';
+    document.getElementById('rawOutput').textContent=JSON.stringify(d,null,2);
+    
+  }catch(e){
+    document.getElementById('histogram').innerHTML='<div style="color:#ef4444;padding:12px">Error: '+e.message+'</div>';
+  }
+}
+
+async function loadStatus(){
+  try{
+    const r=await fetch(API);
+    const d=await r.json();
+    document.getElementById('output').style.display='block';
+    document.getElementById('rawOutput').textContent=JSON.stringify(d,null,2);
+  }catch(e){
+    document.getElementById('output').style.display='block';
+    document.getElementById('rawOutput').textContent='Error: '+e.message;
+  }
+}
+
+loadStatus();
+</script>
+</body>
+</html>
