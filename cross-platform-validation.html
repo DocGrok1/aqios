@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DCGP.AI — Cross-Platform Quantum Validation</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e0e0e0;font-family:'Inter',sans-serif;overflow-x:hidden}
+canvas#bg{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+.container{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:20px}
+
+h1{font-family:'Space Grotesk',sans-serif;font-size:2.4em;font-weight:700;
+   background:linear-gradient(135deg,#FFD700,#00FF88,#00BFFF);
+   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+   text-align:center;margin:40px 0 8px}
+.subtitle{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.85em;color:#888;margin-bottom:40px}
+.subtitle span{color:#FFD700}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+.card{background:rgba(20,20,30,.85);border:1px solid rgba(255,215,0,.15);
+      border-radius:16px;padding:24px;position:relative;overflow:hidden;
+      backdrop-filter:blur(10px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+              background:linear-gradient(90deg,transparent,#FFD700,#00FF88,transparent)}
+.card h2{font-family:'Space Grotesk',sans-serif;font-size:1.3em;margin-bottom:4px;color:#fff}
+.card .device{font-family:'IBM Plex Mono',monospace;font-size:.75em;color:#00BFFF;margin-bottom:16px}
+.card .fidelity{font-family:'Space Grotesk',sans-serif;font-size:2.8em;font-weight:700;
+                text-align:center;margin:12px 0}
+.card .fidelity.gold{color:#FFD700}
+.card .fidelity.green{color:#00FF88}
+.card .fidelity.cyan{color:#00BFFF}
+
+.entangle-viz{width:100%;height:320px;position:relative;margin:12px 0}
+.entangle-viz canvas{width:100%;height:100%;border-radius:8px}
+
+.dist-bars{display:flex;align-items:flex-end;gap:2px;height:140px;margin:16px 0;padding:0 4px}
+.dist-bar{flex:1;min-width:0;border-radius:3px 3px 0 0;position:relative;transition:height .6s ease}
+.dist-bar:hover .dist-tip{opacity:1}
+.dist-tip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+          background:#1a1a2e;border:1px solid #FFD700;border-radius:6px;padding:4px 8px;
+          font-family:'IBM Plex Mono',monospace;font-size:.65em;white-space:nowrap;
+          opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}
+.dist-labels{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.6em;color:#666}
+
+.stat-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.stat-row:last-child{border:none}
+.stat-label{font-family:'IBM Plex Mono',monospace;font-size:.78em;color:#888}
+.stat-value{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.85em}
+
+.full-width{grid-column:1/-1}
+
+.entanglement-field{width:100%;height:500px;position:relative;border-radius:12px;overflow:hidden;margin:16px 0}
+.entanglement-field canvas{width:100%;height:100%}
+
+.qpu-ring{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin:30px 0}
+.qpu-node{text-align:center;position:relative}
+.qpu-circle{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+            font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1em;
+            position:relative;cursor:default}
+.qpu-circle::after{content:'';position:absolute;inset:-4px;border-radius:50%;
+                   border:2px solid transparent;animation:qpuPulse 3s ease-in-out infinite}
+@keyframes qpuPulse{0%,100%{border-color:rgba(255,215,0,.1);transform:scale(1)}50%{border-color:rgba(255,215,0,.5);transform:scale(1.06)}}
+.qpu-label{font-family:'IBM Plex Mono',monospace;font-size:.7em;color:#888;margin-top:8px}
+.qpu-status{font-family:'IBM Plex Mono',monospace;font-size:.65em;color:#00FF88;margin-top:2px}
+
+.patent-bar{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.7em;
+            color:#555;margin:40px 0 20px;padding:16px;
+            border-top:1px solid rgba(255,215,0,.1);border-bottom:1px solid rgba(255,215,0,.1)}
+.patent-bar span{color:#FFD700}
+
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.6em;font-weight:600;
+               text-align:center;margin:50px 0 20px;color:#fff}
+.section-sub{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.8em;color:#666;margin-bottom:30px}
+
+.bloch-container{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;margin:20px 0}
+.bloch-sphere{width:240px;height:240px}
+.bloch-sphere canvas{width:100%;height:100%}
+.bloch-label{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.7em;color:#888;margin-top:6px}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="container">
+
+<h1>Cross-Platform Quantum Validation</h1>
+<p class="subtitle">DCGP.AI LLC — <span>USPTO 19/555,951 + 64/095,091</span> — S3 Verified July 25 2026</p>
+
+<div class="qpu-ring">
+  <div class="qpu-node">
+    <div class="qpu-circle" style="background:radial-gradient(circle,rgba(255,215,0,.25),rgba(255,215,0,.05));color:#FFD700">108Q</div>
+    <div class="qpu-label">Rigetti Cepheus</div>
+    <div class="qpu-status">✓ SUPERCONDUCTING</div>
+  </div>
+  <div class="qpu-node">
+    <div class="qpu-circle" style="background:radial-gradient(circle,rgba(0,191,255,.25),rgba(0,191,255,.05));color:#00BFFF">Q1</div>
+    <div class="qpu-label">AQT IBEX</div>
+    <div class="qpu-status">✓ TRAPPED-ION</div>
+  </div>
+  <div class="qpu-node">
+    <div class="qpu-circle" style="background:radial-gradient(circle,rgba(255,107,107,.25),rgba(255,107,107,.05));color:#FF6B6B">20Q</div>
+    <div class="qpu-label">IQM Garnet</div>
+    <div class="qpu-status">✓ SQUARE-LATTICE</div>
+  </div>
+  <div class="qpu-node">
+    <div class="qpu-circle" style="background:radial-gradient(circle,rgba(0,255,136,.25),rgba(0,255,136,.05));color:#00FF88">5Q</div>
+    <div class="qpu-label">IQM Emerald</div>
+    <div class="qpu-status">✓ HIGH-FIDELITY</div>
+  </div>
+</div>
+
+<div class="section-title">Entanglement Field</div>
+<p class="section-sub">Real-time visualization of cross-platform Bell correlations from S3 measurement data</p>
+
+<div class="card full-width" style="grid-column:1/-1">
+  <div class="entanglement-field">
+    <canvas id="entangleField"></canvas>
+  </div>
+</div>
+
+<div class="section-title">Measurement Distributions</div>
+<p class="section-sub">Full 100-shot distributions pulled from s3://amazon-braket-125746528360/master-fire/</p>
+
+<div class="grid">
+  <!-- Emerald Bell -->
+  <div class="card">
+    <h2>Bell State — Emerald-5Q</h2>
+    <div class="device">arn:aws:braket:eu-north-1::device/qpu/iqm/Emerald · 100 shots · 2 qubits</div>
+    <div class="fidelity gold">98.0%</div>
+    <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.75em;color:#888;margin-bottom:12px">BELL FIDELITY</div>
+    <div class="dist-bars" id="emeraldBars"></div>
+    <div class="dist-labels"><span>|00⟩</span><span>|01⟩</span><span>|10⟩</span><span>|11⟩</span></div>
+    <div style="margin-top:16px">
+      <div class="stat-row"><span class="stat-label">Correlated |00⟩+|11⟩</span><span class="stat-value" style="color:#00FF88">98 / 100</span></div>
+      <div class="stat-row"><span class="stat-label">Anti-correlated |01⟩+|10⟩</span><span class="stat-value" style="color:#FF6B6B">2 / 100</span></div>
+      <div class="stat-row"><span class="stat-label">S3 Key</span><span class="stat-value" style="color:#FFD700;font-size:.65em">bell/emerald-5q/0495c8ca...</span></div>
+    </div>
+  </div>
+
+  <!-- Cepheus Wardenclyffe -->
+  <div class="card">
+    <h2>Wardenclyffe — Cepheus-108Q</h2>
+    <div class="device">arn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q · 100 shots · 5 qubits</div>
+    <div class="fidelity cyan">23 states</div>
+    <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.75em;color:#888;margin-bottom:12px">UNIQUE BITSTRINGS / 32 POSSIBLE</div>
+    <div class="dist-bars" id="cepheusBars"></div>
+    <div class="dist-labels"><span>|00001⟩</span><span></span><span>Top 10 states</span><span></span><span>Other</span></div>
+    <div style="margin-top:16px">
+      <div class="stat-row"><span class="stat-label">Peak state |00001⟩</span><span class="stat-value" style="color:#FFD700">14%</span></div>
+      <div class="stat-row"><span class="stat-label">GOV bit (q4) = 1 rate</span><span class="stat-value" style="color:#00FF88">73%</span></div>
+      <div class="stat-row"><span class="stat-label">S3 Key</span><span class="stat-value" style="color:#FFD700;font-size:.65em">wardenclyffe/cepheus/84e0a8b1...</span></div>
+    </div>
+  </div>
+
+  <!-- IBEX Wardenclyffe -->
+  <div class="card">
+    <h2>Wardenclyffe — IBEX-Q1</h2>
+    <div class="device">arn:aws:braket:eu-north-1::device/qpu/aqt/Ibex-Q1 · 100 shots · 5 qubits</div>
+    <div class="fidelity cyan">15 states</div>
+    <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.75em;color:#888;margin-bottom:12px">UNIQUE BITSTRINGS / 32 POSSIBLE · TRAPPED-ION</div>
+    <div class="dist-bars" id="ibexBars"></div>
+    <div class="dist-labels"><span>|01001⟩</span><span></span><span>Top 10 states</span><span></span><span>Other</span></div>
+    <div style="margin-top:16px">
+      <div class="stat-row"><span class="stat-label">Peak states |01001⟩+|00101⟩</span><span class="stat-value" style="color:#00BFFF">36%</span></div>
+      <div class="stat-row"><span class="stat-label">GOV bit (q4) = 1 rate</span><span class="stat-value" style="color:#00FF88">93%</span></div>
+      <div class="stat-row"><span class="stat-label">S3 Key</span><span class="stat-value" style="color:#FFD700;font-size:.65em">wardenclyffe/ibex-q1/139aa34c...</span></div>
+    </div>
+  </div>
+
+  <!-- Garnet Proverbs12 -->
+  <div class="card">
+    <h2>Proverbs12 — Garnet-20Q</h2>
+    <div class="device">arn:aws:braket:eu-north-1::device/qpu/iqm/Garnet · 100 shots · 12 qubits</div>
+    <div class="fidelity green">71 / 4096</div>
+    <div style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.75em;color:#888;margin-bottom:12px">UNIQUE BITSTRINGS — STRUCTURED OUTPUT</div>
+    <div class="dist-bars" id="garnetBars"></div>
+    <div class="dist-labels"><span>Top 14 states</span><span></span><span>57 long-tail singles</span></div>
+    <div style="margin-top:16px">
+      <div class="stat-row"><span class="stat-label">Dominant prefix 1010...</span><span class="stat-value" style="color:#FF6B6B">62%</span></div>
+      <div class="stat-row"><span class="stat-label">Top-5 concentration</span><span class="stat-value" style="color:#FFD700">22%</span></div>
+      <div class="stat-row"><span class="stat-label">S3 Key</span><span class="stat-value" style="color:#FFD700;font-size:.65em">proverbs12/garnet-20q/8b9eae9f...</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">Governed Qubit Correlation Map</div>
+<p class="section-sub">GOV_ANGLE = π/φ · OBLIGATION_THETA = 2×acos(√0.605533)</p>
+
+<div class="card full-width">
+  <canvas id="correlationMap" style="width:100%;height:400px;border-radius:8px"></canvas>
+</div>
+
+<div class="patent-bar">
+  <span>DCGP.AI LLC</span> · Joshua L. Lopez · Founder and Chief Architect<br>
+  USPTO 19/555,951 · 64/095,091 · Priority January 15 2026<br>
+  S3 Bucket: amazon-braket-125746528360 · Account: 125746528360<br>
+  <span>Where there is a gap, there is a gate.</span>
+</div>
+
+</div>
+
+<script>
+// === BACKGROUND PARTICLE FIELD ===
+const bgCanvas = document.getElementById('bg');
+const bgCtx = bgCanvas.getContext('2d');
+let W, H;
+function resizeBg(){W=bgCanvas.width=window.innerWidth;H=bgCanvas.height=window.innerHeight}
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+const particles = Array.from({length:120},()=>({
+  x:Math.random()*2000, y:Math.random()*2000,
+  vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
+  r:Math.random()*1.5+.5,
+  color:['#FFD700','#00FF88','#00BFFF','#FF6B6B'][Math.floor(Math.random()*4)]
+}));
+
+function drawBg(){
+  bgCtx.fillStyle='rgba(10,10,15,.15)';
+  bgCtx.fillRect(0,0,W,H);
+  particles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    bgCtx.beginPath();
+    bgCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    bgCtx.fillStyle=p.color;
+    bgCtx.globalAlpha=.4;
+    bgCtx.fill();
+    bgCtx.globalAlpha=1;
+  });
+  // Draw entanglement lines between nearby particles
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<150){
+        bgCtx.beginPath();
+        bgCtx.moveTo(particles[i].x,particles[i].y);
+        bgCtx.lineTo(particles[j].x,particles[j].y);
+        bgCtx.strokeStyle=particles[i].color;
+        bgCtx.globalAlpha=.08*(1-dist/150);
+        bgCtx.stroke();
+        bgCtx.globalAlpha=1;
+      }
+    }
+  }
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+// === DISTRIBUTION BARS ===
+function makeBars(containerId, data, colors){
+  const el=document.getElementById(containerId);
+  const max=Math.max(...data.map(d=>d.value));
+  data.forEach((d,i)=>{
+    const bar=document.createElement('div');
+    bar.className='dist-bar';
+    const h=Math.max(2, (d.value/max)*130);
+    bar.style.height=h+'px';
+    bar.style.background=`linear-gradient(to top, ${colors[i%colors.length]}88, ${colors[i%colors.length]})`;
+    const tip=document.createElement('div');
+    tip.className='dist-tip';
+    tip.textContent=`${d.label}: ${d.value}`;
+    bar.appendChild(tip);
+    el.appendChild(bar);
+  });
+}
+
+// Emerald Bell
+makeBars('emeraldBars',[
+  {label:'|00⟩',value:38},{label:'|01⟩',value:1},{label:'|10⟩',value:1},{label:'|11⟩',value:60}
+],['#00FF88','#FF6B6B','#FF6B6B','#00FF88']);
+
+// Cepheus Wardenclyffe top 10 + other
+makeBars('cepheusBars',[
+  {label:'|00001⟩',value:14},{label:'|01101⟩',value:13},{label:'|01001⟩',value:9},
+  {label:'|00101⟩',value:7},{label:'|10001⟩',value:7},{label:'|11011⟩',value:6},
+  {label:'|11111⟩',value:5},{label:'|01100⟩',value:4},{label:'|11001⟩',value:4},
+  {label:'|10011⟩',value:4},{label:'Other(13)',value:27}
+],['#FFD700','#FFD700','#FFD700','#FFD700','#FFD700','#FFD700','#FFD700','#FFD700','#FFD700','#FFD700','#555']);
+
+// IBEX Wardenclyffe
+makeBars('ibexBars',[
+  {label:'|01001⟩',value:18},{label:'|00101⟩',value:18},{label:'|00001⟩',value:17},
+  {label:'|01101⟩',value:8},{label:'|10001⟩',value:6},{label:'|10111⟩',value:6},
+  {label:'|11111⟩',value:6},{label:'|10101⟩',value:5},{label:'|11011⟩',value:5},
+  {label:'|11101⟩',value:4},{label:'Other(5)',value:7}
+],['#00BFFF','#00BFFF','#00BFFF','#00BFFF','#00BFFF','#00BFFF','#00BFFF','#00BFFF','#00BFFF','#00BFFF','#555']);
+
+// Garnet Proverbs12
+makeBars('garnetBars',[
+  {label:'101010000110',value:6},{label:'101010110110',value:5},{label:'100010001011',value:4},
+  {label:'101010001001',value:4},{label:'101010001110',value:3},{label:'101010010001',value:3},
+  {label:'101011110110',value:3},{label:'101010000001',value:3},{label:'101010011110',value:2},
+  {label:'101010011001',value:2},{label:'101011110010',value:2},{label:'101011100101',value:2},
+  {label:'101011100110',value:2},{label:'101011100001',value:2},
+  {label:'57 singles',value:57}
+],['#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B',
+   '#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B','#FF6B6B','#444']);
+
+// === ENTANGLEMENT FIELD VISUALIZATION ===
+const efCanvas = document.getElementById('entangleField');
+const efCtx = efCanvas.getContext('2d');
+let efW, efH;
+function resizeEF(){
+  const rect = efCanvas.parentElement.getBoundingClientRect();
+  efW = efCanvas.width = rect.width;
+  efH = efCanvas.height = rect.height;
+}
+resizeEF();
+window.addEventListener('resize', resizeEF);
+
+// Create quantum state particles representing measurement outcomes
+const stateParticles = [];
+const bellData = [{s:'00',c:38,color:'#00FF88'},{s:'11',c:60,color:'#FFD700'},{s:'01',c:1,color:'#FF6B6B'},{s:'10',c:1,color:'#FF6B6B'}];
+const cx0=.15, cy0=.5; // Emerald center
+const cx1=.40, cy1=.35; // Cepheus center
+const cx2=.65, cy2=.35; // IBEX center
+const cx3=.85, cy3=.5;  // Garnet center
+
+// Emerald Bell particles
+bellData.forEach(d=>{
+  for(let i=0;i<d.c;i++){
+    const angle=Math.random()*Math.PI*2;
+    const r=Math.random()*60+10;
+    stateParticles.push({
+      baseX:cx0, baseY:cy0, r:r, angle:angle,
+      speed:.002+Math.random()*.003,
+      size:2+Math.random()*2,
+      color:d.color, label:d.s, group:'emerald',
+      entangled: d.s==='00'||d.s==='11'
+    });
+  }
+});
+
+// Cepheus top states
+const cephTop=[{s:'00001',c:14},{s:'01101',c:13},{s:'01001',c:9},{s:'00101',c:7},{s:'10001',c:7}];
+cephTop.forEach(d=>{
+  for(let i=0;i<d.c;i++){
+    const angle=Math.random()*Math.PI*2;
+    const r=Math.random()*70+10;
+    stateParticles.push({
+      baseX:cx1, baseY:cy1, r:r, angle:angle,
+      speed:.001+Math.random()*.004,
+      size:1.5+Math.random()*1.5,
+      color:'#FFD700', label:d.s, group:'cepheus',
+      entangled:d.s.endsWith('1')
+    });
+  }
+});
+
+// IBEX top states
+const ibexTop=[{s:'01001',c:18},{s:'00101',c:18},{s:'00001',c:17}];
+ibexTop.forEach(d=>{
+  for(let i=0;i<d.c;i++){
+    const angle=Math.random()*Math.PI*2;
+    const r=Math.random()*70+10;
+    stateParticles.push({
+      baseX:cx2, baseY:cy2, r:r, angle:angle,
+      speed:.001+Math.random()*.004,
+      size:1.5+Math.random()*1.5,
+      color:'#00BFFF', label:d.s, group:'ibex',
+      entangled:d.s.endsWith('1')
+    });
+  }
+});
+
+// Garnet dominant
+for(let i=0;i<30;i++){
+  const angle=Math.random()*Math.PI*2;
+  const r=Math.random()*80+10;
+  stateParticles.push({
+    baseX:cx3, baseY:cy3, r:r, angle:angle,
+    speed:.0008+Math.random()*.003,
+    size:1+Math.random()*2,
+    color:'#FF6B6B', label:'1010...', group:'garnet',
+    entangled:Math.random()>.3
+  });
+}
+
+let efTime = 0;
+function drawEntangleField(){
+  efCtx.fillStyle='rgba(10,10,20,.12)';
+  efCtx.fillRect(0,0,efW,efH);
+  efTime+=.016;
+
+  // Draw group labels
+  efCtx.font='600 14px "Space Grotesk"';
+  efCtx.textAlign='center';
+  [[cx0,cy0-.18,'EMERALD','#00FF88'],[cx1,cy1-.2,'CEPHEUS','#FFD700'],
+   [cx2,cy2-.2,'IBEX','#00BFFF'],[cx3,cy3-.18,'GARNET','#FF6B6B']].forEach(([x,y,t,c])=>{
+    efCtx.fillStyle=c;
+    efCtx.fillText(t,x*efW,y*efH);
+  });
+
+  // Draw cross-platform entanglement bridges
+  const bridges=[[cx0,cy0,cx1,cy1,'#FFD700'],[cx1,cy1,cx2,cy2,'#00BFFF'],[cx2,cy2,cx3,cy3,'#FF6B6B']];
+  bridges.forEach(([x1,y1,x2,y2,c])=>{
+    const wave=Math.sin(efTime*2)*8;
+    efCtx.beginPath();
+    efCtx.moveTo(x1*efW,y1*efH);
+    const mx=(x1+x2)/2*efW, my=(y1+y2)/2*efH+wave;
+    efCtx.quadraticCurveTo(mx,my,x2*efW,y2*efH);
+    efCtx.strokeStyle=c;
+    efCtx.globalAlpha=.15+Math.sin(efTime*1.5)*.1;
+    efCtx.lineWidth=2;
+    efCtx.stroke();
+    efCtx.globalAlpha=1;
+
+    // Traveling photon
+    const t2=(Math.sin(efTime*1.2)*.5+.5);
+    const px=x1*efW+(x2*efW-x1*efW)*t2;
+    const py=y1*efH+(y2*efH-y1*efH)*t2+wave*(1-Math.abs(t2-.5)*2);
+    efCtx.beginPath();
+    efCtx.arc(px,py,3,0,Math.PI*2);
+    efCtx.fillStyle=c;
+    efCtx.shadowColor=c;
+    efCtx.shadowBlur=12;
+    efCtx.fill();
+    efCtx.shadowBlur=0;
+  });
+
+  // Draw particles orbiting their centers
+  stateParticles.forEach(p=>{
+    p.angle+=p.speed;
+    const wobble=Math.sin(efTime*2+p.angle*3)*5;
+    const x=p.baseX*efW+Math.cos(p.angle)*(p.r+wobble);
+    const y=p.baseY*efH+Math.sin(p.angle)*(p.r*.6+wobble*.5);
+    efCtx.beginPath();
+    efCtx.arc(x,y,p.size,0,Math.PI*2);
+    efCtx.fillStyle=p.color;
+    efCtx.globalAlpha=p.entangled?.7:.25;
+    efCtx.fill();
+    efCtx.globalAlpha=1;
+
+    // Draw entanglement link to paired particle
+    if(p.entangled && Math.random()>.97){
+      const partner=stateParticles[Math.floor(Math.random()*stateParticles.length)];
+      if(partner.group!==p.group && partner.entangled){
+        const px2=partner.baseX*efW+Math.cos(partner.angle)*partner.r;
+        const py2=partner.baseY*efH+Math.sin(partner.angle)*partner.r*.6;
+        efCtx.beginPath();
+        efCtx.moveTo(x,y);
+        efCtx.lineTo(px2,py2);
+        efCtx.strokeStyle=p.color;
+        efCtx.globalAlpha=.06;
+        efCtx.stroke();
+        efCtx.globalAlpha=1;
+      }
+    }
+  });
+
+  requestAnimationFrame(drawEntangleField);
+}
+drawEntangleField();
+
+// === CORRELATION MAP ===
+const cmCanvas = document.getElementById('correlationMap');
+const cmCtx = cmCanvas.getContext('2d');
+function resizeCM(){
+  const rect=cmCanvas.parentElement.getBoundingClientRect();
+  cmCanvas.width=rect.width-48;
+  cmCanvas.height=400;
+}
+resizeCM();
+window.addEventListener('resize',()=>{resizeCM();drawCorrelationMap()});
+
+function drawCorrelationMap(){
+  const w=cmCanvas.width, h=cmCanvas.height;
+  cmCtx.fillStyle='#0a0a15';
+  cmCtx.fillRect(0,0,w,h);
+
+  // Cross-platform qubit correlation heatmap
+  // Compare q0-q4 across Cepheus vs IBEX for wardenclyffe
+  const cephDist={
+    '00001':14,'01101':13,'01001':9,'00101':7,'10001':7,
+    '11011':6,'11111':5,'01100':4,'11001':4,'10011':4,
+    '11000':4,'11101':4,'00000':3,'00011':3,'10111':2,
+    '01000':2,'10101':2,'01111':2,'01110':1,'11110':1,
+    '10000':1,'10010':1,'11100':1
+  };
+  const ibexDist={
+    '00001':17,'10001':6,'01001':18,'00101':18,'01101':8,
+    '00111':2,'11101':4,'10111':6,'11111':6,'10101':5,
+    '11011':5,'11001':2,'01000':1,'01011':1,'01111':1
+  };
+
+  // Compute single-qubit marginals
+  function marginals(dist,nq){
+    const m=Array(nq).fill(0);
+    let total=0;
+    for(const[bs,c] of Object.entries(dist)){
+      total+=c;
+      for(let i=0;i<nq;i++) if(bs[i]==='1') m[i]+=c;
+    }
+    return m.map(v=>v/total);
+  }
+
+  const cMarg=marginals(cephDist,5);
+  const iMarg=marginals(ibexDist,5);
+
+  const labels=['q0','q1','q2','q3','q4(GOV)'];
+  const devices=['Cepheus','IBEX'];
+  const cellW=Math.min(80,(w-200)/5);
+  const cellH=60;
+  const startX=(w-cellW*5)/2;
+  const startY=80;
+
+  // Header
+  cmCtx.font='500 13px "Space Grotesk"';
+  cmCtx.fillStyle='#888';
+  cmCtx.textAlign='center';
+  labels.forEach((l,i)=>{
+    cmCtx.fillText(l,startX+i*cellW+cellW/2,startY-10);
+  });
+
+  // Draw heatmap rows
+  [cMarg,iMarg].forEach((marg,row)=>{
+    const color=row===0?'#FFD700':'#00BFFF';
+    cmCtx.font='500 12px "IBM Plex Mono"';
+    cmCtx.fillStyle=color;
+    cmCtx.textAlign='right';
+    cmCtx.fillText(devices[row],startX-12,startY+row*cellH+cellH/2+4);
+
+    marg.forEach((v,col)=>{
+      const x=startX+col*cellW;
+      const y=startY+row*cellH;
+      const intensity=v;
+      cmCtx.fillStyle=`rgba(${row===0?'255,215,0':'0,191,255'},${intensity*.7+.1})`;
+      cmCtx.fillRect(x+2,y+2,cellW-4,cellH-4);
+      cmCtx.strokeStyle=color+'33';
+      cmCtx.strokeRect(x+2,y+2,cellW-4,cellH-4);
+      cmCtx.font='600 16px "Space Grotesk"';
+      cmCtx.fillStyle='#fff';
+      cmCtx.textAlign='center';
+      cmCtx.fillText((v*100).toFixed(1)+'%',x+cellW/2,y+cellH/2+6);
+    });
+  });
+
+  // Cross-platform correlation score
+  let corrSum=0;
+  for(let i=0;i<5;i++) corrSum+=1-Math.abs(cMarg[i]-iMarg[i]);
+  const corrScore=(corrSum/5*100).toFixed(1);
+
+  cmCtx.font='700 28px "Space Grotesk"';
+  cmCtx.fillStyle='#00FF88';
+  cmCtx.textAlign='center';
+  cmCtx.fillText(`Cross-Platform Correlation: ${corrScore}%`,w/2,startY+cellH*2+60);
+
+  cmCtx.font='400 12px "IBM Plex Mono"';
+  cmCtx.fillStyle='#666';
+  cmCtx.fillText('Superconducting (Cepheus) vs Trapped-Ion (IBEX) — same wardenclyffe circuit',w/2,startY+cellH*2+85);
+
+  // GOV qubit highlight
+  cmCtx.font='500 11px "IBM Plex Mono"';
+  cmCtx.fillStyle='#FFD700';
+  cmCtx.fillText(`GOV qubit (q4): Cepheus ${(cMarg[4]*100).toFixed(0)}% | IBEX ${(iMarg[4]*100).toFixed(0)}% — π/φ governed rotation lock`,w/2,startY+cellH*2+110);
+
+  // Draw correlation arcs between matching qubits
+  for(let i=0;i<5;i++){
+    const x=startX+i*cellW+cellW/2;
+    const y1=startY+cellH-2;
+    const y2=startY+cellH+2;
+    const similarity=1-Math.abs(cMarg[i]-iMarg[i]);
+    cmCtx.beginPath();
+    cmCtx.moveTo(x,y1);
+    cmCtx.lineTo(x,y2);
+    cmCtx.strokeStyle=`rgba(0,255,136,${similarity})`;
+    cmCtx.lineWidth=similarity*4+1;
+    cmCtx.stroke();
+    cmCtx.lineWidth=1;
+  }
+}
+drawCorrelationMap();
+</script>
+</body>
+</html>
