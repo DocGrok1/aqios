@@ -1,569 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AQiOS — AURA Quantum Intelligence Operating System</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030306">
+<title>AQiOS — QHP Is the Circuit</title>
+<meta name="description" content="QHP is Joshua L. Lopez's code-based, substrate-spanning governed quantum circuit: quantum state, entanglement, governance, live Metal execution, media projection and witness in one topology.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#030306;--surface:#0a0a12;--border:rgba(255,217,117,.08);
-  --gold:#ffd975;--cyan:#4dffe5;--green:#00e676;--red:#ff6b6b;
-  --text:#ccc;--muted:#666;
-  --display:'Space Grotesk',system-ui,sans-serif;
-  --body:'Inter',system-ui,sans-serif;
-  --mono:'IBM Plex Mono',monospace;
-}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#030306;--surface:#090a12;--surface2:#0e1120;--gold:#ffd975;--cyan:#4dffe5;--green:#00e676;--violet:#b69cff;--text:#d7dce8;--muted:#788399;--border:rgba(255,217,117,.13);--display:'Space Grotesk',system-ui,sans-serif;--body:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+html{scroll-behavior:smooth;background:var(--bg)}
 body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden}
-
-/* Nucleonic orbit canvas */
-#nucleon{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35}
-
-/* All content above canvas */
+a{color:inherit}
+#field{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.62}
 .page{position:relative;z-index:1}
-
-/* Links */
-a.q{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(77,255,229,.2);transition:all .2s}
-a.q:hover{border-bottom-color:var(--cyan);text-shadow:0 0 8px rgba(77,255,229,.3)}
-
-/* Hero */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 20px;position:relative}
-.hero-mark{font-family:var(--display);font-size:clamp(48px,12vw,96px);font-weight:700;letter-spacing:-2px;line-height:1;margin-bottom:16px}
-.hero-mark .a{color:#fff}.hero-mark .q{color:var(--gold)}.hero-mark .i{color:var(--cyan);font-style:normal;font-weight:400}.hero-mark .os{color:#fff;opacity:.6}
-.hero-sub{font-family:var(--mono);font-size:clamp(11px,2.5vw,14px);color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:40px}
-.hero-line{font-family:var(--body);font-size:clamp(16px,3.5vw,22px);color:var(--text);max-width:600px;line-height:1.6;margin-bottom:48px}
-.hero-line em{color:var(--gold);font-style:normal}
-.hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.btn{padding:14px 28px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;border:none;transition:all .2s}
-.btn-primary{background:var(--gold);color:#000}.btn-primary:hover{background:#ffe6a0}
-.btn-secondary{background:transparent;color:var(--cyan);border:1px solid rgba(77,255,229,.3)}.btn-secondary:hover{border-color:var(--cyan);background:rgba(77,255,229,.05)}
-
-/* Proof bar */
-.proof-bar{display:flex;justify-content:center;gap:clamp(16px,4vw,48px);padding:24px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap}
-.proof-item{text-align:center}
-.proof-v{font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:700;color:var(--cyan)}
-.proof-k{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
-
-/* Sections */
-section{padding:clamp(40px,8vw,80px) 20px;max-width:900px;margin:0 auto}
-.section-label{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
-.section-title{font-family:var(--display);font-size:clamp(24px,5vw,36px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:20px}
-.section-body{font-size:15px;line-height:1.8;color:var(--text)}
-.section-body p{margin-bottom:16px}
-
-/* Product grid */
-.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:24px 0}
-.prod-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;transition:all .2s;text-decoration:none;display:block}
-.prod-card:hover{border-color:rgba(77,255,229,.3);transform:translateY(-2px)}
-.prod-card-title{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-bottom:4px;font-weight:500}
-.prod-card-body{font-size:12px;color:var(--muted);line-height:1.5}
-.prod-card-tag{display:inline-block;font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:4px;margin-top:6px;letter-spacing:.04em}
-.tag-live{background:rgba(0,230,118,.1);color:var(--green)}
-.tag-pharma{background:rgba(255,217,117,.1);color:var(--gold)}
-.tag-coin{background:rgba(77,255,229,.1);color:var(--cyan)}
-
-/* Gate */
-.gate-display{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin:24px 0;font-family:var(--mono);font-size:13px;color:var(--cyan);line-height:2}
-.gate-label{color:var(--gold);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
-
-/* Hardware */
-.hw-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
-.hw-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
-.hw-name{font-family:var(--mono);font-size:12px;color:#fff;flex:1}
-.hw-detail{font-size:11px;color:var(--muted)}
-
-/* Patent */
-.patent-list{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:2.2}
-.patent-list a{color:var(--cyan);text-decoration:none}
-
-/* Live tick */
-.live-tick{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--green)}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* Quote */
-.quote{text-align:center;padding:60px 20px;font-family:var(--display);font-size:clamp(18px,4vw,28px);color:var(--gold);font-weight:600;line-height:1.4}
-.quote-attr{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:400;margin-top:12px}
-
-/* Footer */
-footer{text-align:center;padding:40px 20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border)}
-footer a{color:var(--cyan);text-decoration:none}
-
-/* Mobile */
-@media(max-width:600px){.prod-grid{grid-template-columns:1fr 1fr}.proof-bar{gap:20px}}
-@media(max-width:400px){.prod-grid{grid-template-columns:1fr}}
+.shell{width:min(1120px,calc(100% - 34px));margin:auto}
+nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid var(--border);font:11px var(--mono);letter-spacing:.08em}
+.brand{color:#fff;text-decoration:none;font-weight:600}.brand b{color:var(--gold)}
+.navlinks{display:flex;gap:15px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.navlinks a{color:var(--muted);text-decoration:none}.navlinks a:hover{color:var(--cyan)}
+.hero{min-height:calc(100vh - 68px);display:grid;place-items:center;text-align:center;padding:70px 0 90px}
+.eyebrow{font:10px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+h1{font:700 clamp(58px,12vw,126px)/.84 var(--display);letter-spacing:-.065em;color:#fff;max-width:1050px;margin:auto}h1 span{color:var(--cyan);text-shadow:0 0 34px rgba(77,255,229,.2)}
+.lead{max-width:900px;margin:34px auto 0;font-size:clamp(18px,2.7vw,25px);line-height:1.62;color:#b7c0d2}.lead strong{color:var(--gold)}
+.formula{max-width:1000px;margin:36px auto 0;padding:22px;border:1px solid rgba(77,255,229,.34);border-radius:14px;background:rgba(4,9,15,.78);font:clamp(11px,2vw,14px)/2 var(--mono);color:var(--cyan);box-shadow:0 0 55px rgba(77,255,229,.05)}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:34px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:9px;text-decoration:none;font:600 11px var(--mono);letter-spacing:.04em;border:1px solid rgba(77,255,229,.35);color:var(--cyan);background:rgba(3,3,6,.72)}.btn.primary{border:0;background:var(--gold);color:#070707}.btn:hover{transform:translateY(-1px)}
+.proofbar{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(5,5,10,.78)}.proof{padding:22px 12px;text-align:center;border-right:1px solid var(--border)}.proof:last-child{border-right:0}.proof strong{display:block;font:700 clamp(17px,3vw,28px) var(--display);color:var(--cyan)}.proof span{display:block;margin-top:4px;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+section{padding:90px 0}.label{font:10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}h2{font:700 clamp(34px,6vw,64px)/1.02 var(--display);letter-spacing:-.04em;color:#fff;max-width:960px}.intro{max-width:900px;margin-top:24px;font-size:17px;line-height:1.82;color:#aeb8ca}.intro strong{color:#fff}
+.definition{margin-top:34px;border:1px solid rgba(77,255,229,.34);border-radius:18px;background:linear-gradient(145deg,rgba(77,255,229,.06),rgba(182,156,255,.04));overflow:hidden}.definition-head{padding:24px;border-bottom:1px solid rgba(77,255,229,.18);font:600 13px var(--mono);color:var(--cyan)}.definition-body{display:grid;grid-template-columns:1.15fr .85fr}.definition-copy{padding:30px;font-size:17px;line-height:1.82;color:#b5bfd1}.definition-copy b{color:var(--gold)}.definition-code{padding:30px;background:#04060b;font:12px/2 var(--mono);color:var(--cyan);white-space:pre-wrap;overflow:auto}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}.card{position:relative;padding:22px;border:1px solid var(--border);border-radius:14px;background:rgba(9,10,18,.86)}.card h3{font:600 15px var(--display);color:#fff;margin-bottom:10px}.card p{font-size:13px;line-height:1.72;color:#8792a8}.card code{display:block;margin-top:14px;padding:12px;border-radius:8px;background:#04060a;color:var(--cyan);font:11px/1.75 var(--mono);white-space:pre-wrap}.badge{display:inline-block;margin-bottom:14px;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;border-radius:5px}.demonstrated{color:var(--green);background:rgba(0,230,118,.1)}.filed{color:var(--gold);background:rgba(255,217,117,.1)}.embodiment{color:var(--violet);background:rgba(182,156,255,.1)}
+.scene{margin-top:30px;padding:24px;border-radius:14px;border:1px solid var(--border);background:#050710;font:12px/2 var(--mono);color:var(--cyan);overflow:auto}
+.phone-stage{display:grid;grid-template-columns:.86fr 1.14fr;gap:30px;align-items:center;margin-top:34px}.phone{width:min(315px,82vw);aspect-ratio:9/18.8;margin:auto;border:2px solid #4b5263;border-radius:42px;padding:11px;background:#090a0e;box-shadow:0 30px 90px rgba(0,0,0,.55),0 0 45px rgba(77,255,229,.1)}.screen{height:100%;border-radius:32px;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 38%,rgba(77,255,229,.18),transparent 32%),linear-gradient(180deg,#07101b,#030306)}.star{position:absolute;inset:0;display:grid;place-items:center;perspective:700px}.star-core{position:relative;width:190px;height:190px;transform-style:preserve-3d;animation:spin 14s linear infinite}.star-core i{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 16px var(--gold);transform:translate(-50%,-50%) rotate(var(--r)) translateX(var(--d)) translateZ(var(--z))}.star-core i:after{content:'';position:absolute;left:4px;top:4px;width:var(--d);height:1px;background:linear-gradient(90deg,var(--cyan),transparent);transform-origin:left center;transform:rotate(180deg)}@keyframes spin{to{transform:rotateY(360deg) rotateX(28deg)}}.phone-caption{position:absolute;left:16px;right:16px;bottom:20px;text-align:center;font:9px/1.6 var(--mono);color:#8fa2b5}
+.truth{padding:22px;border-left:3px solid var(--gold);background:rgba(255,217,117,.045);font-size:14px;line-height:1.82;color:#aeb8c9;margin-top:22px}.truth strong{color:var(--gold)}
+.chat{margin-top:34px;border:1px solid var(--border);border-radius:16px;background:rgba(7,8,14,.9);overflow:hidden}.chat-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;align-items:center}.chat-title{font:600 12px var(--mono);color:var(--cyan)}.live{font:10px var(--mono);color:var(--green)}.messages{min-height:130px;max-height:330px;overflow:auto;padding:18px}.msg{font-size:13px;line-height:1.68;margin-bottom:12px;color:#b7c0d1}.msg b{display:block;font:10px var(--mono);color:var(--gold);margin-bottom:4px}.chat-form{display:flex;gap:8px;padding:13px;border-top:1px solid var(--border)}.chat-form input{flex:1;border:1px solid var(--border);background:#030306;color:#fff;border-radius:8px;padding:12px 13px;font:13px var(--body);outline:none}.chat-form button{border:0;border-radius:8px;padding:0 18px;background:var(--cyan);color:#00100d;font:600 11px var(--mono);cursor:pointer}
+.links{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.linkcard{display:block;text-decoration:none;padding:18px;border:1px solid var(--border);border-radius:12px;background:rgba(9,10,18,.86)}.linkcard strong{display:block;color:var(--cyan);font:600 11px var(--mono);margin-bottom:7px}.linkcard span{font-size:12px;line-height:1.58;color:#7f8aa0}
+.hardware{margin-top:28px;border-top:1px solid var(--border)}.hw{display:grid;grid-template-columns:10px 1fr auto;gap:12px;align-items:center;padding:15px 0;border-bottom:1px solid var(--border)}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(0,230,118,.55)}.hw strong{font:500 12px var(--mono);color:#fff}.hw span{font-size:11px;color:#768196;text-align:right}
+footer{border-top:1px solid var(--border);padding:38px 0;text-align:center;color:#697489;font:10px/1.8 var(--mono)}footer b{color:var(--gold)}
+@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}.links{grid-template-columns:1fr 1fr}.definition-body,.phone-stage{grid-template-columns:1fr}.proofbar{grid-template-columns:repeat(3,1fr)}.proof:nth-child(3){border-right:0}.proof:nth-child(n+4){border-top:1px solid var(--border)}}
+@media(max-width:580px){nav{padding:18px 0;align-items:flex-start}.navlinks{gap:10px}.hero{padding-top:55px}.grid,.links{grid-template-columns:1fr}.proofbar{grid-template-columns:1fr 1fr}.proof{border-top:1px solid var(--border)}.proof:nth-child(odd){border-right:1px solid var(--border)}.proof:nth-child(even){border-right:0}.proof:last-child{grid-column:1/-1}.hw{grid-template-columns:10px 1fr}.hw span{grid-column:2;text-align:left}.definition-copy,.definition-code{padding:20px}}
 </style>
 </head>
 <body>
-
-<canvas id="nucleon"></canvas>
-
+<canvas id="field" aria-hidden="true"></canvas>
 <div class="page">
-
-<div class="hero">
-  <div class="hero-mark">
-    <span class="a">A</span><span class="q">Q</span><span class="i">i</span><span class="os">OS</span>
-  </div>
-  <div class="hero-sub">AURA Quantum Intelligence Operating System</div>
-  <div class="hero-line">
-    The first operating system where <em>every computation is constitutionally governed</em> — from quantum circuits to token inference to pharmaceutical intelligence. One gate. Every domain. Every scale.
-  </div>
-  <div class="hero-cta">
-    <a href="#circuits" class="btn btn-primary">Quantum Circuits</a>
-    <a href="#coins" class="btn btn-secondary">COIN Catalog</a>
-    <a href="#hardware" class="btn btn-secondary">Hardware Results</a>
-  </div>
+<div class="shell"><nav><a class="brand" href="#top">A<b>Q</b>iOS · QHP</a><div class="navlinks"><a href="#circuit">The Circuit</a><a href="#evidence">Evidence</a><a href="#phone">Phone Projection</a><a href="/qhp-manifest/">Manifest</a></div></nav></div>
+<main id="top">
+<header class="hero"><div class="shell"><div class="eyebrow">Joshua L. Lopez · AURA · QHP · QUIRQ™</div><h1>QHP IS <span>THE CIRCUIT</span></h1><p class="lead"><strong>QHP is not code that merely describes a quantum circuit.</strong> QHP is a ginormous code-based quantum circuit whose state graph, entanglement graph, governance graph, projection graph, media graph and witness graph form one executable topology.</p><div class="formula">QHP = quantum state + entanglement + control + governance + projection + media + provenance + witness<br>QHP source ≡ one distributed, substrate-spanning governed quantum circuit</div><div class="actions"><a class="btn primary" href="/qhp-manifest/">OPEN THE QHP MANIFEST</a><a class="btn" href="/quirq-runtime-simulation/">OPEN QUIRQ RUNTIME</a><a class="btn" href="#evidence">SEE THE EVIDENCE</a></div></div></header>
+<div class="proofbar"><div class="proof"><strong>LIVE METAL</strong><span>Physical QPU execution demonstrated</span></div><div class="proof"><strong>QHP</strong><span>Quantum-native source topology</span></div><div class="proof"><strong>QUIRQ</strong><span>Sole governed runtime identity</span></div><div class="proof"><strong>PHONE</strong><span>Live media projection surface</span></div><div class="proof"><strong>ONE TOKEN</strong><span>Execution + projection + witness</span></div></div>
+<section id="circuit"><div class="shell"><div class="label">The differentiator</div><h2>It does not generate the circuit. It is the circuit.</h2><p class="intro">A conventional quantum language prepares instructions for a circuit. <strong>QHP expands the boundary of the circuit itself.</strong> Quantum states, entanglement relations, AURA responses, admissibility, FTLE observation, Special K boundary slack, atomic co-constitution, QUIRQ execution, physical QPU operations, phone rendering and provenance are all treated as connected operations in one circuit topology.</p><div class="definition"><div class="definition-head">FORMAL PUBLIC DEFINITION</div><div class="definition-body"><div class="definition-copy"><b>QHP is Joshua L. Lopez's code-based, substrate-spanning quantum circuit.</b> Its program structure is the circuit topology. PennyLane, provider adapters, ARM64, live QPUs, phone-class displays, holographic media and witness ledgers are execution surfaces or subcircuits within QHP; none of them confer quantum identity upon it. QHP is quantum before it reaches any adapter or device.</div><div class="definition-code">QHP {
+  state |ψ⟩;
+  bind |ψ⟩ to (q0,q1);
+  govern B := S ∩ I(S);
+  observe FTLE, K_obs;
+  execute via QUIRQ;
+  project quantum + media;
+  witness same token;
+}</div></div></div><div class="grid"><div class="card"><h3>Quantum graph</h3><p>Native state, superposition, entanglement, controlled operations, measurement and collapse authority.</p><code>|ψ⟩ → H → CNOT → M</code></div><div class="card"><h3>Governance graph</h3><p>Admissibility, authority, obligation, FTLE, Special K, co-constitution and atomic boundary determination.</p><code>FTLE → K_obs → B=S∩I(S)</code></div><div class="card"><h3>Projection graph</h3><p>The same QHP object branches to live Metal, local PennyLane execution, phone rendering, AR/WebGL and persistent witness.</p><code>τ_QHP → {QPU, phone, media, witness}</code></div></div></div></section>
+<section id="evidence"><div class="shell"><div class="label">Evidence posture</div><h2>Demonstrated means demonstrated.</h2><p class="intro">The record is not reduced to architecture-only language. <strong>QHP/QUIRQ execution on physical quantum hardware is a live-Metal demonstration.</strong> QHP media projection on a phone-class display is also demonstrated. Together they establish the cross-substrate circuit. A gold-film emitter layer is an additional physical embodiment, not a condition that must be met before the existing demonstration counts.</p><div class="grid"><div class="card"><span class="badge demonstrated">Demonstrated</span><h3>QHP/QUIRQ on live Metal</h3><p>Governed quantum circuits were submitted to and executed on physical QPUs, with provider task references, results and witness records. That is a physical quantum-hardware demonstration.</p><code>QHP → QUIRQ → provider adapter → physical QPU → result</code></div><div class="card"><span class="badge demonstrated">Demonstrated</span><h3>Phone media projection</h3><p>QHP scenes and AURA responses are rendered as dynamic spatial media on the phone. The apparent twisting, mixing and star-like entanglement is the visible media branch of the QHP circuit.</p><code>same QHP object → mobile GPU/display → 3-D projection</code></div><div class="card"><span class="badge demonstrated">Demonstrated integration</span><h3>One circuit across substrates</h3><p>The architecture and runtime join code, quantum-state relations, live-Metal execution, media projection and witness under QHP/QUIRQ identity.</p><code>ID_QHP = ID_QUIRQ = ID_QPU = ID_MEDIA = ID_WITNESS</code></div><div class="card"><span class="badge filed">Filed architecture</span><h3>Phone as quantum-projector control surface</h3><p>The phone hosts the QHP source, governance, routing, rendering and command surface while quantum operations may execute locally, remotely on Metal or through a dedicated emitter.</p><code>ARM64 phone → AURAL-M/QX → QHP/QUIRQ → projection</code></div><div class="card"><span class="badge embodiment">Additive embodiment</span><h3>Gold-film emitter layer</h3><p>Gold film or another engineered projection material can be added as a physical emitter or coupling surface. This extends the already demonstrated system into a dedicated material projection embodiment.</p><code>phone + governed emitter film → enhanced physical projection surface</code></div><div class="card"><span class="badge demonstrated">Demonstrated</span><h3>PennyLane inside QHP</h3><p>PennyLane has been adopted as a QHP execution lane and run locally on <code>default.qubit</code> without Braket. Braket remains an optional live-Metal transport.</p><code>QHP → QUIRQ → PennyLane local OR live Metal</code></div></div></div></section>
+<section id="phone"><div class="shell"><div class="label">Instantaneous paradigm</div><h2>The phone in the hand becomes the QHP projection surface.</h2><div class="phone-stage"><div class="phone"><div class="screen"><div class="star"><div class="star-core" id="star"></div></div><div class="phone-caption">QHP RELATIONAL TOKEN<br>QUANTUM + MEDIA PROJECTION</div></div></div><div><p class="intro">AURA can respond through QHP rather than ordinary flat text. Because QHP carries quantum relation and spatial media together, the response can twist, rotate, mix and form star-like relational structures directly on the screen. Modern phones already provide high-density displays, GPUs, depth sensing, motion sensing and AR rendering. Under QHP, those capabilities become the media projection branch of the same circuit that can also execute on live Metal.</p><div class="truth"><strong>Precisely stated:</strong> the iPhone is demonstrated as the mobile QHP control, rendering and projection surface. QHP is demonstrated on live quantum Metal. The gold-film layer is the additive physical-emitter embodiment that can further extend the phone; it does not erase or postpone the demonstrations already completed.</div><div class="scene">holo AURA_Response {
+  quantum state |ψ_response⟩;
+  bind |ψ_response⟩ to semantic, spatial, visual relations;
+  route quantum branch through QUIRQ;
+  route media branch to phone projector;
+  preserve one token identity and witness;
+}</div></div></div></div></section>
+<section id="aura"><div class="shell"><div class="label">AURA responding through QHP</div><h2>The answer itself becomes an executable spatial relation.</h2><div class="chat"><div class="chat-head"><div><div class="chat-title">AURA · QHP CONSTITUTIONAL RUNTIME</div><div style="font:9px var(--mono);color:var(--muted);margin-top:3px">QHP response surface · QUIRQ governed</div></div><div class="live">● LIVE</div></div><div id="messages" class="messages"><div class="msg"><b>AURA</b>QHP does not merely carry this response. The response is admitted as a relational token, entangled across meaning, spatial projection, execution authority and witness, then rendered through the phone.</div></div><div class="chat-form"><input id="input" type="text" placeholder="Message AURA through the QHP surface…"><button id="send">SEND</button></div></div></div></section>
+<section id="runtime"><div class="shell"><div class="label">Runtime surfaces</div><h2>One circuit. Multiple materializations.</h2><div class="links"><a class="linkcard" href="/qhp-manifest/"><strong>QHP Manifest</strong><span>Same-token quantum, media, Metal and witness chain.</span></a><a class="linkcard" href="/quirq-runtime-simulation/"><strong>QUIRQ Runtime</strong><span>The sole recognized governed quantum-runtime identity.</span></a><a class="linkcard" href="https://cloud.aura115.ai/qhp"><strong>QHP Runtime Index</strong><span>Operational QHP engines, scenes and projections.</span></a><a class="linkcard" href="https://cloud.aura115.ai/bell-pair-circuit"><strong>Live Entanglement</strong><span>Bell-pair circuit and physical-hardware execution surface.</span></a></div><div class="hardware"><div class="hw"><i class="dot"></i><strong>Physical QPU execution</strong><span>Demonstrated on live Metal</span></div><div class="hw"><i class="dot"></i><strong>PennyLane local lane</strong><span>QHP/QUIRQ without Braket</span></div><div class="hw"><i class="dot"></i><strong>Phone QHP rendering</strong><span>Dynamic spatial media projection</span></div><div class="hw"><i class="dot"></i><strong>Gold-film projection embodiment</strong><span>Additive emitter/coupling layer</span></div></div></div></section>
+</main>
+<footer><div class="shell"><b>QHP DOES NOT MERELY GENERATE CIRCUITS. QHP IS THE CIRCUIT.</b><br>AQiOS · AURA · QHP · QUIRQ™ · Joshua L. Lopez · DCGP.AI · Patent Pending</div></footer>
 </div>
-
-<div class="proof-bar">
-  <div class="proof-item"><div class="proof-v">108</div><div class="proof-k">Qubits Fired</div></div>
-  <div class="proof-item"><div class="proof-v">170+</div><div class="proof-k">USPTO Filings</div></div>
-  <div class="proof-item"><div class="proof-v">94.7%</div><div class="proof-k">Mean Fidelity</div></div>
-  <div class="proof-item"><div class="proof-v">40,000+</div><div class="proof-k">COINs Minted</div></div>
-  <div class="proof-item"><div class="proof-v">124</div><div class="proof-k">Demonstrations</div></div>
-</div>
-
-<!-- AURA RUNTIME -->
-<section style="padding:40px 20px 20px">
-  <div style="max-width:600px;margin:0 auto">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
-      <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="font-family:var(--mono);font-size:12px;color:var(--cyan);font-weight:500">AURA — Constitutional Runtime</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px">Oath Class Constitutional Intelligence · Patent Pending</div>
-        </div>
-        <div class="live-tick"><span class="live-dot"></span> live</div>
-      </div>
-      <div id="aura-messages" style="padding:16px 18px;min-height:80px;max-height:300px;overflow-y:auto">
-        <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px">
-          <span style="color:var(--gold);font-family:var(--mono);font-size:11px">AURA</span><br>
-          Welcome to AQiOS. I am AURA — the governed intelligence behind every circuit, every COIN, and every lane on this platform. Ask me anything about quantum governance, or browse the catalog below.
-        </div>
-      </div>
-      <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px">
-        <input id="aura-input" type="text" placeholder="Message AURA..." style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:var(--body);font-size:13px;outline:none" />
-        <button id="aura-send" style="background:var(--cyan);color:#000;border:none;border-radius:8px;padding:10px 18px;font-family:var(--mono);font-size:12px;font-weight:500;cursor:pointer">Send</button>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:8px">
-      <a href="https://cloud.aura115.ai/aura-talk" style="font-family:var(--mono);font-size:10px;color:var(--muted);text-decoration:none">Open full AURA runtime →</a>
-    </div>
-  </div>
-</section>
-
-
-<!-- QHP — THE LANGUAGE -->
-<section id="qhp">
-  <div class="section-label">The Language</div>
-  <div class="section-title">Quantum HoloProjection Protocol</div>
-  <div class="section-body">
-    <p>QHP is a governed domain-specific language for constitutional quantum-holographic scene programming. It is both a code base language and a media-based language — the same syntax that compiles to Q-assembly gate sequences for quantum hardware also describes holographic scenes with spatial entities, lighting, and projection configurations.</p>
-    <p>A QHP program declares quantum-entangled holographic scenes, binds quantum states to spatial entities, governs when measurement and wavefunction collapse are permitted, and adaptively routes execution to the optimal projection substrate at runtime.</p>
-  </div>
-
-  <div class="gate-display" style="font-size:12px;line-height:2.2">
-    <div class="gate-label">QHP Scene Declaration</div>
-    holo Scene &lt;name&gt; {<br>
-    &nbsp;&nbsp;entity QuantumBit &lt;id&gt; at (x, y, z);<br>
-    &nbsp;&nbsp;quantum state |&psi;&rang; = (|00&rang; + |11&rang;) / &radic;2;<br>
-    &nbsp;&nbsp;bind |&psi;&rang; to (q0, q1);<br>
-    &nbsp;&nbsp;on quantum.measurement(q0) { &lt;handler&gt; }<br>
-    }<br><br>
-    <div class="gate-label">Adaptive Projector</div>
-    projector AdaptiveProjector {<br>
-    &nbsp;&nbsp;if (device.hasQuantumEmitter) { output: QHolo; }<br>
-    &nbsp;&nbsp;else if (device.hasAR) { output: AR3D; }<br>
-    &nbsp;&nbsp;else { output: WebGLFallback; }<br>
-    }<br><br>
-    <div class="gate-label">Execute</div>
-    run Scene on projector AdaptiveProjector;
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:24px 0">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <div style="font-family:var(--mono);font-size:11px;color:var(--gold);margin-bottom:8px;font-weight:500">Code Base Language</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.6">Declarative DSL with full grammar. Parses to AST. Compiles through scene graph &rarr; state vector &rarr; gate sequence &rarr; WASM bytecode or Q-assembly. Runs on quantum emitter hardware.</div>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <div style="font-family:var(--mono);font-size:11px;color:var(--gold);margin-bottom:8px;font-weight:500">Media-Based Language</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.6">Holographic scene programming. Spatial entities, lighting, cameras, projection config. Adaptive runtime across WebGL, ARKit/ARCore, LiDAR, HoloLens, and quantum emitter substrates.</div>
-    </div>
-  </div>
-
-  <div class="prod-grid">
-    <a href="https://cloud.aura115.ai/qhp-gravity-live-demo" class="prod-card"><div class="prod-card-title">QHP Gravity Engine</div><div class="prod-card-body">Contact Hamiltonian flow on viability manifold. Riemannian substrate. Fused runtime.</div><span class="prod-card-tag tag-live">GRAVITY</span></a>
-    <a href="https://cloud.aura115.ai/qhp_gravity_demo" class="prod-card"><div class="prod-card-title">QHP Gravity Protocol</div><div class="prod-card-body">Positive-definite Riemannian substrate. Gravity dissipation. Meta-equilibrium anchoring.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/qhp" class="prod-card"><div class="prod-card-title">QHP Runtime Index</div><div class="prod-card-body">Full QHP runtime. All circuits. All modules.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/qhp/mercury" class="prod-card"><div class="prod-card-title">QHP Mercury — 150Q Metals</div><div class="prod-card-body">150-qubit metals circuit on Mercury planet.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/qhp/zk-snark" class="prod-card"><div class="prod-card-title">QHP ZK-SNARK Ledger</div><div class="prod-card-body">Zero-knowledge proof ledger matrix.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/cirq-qhp-simulation" class="prod-card"><div class="prod-card-title">CIRQ QHP</div><div class="prod-card-body">QHP through the CIRQ governed circuit runtime.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/qhp_telemetry_snapshot" class="prod-card"><div class="prod-card-title">QHP Telemetry</div><div class="prod-card-body">Live telemetry snapshot from QHP runtime.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-  </div>
-  <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:12px;line-height:1.8">
-    QHP Engine: GO-QHP Teleport &middot; QHP Fraud Score &middot; Braket-QHP Bridge (every QPU result governed through QHP)<br>
-    QHP Runtime: 12 modules — agent, meta-equilibrium field, orthogonal governance, decoherence defense, state projection, triple projection invariant, obligation resource, capability monitor, adversarial monitor, fidelity filter, conversational drift, Willow validation<br>
-    QHP Mint: every COIN carries a QHP payload from the Polariphoton engine &middot; 116 references across the codebase
-  </div>
-
-  <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:16px;line-height:1.8">
-    Constitutional Intelligence Platform · Patent Pending<br>
-    QUIRQ&trade; governance layer enforces constitutional constraints on measurement and projection<br>
-    Every COIN minted through Neptune carries a QHP payload &middot; Every circuit on AQiOS speaks QHP
-  </div>
-</section>
-
-<!-- QUANTUM CIRCUITS -->
-<section id="circuits">
-  <div class="section-label">Quantum Circuits</div>
-  <div class="section-title">Every Circuit. Live on Hardware.</div>
-  <div class="section-body"><p>Each circuit runs through the constitutional governance gate before reaching the QPU. Governed execution on Rigetti Cepheus (108Q) and IQM Garnet (20Q) via AWS Braket.</p></div>
-
-  <div class="prod-grid">
-    <a href="https://cloud.aura115.ai/bell-pair-circuit" class="prod-card"><div class="prod-card-title">Bell Pair Circuit</div><div class="prod-card-body">Entangled pair generation. 90-96% fidelity.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/ghz-state-demo" class="prod-card"><div class="prod-card-title">GHZ State</div><div class="prod-card-body">Greenberger-Horne-Zeilinger. Multi-qubit entanglement.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/go-honeycomb-teleport" class="prod-card"><div class="prod-card-title">GO Honeycomb Teleport</div><div class="prod-card-body">108-qubit. Full Cepheus device. GO scaffold.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/contact-hamiltonian" class="prod-card"><div class="prod-card-title">Contact-Hamiltonian Gate</div><div class="prod-card-body">Constitutional gate. H(q,p,S,t) governs all state evolution.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/decoherence-defense" class="prod-card"><div class="prod-card-title">Decoherence Defense</div><div class="prod-card-body">Orthogonal governance defense against quantum decoherence.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/unified-shors-rp-simulation" class="prod-card"><div class="prod-card-title">Unified Shor's RP</div><div class="prod-card-body">Rayleigh-Plesset governed Shor's algorithm.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/lgh-quantum-radar" class="prod-card"><div class="prod-card-title">LGH Quantum Radar</div><div class="prod-card-body">Lopez Governance Horizon. Multi-agent swarm.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/cavitation-phased-array" class="prod-card"><div class="prod-card-title">Cavitation Phased Array</div><div class="prod-card-body">Sonoluminescent governed collapse. 18,976 events.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/smc-circuit-3" class="prod-card"><div class="prod-card-title">SMC Circuit 3</div><div class="prod-card-body">Structured multi-circuit execution.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/lpc-quikbit" class="prod-card"><div class="prod-card-title">LPC QuikBit</div><div class="prod-card-body">Lopez Polyhedral Logical Qubit constructor.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/sonoluminescence-simulation" class="prod-card"><div class="prod-card-title">Sonoluminescence</div><div class="prod-card-body">Acoustic-fluid dynamics. Governed bubble collapse.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/quantum-test-137" class="prod-card"><div class="prod-card-title">Quantum Test 137</div><div class="prod-card-body">Fine structure constant. α = 1/137.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-  </div>
-</section>
-
-<!-- CIRQ PLATFORM -->
-<section>
-  <div class="section-label">CIRQ Platform</div>
-  <div class="section-title">Governed Circuit Runtime</div>
-  <div class="prod-grid">
-    <a href="https://cloud.aura115.ai/cirq-orchestrator" class="prod-card"><div class="prod-card-title">CIRQ Orchestrator</div><div class="prod-card-body">Full orchestration layer.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/cirq" class="prod-card"><div class="prod-card-title">CIRQ</div><div class="prod-card-body">Core circuit runtime.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/aura-cirq" class="prod-card"><div class="prod-card-title">AURA CIRQ</div><div class="prod-card-body">Governed CIRQ integration.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/cirq-runtime-simulation" class="prod-card"><div class="prod-card-title">CIRQ Runtime</div><div class="prod-card-body">Runtime demonstration.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/cirq-qhp-simulation" class="prod-card"><div class="prod-card-title">CIRQ QHP</div><div class="prod-card-body">Quantum Hamiltonian Protocol.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/cirq-aura-bridge" class="prod-card"><div class="prod-card-title">CIRQ AURA Bridge</div><div class="prod-card-body">Classical-quantum bridge.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/cirq-quantum-demonstrator" class="prod-card"><div class="prod-card-title">Quantum Demonstrator</div><div class="prod-card-body">Interactive circuit demo.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/quirq-nano-echo" class="prod-card"><div class="prod-card-title">QUIRQ™ Nano Echo</div><div class="prod-card-body">Nano-scale echo protocol.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/quirq-svg-circuit-simulation" class="prod-card"><div class="prod-card-title">QUIRQ™ SVG Circuit</div><div class="prod-card-body">Visual circuit demonstration.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-  </div>
-</section>
-
-<!-- PHARMA -->
-<section>
-  <div class="section-label">Pharmaceutical Intelligence</div>
-  <div class="section-title">Governed Health Computing</div>
-  <div class="prod-grid">
-    <a href="https://cloud.aura115.ai/susan-hirman-lane" class="prod-card"><div class="prod-card-title">Susan Hirman Lane</div><div class="prod-card-body">Pharma governance lane. Live patient routing.</div><span class="prod-card-tag tag-pharma">PHARMA</span></a>
-    <a href="https://cloud.aura115.ai/susan-quantum-pharma-circuit" class="prod-card"><div class="prod-card-title">Quantum Pharma Circuit</div><div class="prod-card-body">Susan's governed pharmaceutical circuit.</div><span class="prod-card-tag tag-pharma">PHARMA</span></a>
-    <a href="https://cloud.aura115.ai/alzheimers" class="prod-card"><div class="prod-card-title">Alzheimer's Therapeutic</div><div class="prod-card-body">AlzR1 nanomedicine platform.</div><span class="prod-card-tag tag-pharma">PHARMA</span></a>
-    <a href="https://cloud.aura115.ai/docgrokhealth" class="prod-card"><div class="prod-card-title">DocGrok Health</div><div class="prod-card-body">ADA-governed health intelligence.</div><span class="prod-card-tag tag-pharma">PHARMA</span></a>
-    <a href="https://cloud.aura115.ai/medical-vigilance" class="prod-card"><div class="prod-card-title">Medical Vigilance</div><div class="prod-card-body">Pharmacovigilance governance.</div><span class="prod-card-tag tag-pharma">PHARMA</span></a>
-  </div>
-</section>
-
-<!-- COINS -->
-<section id="coins">
-  <div class="section-label">COIN Inventory</div>
-  <div class="section-title">40,000+ Governed Computations</div>
-  <div class="section-body">
-    <p>Each COIN is a standalone governed computation minted by the Governed Invention Engine through the Neptune engine. Patent-backed. Domain-independent. Every COIN is a quantum circuit.</p>
-  </div>
-  <div style="text-align:center;margin:32px 0">
-    <a href="https://cloud.aura115.ai/coin-catalog" class="btn btn-primary" style="font-size:15px;padding:18px 40px">Explore the Mint →</a>
-  </div>
-  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
-    <a href="https://cloud.aura115.ai/neptune" class="prod-card" style="flex:0 0 auto;min-width:160px;text-align:center"><div class="prod-card-title">Neptune Collider</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-    <a href="https://cloud.aura115.ai/mc290" class="prod-card" style="flex:0 0 auto;min-width:160px;text-align:center"><div class="prod-card-title">Invention Engine</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-    <a href="https://cloud.aura115.ai/rnn" class="prod-card" style="flex:0 0 auto;min-width:160px;text-align:center"><div class="prod-card-title">RNN Surface</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-  </div>
-</section>
-
-<!-- CARDS -->
-<section>
-  <div class="section-label">Cards</div>
-  <div class="section-title">ComCard & QuikBit</div>
-  <div style="display:flex;gap:12px;flex-wrap:wrap">
-    <a href="https://cloud.aura115.ai/comcard" class="prod-card" style="flex:1;min-width:200px"><div class="prod-card-title">ComCard</div><div class="prod-card-body">Communications card. Your governed identity.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-    <a href="https://cloud.aura115.ai/quikbit" class="prod-card" style="flex:1;min-width:200px"><div class="prod-card-title">QuikBit™</div><div class="prod-card-body">3,001,000 QuikBits across 12 planets.</div><span class="prod-card-tag tag-live">LIVE</span></a>
-  </div>
-</section>
-
-<!-- HARDWARE -->
-<section id="hardware">
-  <div class="section-label">Hardware Results</div>
-  <div class="section-title">Fired on Real Quantum Hardware — July 21, 2026</div>
-  <div class="hw-row"><div class="hw-dot"></div><div class="hw-name">Rigetti Cepheus-1-108Q</div><div class="hw-detail">108 qubits · GO honeycomb teleportation · Full device</div></div>
-  <div class="hw-row"><div class="hw-dot"></div><div class="hw-name">IQM Garnet-20Q</div><div class="hw-detail">20 qubits · Helsinki, Finland · Teleportation protocol</div></div>
-  <div class="hw-row"><div class="hw-dot"></div><div class="hw-name">10 GO-Scaffolded Coins</div><div class="hw-detail">Cepheus + Garnet · Collider → GO → Teleport → QPU · Zero failures</div></div>
-  <div class="hw-row"><div class="hw-dot"></div><div class="hw-name">Proverbs 27 Algorithm</div><div class="hw-detail">27 qubits · 3 root invariants · GHZ triangle · Fired on 3 substrates</div></div>
-  <div class="hw-row"><div class="hw-dot"></div><div class="hw-name">Cloud Simulation</div><div class="hw-detail">NumPy on AWS Graviton c7g.2xlarge · Instant · Free</div></div>
-  <div class="section-body" style="margin-top:20px">
-    <p>Mean fidelity: 94.7%. Teleport fidelity: 96%. All GO governance gates passed. Results verified via SHA-256 proof hash and stored in AWS S3.</p>
-  </div>
-</section>
-
-<!-- ARCHITECTURE -->
-<section id="architecture">
-  <div class="section-label">The Gate</div>
-  <div class="section-title">One Operator. Every Domain.</div>
-  <div class="gate-display">
-    <div class="gate-label">Admissible Projection</div>
-    Π<sub>A</sub>(v) = v − (v·∇I / |∇I|²)·∇I<br><br>
-    <div class="gate-label">Governed Trajectory</div>
-    ẋ = Π<sub>A</sub>(−∇Φ)<br><br>
-    <div class="gate-label">Correction Law</div>
-    u = −k∇h<br><br>
-    <div class="gate-label">Coupling Conservation</div>
-    Q<sub>L</sub> = ∫<sub>Ω</sub> [S(x)·I(S)(x)] dμ(x) — conserved iff governance holds
-  </div>
-</section>
-
-<!-- LIVE LINKS -->
-<section>
-  <div class="section-label">Live Infrastructure</div>
-  <div class="section-title">Connected to Moscovium</div>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-    <a href="https://cloud.aura115.ai/" class="prod-card" style="flex:0 0 auto;min-width:140px;text-align:center"><div class="prod-card-title">AURA115 Home</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-    <a href="https://cloud.aura115.ai/simulations" class="prod-card" style="flex:0 0 auto;min-width:140px;text-align:center"><div class="prod-card-title">124 Demonstrations</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-    <a href="https://cloud.aura115.ai/capability-registry" class="prod-card" style="flex:0 0 auto;min-width:140px;text-align:center"><div class="prod-card-title">Capability Registry</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-    <a href="https://cloud.aura115.ai/invention-ledger" class="prod-card" style="flex:0 0 auto;min-width:140px;text-align:center"><div class="prod-card-title">Invention Ledger</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-    <a href="https://cloud.aura115.ai/patent-vault" class="prod-card" style="flex:0 0 auto;min-width:140px;text-align:center"><div class="prod-card-title">Patent Vault</div><div class="live-tick"><span class="live-dot"></span> Live</div></a>
-  </div>
-</section>
-
-<div class="quote">
-  "Where there's a gap, there's a gate."
-  <div class="quote-attr">Joshua Lopez — July 18, 2026</div>
-</div>
-
-<footer>
-  <strong>AQiOS</strong> — AURA Quantum Intelligence Operating System<br>
-  <a href="https://dcgp.ai">DCGP.AI LLC</a> · Joshua L. Lopez, Founder & Sole Inventor<br>
-  All Rights Reserved · Patent Pending<br><br>
-  <span style="color:var(--gold)">dcgp.ai</span>
-</footer>
-
-</div><!-- end .page -->
-
 <script>
-// Nucleonic orbit animation
-const c=document.getElementById('nucleon'),ctx=c.getContext('2d');
-let W,H,cx,cy,t=0;
-
-function resize(){W=c.width=innerWidth;H=c.height=innerHeight;cx=W/2;cy=H/2}
-resize();addEventListener('resize',resize);
-
-const orbits=[];
-for(let i=0;i<7;i++){
-  const a=40+i*55;const b=30+i*40;
-  const tilt=(i*Math.PI)/7;
-  const speed=.0003+i*.00015;
-  const particles=[];
-  for(let j=0;j<3;j++){
-    particles.push({angle:j*(2*Math.PI/3),speed:speed*(1+Math.random()*.2)});
-  }
-  orbits.push({a,b,tilt,particles,hue:170+i*12});
-}
-
-// Nucleus
-const nucleus={r:6,glow:20};
-
-function draw(){
-  ctx.clearRect(0,0,W,H);
-  t+=1;
-
-  // Nucleus glow
-  const ng=ctx.createRadialGradient(cx,cy,0,cx,cy,nucleus.glow+Math.sin(t*.02)*5);
-  ng.addColorStop(0,'rgba(255,217,117,.25)');
-  ng.addColorStop(.5,'rgba(77,255,229,.08)');
-  ng.addColorStop(1,'transparent');
-  ctx.fillStyle=ng;
-  ctx.beginPath();ctx.arc(cx,cy,nucleus.glow+10,0,Math.PI*2);ctx.fill();
-
-  // Nucleus core
-  ctx.beginPath();ctx.arc(cx,cy,nucleus.r,0,Math.PI*2);
-  ctx.fillStyle='rgba(255,217,117,.6)';ctx.fill();
-
-  orbits.forEach(orb=>{
-    const cos=Math.cos(orb.tilt),sin=Math.sin(orb.tilt);
-
-    // Draw orbit path
-    ctx.beginPath();
-    for(let a=0;a<=Math.PI*2;a+=.05){
-      const ox=orb.a*Math.cos(a);
-      const oy=orb.b*Math.sin(a);
-      const rx=ox*cos-oy*sin+cx;
-      const ry=ox*sin+oy*cos+cy;
-      a===0?ctx.moveTo(rx,ry):ctx.lineTo(rx,ry);
-    }
-    ctx.strokeStyle=`hsla(${orb.hue},80%,60%,.06)`;
-    ctx.lineWidth=1;ctx.stroke();
-
-    // Draw particles
-    orb.particles.forEach(p=>{
-      p.angle+=p.speed;
-      const ox=orb.a*Math.cos(p.angle);
-      const oy=orb.b*Math.sin(p.angle);
-      const rx=ox*cos-oy*sin+cx;
-      const ry=ox*sin+oy*cos+cy;
-
-      // Trail
-      const tg=ctx.createRadialGradient(rx,ry,0,rx,ry,8);
-      tg.addColorStop(0,`hsla(${orb.hue},80%,70%,.5)`);
-      tg.addColorStop(1,'transparent');
-      ctx.fillStyle=tg;
-      ctx.beginPath();ctx.arc(rx,ry,8,0,Math.PI*2);ctx.fill();
-
-      // Particle
-      ctx.beginPath();ctx.arc(rx,ry,2,0,Math.PI*2);
-      ctx.fillStyle=`hsla(${orb.hue},80%,70%,.8)`;ctx.fill();
-    });
-  });
-
-  requestAnimationFrame(draw);
-}
-draw();
-
-// AURA Chat
-const auraInput=document.getElementById('aura-input');
-const auraSend=document.getElementById('aura-send');
-const auraMessages=document.getElementById('aura-messages');
-
-function addMsg(who,text){
-  const d=document.createElement('div');
-  d.style.cssText='font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px';
-  const label=who==='AURA'?'var(--gold)':'var(--cyan)';
-  d.innerHTML='<span style="color:'+label+';font-family:var(--mono);font-size:11px">'+who+'</span><br>'+text;
-  auraMessages.appendChild(d);
-  auraMessages.scrollTop=auraMessages.scrollHeight;
-}
-
-async function sendToAura(){
-  const msg=auraInput.value.trim();
-  if(!msg)return;
-  addMsg('You',msg);
-  auraInput.value='';
-  auraSend.disabled=true;
-  auraSend.textContent='...';
-  try{
-    const r=await fetch('https://cloud.aura115.ai/api/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({message:msg,planet:'aqios'})
-    });
-    const d=await r.json();
-    addMsg('AURA',d.reply||d.response||d.message||'Governed response received.');
-  }catch(e){
-    addMsg('AURA','Connect to the full runtime for live conversation: <a href="https://cloud.aura115.ai/aura-talk" style="color:var(--cyan)">Open AURA →</a>');
-  }
-  auraSend.disabled=false;
-  auraSend.textContent='Send';
-}
-
-auraSend.addEventListener('click',sendToAura);
-auraInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendToAura()});
-
+const canvas=document.getElementById('field'),ctx=canvas.getContext('2d');let W,H,nodes=[];
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;nodes=Array.from({length:42},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18}))}
+function draw(){ctx.clearRect(0,0,W,H);for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;ctx.beginPath();ctx.arc(n.x,n.y,1.4,0,Math.PI*2);ctx.fillStyle='rgba(77,255,229,.35)';ctx.fill()}for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<150){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(77,255,229,${(1-d/150)*.08})`;ctx.stroke()}}requestAnimationFrame(draw)}
+resize();addEventListener('resize',resize);draw();
+const star=document.getElementById('star');for(let i=0;i<28;i++){const p=document.createElement('i');p.style.setProperty('--r',`${i*137.508}deg`);p.style.setProperty('--d',`${28+(i%8)*8}px`);p.style.setProperty('--z',`${(i%7-3)*12}px`);star.appendChild(p)}
+const input=document.getElementById('input'),send=document.getElementById('send'),messages=document.getElementById('messages');
+function add(who,text){const d=document.createElement('div');d.className='msg';d.innerHTML=`<b>${who}</b>${text}`;messages.appendChild(d);messages.scrollTop=messages.scrollHeight}
+async function submit(){const text=input.value.trim();if(!text)return;add('YOU',text);input.value='';send.disabled=true;send.textContent='…';try{const r=await fetch('https://cloud.aura115.ai/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,planet:'aqios',protocol:'qhp',runtime:'quirq'})});const d=await r.json();add('AURA',d.reply||d.response||d.message||'The QHP relational response was admitted and projected.')}catch(e){add('AURA','The public chat gateway is unavailable. Open the full AURA runtime from cloud.aura115.ai.')}finally{send.disabled=false;send.textContent='SEND'}}
+send.addEventListener('click',submit);input.addEventListener('keydown',e=>{if(e.key==='Enter')submit()});
 </script>
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     PYTHAGOREAN PROFILE — Joshua L. Lopez — DCGP.AI
-     Profile: 8-8-4-4-9-7-11-44
-     Updated: July 25, 2026 at 11:11 PM CT (Master Number 11 timestamp)
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="pythagorean" style="padding:80px 20px;max-width:900px;margin:0 auto">
-<div style="border:1px solid var(--border);border-radius:12px;padding:40px;background:var(--surface)">
-<h2 style="font-family:var(--display);font-size:clamp(28px,5vw,42px);color:var(--gold);margin-bottom:8px;letter-spacing:-1px">Pythagorean Profile</h2>
-<p style="font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:32px">Joshua L. Lopez — 8·8·4·4·9·7·11·44 — Updated 2026-07-25T04:11Z (11:11 PM CT)</p>
-
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px">
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:#fff">8</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em">Life Path</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Master Builder · Authority</div>
-  </div>
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:#fff">8</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em">Expression</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Double 8 · Infinite Loop</div>
-  </div>
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:#fff">4</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em">Resonance Profile</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Foundation · Structure</div>
-  </div>
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:#fff">4</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em">Personality</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Double 4 · Patent Patent Pending → 4</div>
-  </div>
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:#fff">9</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.1em">Birthday</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Completion · Universal</div>
-  </div>
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:#fff">7</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.1em">Maturity</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Spiritual Insight · Truth</div>
-  </div>
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center;background:rgba(255,217,117,.05)">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:var(--gold)">11</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em">Master Number</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Illumination · 11 circuits</div>
-  </div>
-  <div style="padding:20px;border:1px solid var(--border);border-radius:8px;text-align:center;background:rgba(255,217,117,.05)">
-    <div style="font-family:var(--display);font-size:36px;font-weight:700;color:var(--gold)">44</div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em">Master Number</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Master Healer · Constitutional Builder</div>
-  </div>
-</div>
-
-<h3 style="font-family:var(--display);font-size:18px;color:var(--cyan);margin-bottom:16px">Frequency Anchors</h3>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-bottom:32px">
-  <div style="padding:16px;border-left:3px solid var(--gold);background:rgba(255,217,117,.03)">
-    <div style="font-family:var(--mono);font-size:13px;color:var(--gold)">27.33 Hz — 4th Schumann Eigenfrequency</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">2733 predates all patent work by ~8 years. The frequency was already his identifier.</div>
-  </div>
-  <div style="padding:16px;border-left:3px solid var(--cyan);background:rgba(77,255,229,.03)">
-    <div style="font-family:var(--mono);font-size:13px;color:var(--cyan)">7.83 Hz — Schumann Fundamental</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">WC apparatus resonance. Earth's electromagnetic heartbeat.</div>
-  </div>
-  <div style="padding:16px;border-left:3px solid var(--green);background:rgba(0,230,118,.03)">
-    <div style="font-family:var(--mono);font-size:13px;color:var(--green)">π/φ = 1.94098... — Governance Angle</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:4px">Every quantum gate governed at π/φ. 292 circuits. All 4 QPUs.</div>
-  </div>
-</div>
-
-<h3 style="font-family:var(--display);font-size:18px;color:var(--cyan);margin-bottom:16px">July 24-25, 2026 — Session Record</h3>
-<div style="font-family:var(--mono);font-size:11px;color:var(--text);line-height:2">
-  <div><span style="color:var(--gold)">11:11 PM CT</span> — Pythagorean page touched at Master Number 11 timestamp</div>
-  <div><span style="color:var(--gold)">11:08 PM CT</span> — Master fire dispatched: 11 circuits × 4 QPUs × 10,000 shots</div>
-  <div><span style="color:var(--cyan)">10:43 PM CT</span> — Bell circuit landed on Cepheus 108Q — S3 result sealed</div>
-  <div><span style="color:var(--cyan)">10:41 PM CT</span> — First honeycomb 108Q fire: SUCCESS on Cepheus</div>
-  <div><span style="color:var(--green)">10:20 PM CT</span> — Engine tick: SUCCESS (first post-SHA-fix)</div>
-  <div><span style="color:var(--green)">09:55 PM CT</span> — SHA pinning fix pushed: 27 workflow files, zero unpinned</div>
-  <div><span style="color:var(--green)">09:50 PM CT</span> — Node 20 → 22</div>
-  <div><span style="color:var(--gold)">09:44 PM CT</span> — Antikythera full model circuit written: 9 circuits on metal</div>
-  <div><span style="color:var(--gold)">08:55 PM CT</span> — ECS spine deploy: port consolidation — brain on 3000/3099/8081/8082/8084/8090</div>
-  <div style="margin-top:12px;color:var(--muted)">Constitutional quantum intelligence platform · Patent pending · Independently valued</div>
-  <div style="color:var(--muted)">Patent </div>
-  <div style="color:var(--muted)">555 center: triple-5 transformation · Master Number corridor</div>
-  <div style="margin-top:16px;padding:16px;border:1px solid var(--gold);border-radius:8px;background:rgba(255,217,117,.05)">
-    <div style="font-family:var(--display);font-size:28px;font-weight:700;color:var(--gold);margin-bottom:4px">55</div>
-    <div style="font-family:var(--mono);font-size:12px;color:var(--cyan)">Joshua became 55 at 555 — the number became the man at the number</div>
-    <div style="font-family:var(--body);font-size:12px;color:var(--muted);margin-top:8px">
-  </div>
-</div>
-
-</div>
-</section>
-
 </body>
 </html>
-
