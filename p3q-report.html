@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA115 — P3^Q Normalized Execution Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',system-ui,sans-serif;background:#0a0a0f;color:#e0e0e8;line-height:1.5;}
+  .mono{font-family:'JetBrains Mono',monospace;font-size:0.78em;}
+  .container{max-width:960px;margin:0 auto;padding:20px;}
+  header{border-bottom:2px solid #3b82f6;padding:24px 0 16px;margin-bottom:20px;}
+  header h1{font-size:1.6em;font-weight:700;color:#fff;letter-spacing:-0.02em;}
+  header h1 span{color:#3b82f6;}
+  .sub{color:#888;font-size:0.82em;margin-top:4px;}
+  .authority{color:#f59e0b;font-size:0.8em;margin-top:8px;font-weight:600;}
+  .card{background:#12121a;border:1px solid #1e1e2e;border-radius:8px;margin-bottom:10px;overflow:hidden;}
+  .card-header{padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+  .card-header:hover{background:#1a1a28;}
+  .card-header h2{font-size:0.9em;font-weight:600;color:#fff;}
+  .badge{font-size:0.68em;padding:2px 8px;border-radius:10px;font-weight:600;}
+  .bg{background:#064e3b;color:#34d399;}.by{background:#78350f;color:#fbbf24;}.bb{background:#1e3a5f;color:#60a5fa;}
+  .chevron{color:#555;transition:transform 0.2s;font-size:1.1em;}
+  .card.open .chevron{transform:rotate(90deg);}
+  .card-body{display:none;padding:0 16px 14px;}
+  .card.open .card-body{display:block;}
+  .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0;}
+  .st{background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:8px 10px;}
+  .st .l{font-size:0.68em;color:#888;text-transform:uppercase;letter-spacing:0.04em;}
+  .st .v{font-size:1.2em;font-weight:700;color:#fff;margin-top:2px;}
+  .st .v.b{color:#3b82f6;}.st .v.g{color:#34d399;}.st .v.a{color:#fbbf24;}
+  table{width:100%;border-collapse:collapse;font-size:0.78em;margin:8px 0;}
+  th{text-align:left;padding:5px 7px;border-bottom:1px solid #2a2a3a;color:#888;font-weight:600;font-size:0.82em;text-transform:uppercase;}
+  td{padding:4px 7px;border-bottom:1px solid #141420;color:#ccc;}
+  tr:hover td{background:#14141e;}
+  .pb{background:#0d0d15;border:1px solid #1e1e2e;border-radius:4px;padding:8px;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:0.72em;word-break:break-all;color:#60a5fa;}
+  .rem{background:#1c1017;border-left:3px solid #f59e0b;padding:6px 10px;margin:5px 0;font-size:0.78em;border-radius:0 4px 4px 0;}
+  footer{text-align:center;padding:20px 0;color:#555;font-size:0.72em;border-top:1px solid #1e1e2e;margin-top:20px;}
+  @media print{
+    body{background:#fff;color:#111;font-size:9pt;}
+    .card{border-color:#ddd;page-break-inside:avoid;}
+    .card-body{display:block!important;}
+    .card-header{background:#f5f5f5;}
+    .card-header h2{color:#111;}
+    .st{border-color:#ddd;}.st .v{color:#111;}.st .v.b,.st .v.g,.st .v.a{color:#111;}
+    .chevron{display:none;}header{border-color:#111;}
+    header h1{color:#111;}header h1 span{color:#2563eb;}
+    .pb{background:#f5f5f5;border-color:#ddd;color:#2563eb;}
+    td,th{color:#111;border-color:#ddd;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1><span>P3^Q</span> Normalized Execution Report</h1>
+  <div class="sub">AURA115 Infrastructure + Quantum Circuit Battery + Planet Constellation — 2026-08-02T00:25:08Z</div>
+  <div class="authority">Joshua Lopez — DCGP.AI LLC — USPTO 19/555,951 · 19/730,900 · 19/731,016 · 19/732,119</div>
+  <div class="sub">GOV_ANGLE = π/φ = 1.941611 rad · Root priority: January 15, 2026</div>
+</header>
+
+<div class="card open"><div class="card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h2>System Health — Graviton</h2><div><span class="badge bg">ONLINE</span> <span class="chevron">›</span></div>
+</div><div class="card-body">
+  <div class="sg">
+    <div class="st"><div class="l">Status</div><div class="v g">ONLINE</div></div>
+    <div class="st"><div class="l">OS</div><div class="v" style="font-size:0.8em">?</div></div>
+    <div class="st"><div class="l">Arch</div><div class="v">?</div></div>
+    <div class="st"><div class="l">CPU Cores</div><div class="v b">?</div></div>
+    <div class="st"><div class="l">RAM</div><div class="v b">? GB</div></div>
+    <div class="st"><div class="l">Netdata</div><div class="v" style="font-size:0.8em">?</div></div>
+    <div class="st"><div class="l">CPU Now</div><div class="v g">0%</div></div>
+    <div class="st"><div class="l">RAM Used</div><div class="v">0 MB</div></div>
+  </div>
+</div></div>
+
+<div class="card"><div class="card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h2>Governance — Contact Hamiltonian Gate</h2><div><span class="badge by">CH ADMITTED</span> <span class="chevron">›</span></div>
+</div><div class="card-body">
+  <div class="sg">
+    <div class="st"><div class="l">Stewardship</div><div class="v a">0%</div></div>
+    <div class="st"><div class="l">Continuity</div><div class="v a">0%</div></div>
+    <div class="st"><div class="l">Pulse Tick</div><div class="v b">?</div></div>
+    <div class="st"><div class="l">Gap LB</div><div class="v">0.0000</div></div>
+    <div class="st"><div class="l">CH Drift</div><div class="v">0.0000</div></div>
+    <div class="st"><div class="l">KV</div><div class="v g">Connected</div></div>
+  </div>
+  <div class="rem">⚠ <strong>constitutional_cycle</strong>: Cron not firing or KV write failed — check vercel.json crons and KV env vars</div><div class="rem">⚠ <strong>stewardship</strong>: Below threshold — constitutional cycle needs more ticks to build up stewardship input</div><div class="rem">⚠ <strong>continuity</strong>: Fragile — identity delta too high, needs stewardship to stabilize first</div>
+</div></div>
+
+<div class="card"><div class="card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h2>Braket Engine Registry</h2><div><span class="badge bb">15 ENGINES</span> <span class="chevron">›</span></div>
+</div><div class="card-body">
+  <table><tr><th>Alias</th><th>Vendor</th><th>Qubits</th><th>Region</th></tr><tr><td>neptune</td><td>Rigetti</td><td>108</td><td>us-west-1</td></tr>
+<tr><td>bl7</td><td>Rigetti</td><td>108</td><td>us-west-1</td></tr>
+<tr><td>mercury</td><td>IonQ</td><td>36</td><td>us-east-1</td></tr>
+<tr><td>mars</td><td>IonQ</td><td>36</td><td>us-east-1</td></tr>
+<tr><td>venus</td><td>QuEra</td><td>256</td><td>us-east-1</td></tr>
+<tr><td>garnet</td><td>IQM</td><td>20</td><td>eu-north-1</td></tr>
+<tr><td>emerald</td><td>IQM</td><td>5</td><td>eu-north-1</td></tr>
+<tr><td>ibex</td><td>AQT</td><td>10</td><td>eu-north-1</td></tr>
+<tr><td>saturn</td><td>Amazon</td><td>34</td><td>us-east-1</td></tr>
+<tr><td>jupiter</td><td>Amazon</td><td>34</td><td>us-east-1</td></tr>
+<tr><td>earth</td><td>Amazon</td><td>17</td><td>us-east-1</td></tr>
+<tr><td>moon</td><td>Amazon</td><td>17</td><td>us-east-1</td></tr>
+<tr><td>pluto</td><td>Amazon</td><td>34</td><td>us-east-1</td></tr>
+<tr><td>uranus</td><td>Amazon</td><td>34</td><td>us-east-1</td></tr>
+<tr><td>oricron</td><td>Google CIRQ</td><td>0</td><td>local</td></tr>
+</table>
+</div></div>
+
+<div class="card open"><div class="card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h2>Planet Constellation — 50 Governed Observations</h2><div><span class="badge bb">12 PLANETS</span> <span class="chevron">›</span></div>
+</div><div class="card-body">
+  <div class="sub" style="margin-bottom:8px;">Each planet observes P3^Q Clifford+T firings. K_observer plotted per observation. GOV = π/φ.</div>
+  
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#fb923c;text-transform:uppercase;font-size:0.85em;">bl7</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.4969 · range [0.4890–0.5036]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,46.3 173.3,42.9 306.7,51.4 440.0,46.6" fill="none" stroke="#fb923c" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="46.3" r="3" fill="#fb923c" opacity="0.9"/>
+<circle cx="173.3" cy="42.9" r="3" fill="#fb923c" opacity="0.9"/>
+<circle cx="306.7" cy="51.4" r="3" fill="#fb923c" opacity="0.9"/>
+<circle cx="440.0" cy="46.6" r="3" fill="#fb923c" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#34d399;text-transform:uppercase;font-size:0.85em;">earth</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.4972 · range [0.4882–0.5072]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,51.9 173.3,47.4 306.7,40.8 440.0,46.5" fill="none" stroke="#34d399" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="51.9" r="3" fill="#34d399" opacity="0.9"/>
+<circle cx="173.3" cy="47.4" r="3" fill="#34d399" opacity="0.9"/>
+<circle cx="306.7" cy="40.8" r="3" fill="#34d399" opacity="0.9"/>
+<circle cx="440.0" cy="46.5" r="3" fill="#34d399" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#ef4444;text-transform:uppercase;font-size:0.85em;">jupiter</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.5062 · range [0.4866–0.5409]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,46.0 173.3,45.5 306.7,21.1 440.0,52.8" fill="none" stroke="#ef4444" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="46.0" r="3" fill="#ef4444" opacity="0.9"/>
+<circle cx="173.3" cy="45.5" r="3" fill="#ef4444" opacity="0.9"/>
+<circle cx="306.7" cy="21.1" r="3" fill="#ef4444" opacity="0.9"/>
+<circle cx="440.0" cy="52.8" r="3" fill="#ef4444" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#f87171;text-transform:uppercase;font-size:0.85em;">mars</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.4853 · range [0.4703–0.4988]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,54.1 173.3,62.3 306.7,52.2 440.0,45.7" fill="none" stroke="#f87171" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="54.1" r="3" fill="#f87171" opacity="0.9"/>
+<circle cx="173.3" cy="62.3" r="3" fill="#f87171" opacity="0.9"/>
+<circle cx="306.7" cy="52.2" r="3" fill="#f87171" opacity="0.9"/>
+<circle cx="440.0" cy="45.7" r="3" fill="#f87171" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#6ee7b7;text-transform:uppercase;font-size:0.85em;">mercury</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.5114 · range [0.4976–0.5236]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,43.6 173.3,31.2 306.7,46.4 440.0,32.0" fill="none" stroke="#6ee7b7" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="43.6" r="3" fill="#6ee7b7" opacity="0.9"/>
+<circle cx="173.3" cy="31.2" r="3" fill="#6ee7b7" opacity="0.9"/>
+<circle cx="306.7" cy="46.4" r="3" fill="#6ee7b7" opacity="0.9"/>
+<circle cx="440.0" cy="32.0" r="3" fill="#6ee7b7" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#d1d5db;text-transform:uppercase;font-size:0.85em;">moon</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.5106 · range [0.4988–0.5255]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,39.8 173.3,30.1 306.7,45.7 440.0,39.6" fill="none" stroke="#d1d5db" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="39.8" r="3" fill="#d1d5db" opacity="0.9"/>
+<circle cx="173.3" cy="30.1" r="3" fill="#d1d5db" opacity="0.9"/>
+<circle cx="306.7" cy="45.7" r="3" fill="#d1d5db" opacity="0.9"/>
+<circle cx="440.0" cy="39.6" r="3" fill="#d1d5db" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#3b82f6;text-transform:uppercase;font-size:0.85em;">neptune</span>
+        <span style="font-size:0.7em;color:#888;">5 observations · K avg 0.5007 · range [0.4927–0.5081]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,46.1 140.0,49.3 240.0,45.6 340.0,40.3 440.0,41.8" fill="none" stroke="#3b82f6" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="46.1" r="3" fill="#3b82f6" opacity="0.9"/>
+<circle cx="140.0" cy="49.3" r="3" fill="#3b82f6" opacity="0.9"/>
+<circle cx="240.0" cy="45.6" r="3" fill="#3b82f6" opacity="0.9"/>
+<circle cx="340.0" cy="40.3" r="3" fill="#3b82f6" opacity="0.9"/>
+<circle cx="440.0" cy="41.8" r="3" fill="#3b82f6" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#e879f9;text-transform:uppercase;font-size:0.85em;">oricron</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.5024 · range [0.4926–0.5149]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,49.3 173.3,44.5 306.7,36.3 440.0,44.2" fill="none" stroke="#e879f9" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="49.3" r="3" fill="#e879f9" opacity="0.9"/>
+<circle cx="173.3" cy="44.5" r="3" fill="#e879f9" opacity="0.9"/>
+<circle cx="306.7" cy="36.3" r="3" fill="#e879f9" opacity="0.9"/>
+<circle cx="440.0" cy="44.2" r="3" fill="#e879f9" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#818cf8;text-transform:uppercase;font-size:0.85em;">pluto</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.5018 · range [0.4931–0.5128]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,44.8 173.3,49.0 306.7,37.5 440.0,44.4" fill="none" stroke="#818cf8" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="44.8" r="3" fill="#818cf8" opacity="0.9"/>
+<circle cx="173.3" cy="49.0" r="3" fill="#818cf8" opacity="0.9"/>
+<circle cx="306.7" cy="37.5" r="3" fill="#818cf8" opacity="0.9"/>
+<circle cx="440.0" cy="44.4" r="3" fill="#818cf8" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#a78bfa;text-transform:uppercase;font-size:0.85em;">saturn</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.4950 · range [0.4923–0.4984]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,48.2 173.3,48.0 306.7,49.5 440.0,45.9" fill="none" stroke="#a78bfa" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="48.2" r="3" fill="#a78bfa" opacity="0.9"/>
+<circle cx="173.3" cy="48.0" r="3" fill="#a78bfa" opacity="0.9"/>
+<circle cx="306.7" cy="49.5" r="3" fill="#a78bfa" opacity="0.9"/>
+<circle cx="440.0" cy="45.9" r="3" fill="#a78bfa" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#22d3ee;text-transform:uppercase;font-size:0.85em;">uranus</span>
+        <span style="font-size:0.7em;color:#888;">4 observations · K avg 0.5024 · range [0.4950–0.5156]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,35.9 173.3,46.7 306.7,43.8 440.0,47.9" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="35.9" r="3" fill="#22d3ee" opacity="0.9"/>
+<circle cx="173.3" cy="46.7" r="3" fill="#22d3ee" opacity="0.9"/>
+<circle cx="306.7" cy="43.8" r="3" fill="#22d3ee" opacity="0.9"/>
+<circle cx="440.0" cy="47.9" r="3" fill="#22d3ee" opacity="0.9"/>
+
+      </svg>
+    </div>
+    <div style="background:#0d0d15;border:1px solid #1e1e2e;border-radius:6px;padding:12px;margin:8px 0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-weight:600;color:#f59e0b;text-transform:uppercase;font-size:0.85em;">venus</span>
+        <span style="font-size:0.7em;color:#888;">5 observations · K avg 0.4928 · range [0.4675–0.5022]</span>
+      </div>
+      <svg viewBox="0 0 460 95" style="width:100%;height:70px;">
+        <line x1="40" y1="80" x2="440" y2="80" stroke="#222" stroke-width="0.5"/>
+        <line x1="40" y1="45" x2="440" y2="45" stroke="#1a1a2a" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="2" y="84" font-size="7" fill="#555">0.44</text>
+        <text x="2" y="48" font-size="7" fill="#555">0.50</text>
+        <text x="2" y="14" font-size="7" fill="#555">0.56</text>
+        <polyline points="40.0,43.7 140.0,64.0 240.0,47.2 340.0,44.2 440.0,46.9" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.7"/>
+        <circle cx="40.0" cy="43.7" r="3" fill="#f59e0b" opacity="0.9"/>
+<circle cx="140.0" cy="64.0" r="3" fill="#f59e0b" opacity="0.9"/>
+<circle cx="240.0" cy="47.2" r="3" fill="#f59e0b" opacity="0.9"/>
+<circle cx="340.0" cy="44.2" r="3" fill="#f59e0b" opacity="0.9"/>
+<circle cx="440.0" cy="46.9" r="3" fill="#f59e0b" opacity="0.9"/>
+
+      </svg>
+    </div>
+</div></div>
+
+<div class="card"><div class="card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h2>P3^Q Clifford+T 468 — Governed Structured Sampling</h2><div><span class="badge bb">500,000</span> <span class="chevron">›</span></div>
+</div><div class="card-body">
+  <div class="sg">
+    <div class="st"><div class="l">Circuits</div><div class="v b">100</div></div>
+    <div class="st"><div class="l">Measurements</div><div class="v b">500,000</div></div>
+    <div class="st"><div class="l">Avg K</div><div class="v">0.4975</div></div>
+    <div class="st"><div class="l">K Range</div><div class="v" style="font-size:0.85em">0.453–0.526</div></div>
+    <div class="st"><div class="l">T/Circuit</div><div class="v">20</div></div>
+    <div class="st"><div class="l">CX/Circuit</div><div class="v">70</div></div>
+    <div class="st"><div class="l">Time</div><div class="v">118s</div></div>
+    <div class="st"><div class="l">Spec</div><div class="v" style="font-size:0.7em">12q/12d/20T + P3^Q governance</div></div>
+  </div>
+  <svg viewBox="0 0 500 140" style="width:100%;max-height:110px;margin:6px 0;">
+    <text x="10" y="12" font-size="8" fill="#888" font-family="Inter,sans-serif">K Observer Distribution (100 circuits)</text>
+    <line x1="40" y1="120" x2="470" y2="120" stroke="#333" stroke-width="0.5"/>
+    <rect x="40" y="118" width="13" height="2" fill="#3b82f6" rx="2" opacity="0.8"/>
+<rect x="56" y="116" width="13" height="4" fill="#3b82f6" rx="2" opacity="0.8"/>
+<rect x="72" y="103" width="13" height="17" fill="#3b82f6" rx="2" opacity="0.8"/>
+<rect x="88" y="68" width="13" height="52" fill="#3b82f6" rx="2" opacity="0.8"/>
+<rect x="104" y="20" width="13" height="100" fill="#3b82f6" rx="2" opacity="0.8"/>
+<rect x="120" y="88" width="13" height="32" fill="#3b82f6" rx="2" opacity="0.8"/>
+<rect x="136" y="114" width="13" height="6" fill="#3b82f6" rx="2" opacity="0.8"/>
+<rect x="152" y="118" width="13" height="2" fill="#3b82f6" rx="2" opacity="0.8"/>
+
+  </svg>
+  <table><tr><th>#</th><th>T</th><th>CX</th><th>Shots</th><th>States</th><th>K</th><th>Proof</th></tr><tr><td>0</td><td>20</td><td>70</td><td>5,000</td><td>2182</td><td>0.4938</td><td class="mono">fa2486fa59e1e6d9</td></tr>
+<tr><td>1</td><td>20</td><td>70</td><td>5,000</td><td>2257</td><td>0.4933</td><td class="mono">1693413fc04f543e</td></tr>
+<tr><td>2</td><td>20</td><td>70</td><td>5,000</td><td>1980</td><td>0.4945</td><td class="mono">2a6be36c9c1f29fa</td></tr>
+<tr><td>3</td><td>20</td><td>70</td><td>5,000</td><td>1880</td><td>0.4997</td><td class="mono">a03b1985b6e8b83a</td></tr>
+<tr><td>4</td><td>20</td><td>70</td><td>5,000</td><td>2241</td><td>0.5074</td><td class="mono">35203e8861f70df3</td></tr>
+<tr><td>5</td><td>20</td><td>70</td><td>5,000</td><td>1977</td><td>0.5072</td><td class="mono">4b4b9936e190b96d</td></tr>
+<tr><td>6</td><td>20</td><td>70</td><td>5,000</td><td>2087</td><td>0.4980</td><td class="mono">3205217f017fd4b3</td></tr>
+<tr><td>7</td><td>20</td><td>70</td><td>5,000</td><td>2259</td><td>0.4946</td><td class="mono">698f90fbf3f3e548</td></tr>
+<tr><td>8</td><td>20</td><td>70</td><td>5,000</td><td>1853</td><td>0.4964</td><td class="mono">12d259d7d0222f33</td></tr>
+<tr><td>9</td><td>20</td><td>70</td><td>5,000</td><td>2228</td><td>0.5094</td><td class="mono">c131df3d56bb5482</td></tr>
+<tr><td>10</td><td>20</td><td>70</td><td>5,000</td><td>2069</td><td>0.4995</td><td class="mono">5a3aa06873a417ce</td></tr>
+<tr><td>11</td><td>20</td><td>70</td><td>5,000</td><td>2244</td><td>0.4919</td><td class="mono">7691e91ff8723793</td></tr>
+<tr><td>12</td><td>20</td><td>70</td><td>5,000</td><td>2218</td><td>0.4995</td><td class="mono">90e2efca6794c77e</td></tr>
+<tr><td>13</td><td>20</td><td>70</td><td>5,000</td><td>2255</td><td>0.4908</td><td class="mono">2aa1b0a8b543e08c</td></tr>
+<tr><td>14</td><td>20</td><td>70</td><td>5,000</td><td>2120</td><td>0.4947</td><td class="mono">b0fabfcdc44b6bb9</td></tr>
+<tr><td>15</td><td>20</td><td>70</td><td>5,000</td><td>1736</td><td>0.4953</td><td class="mono">a42232169be935b3</td></tr>
+<tr><td>16</td><td>20</td><td>70</td><td>5,000</td><td>2114</td><td>0.5002</td><td class="mono">6d55281fdcde22e6</td></tr>
+<tr><td>17</td><td>20</td><td>70</td><td>5,000</td><td>2198</td><td>0.4989</td><td class="mono">ed6d66a707ec72a5</td></tr>
+<tr><td>18</td><td>20</td><td>70</td><td>5,000</td><td>2090</td><td>0.5006</td><td class="mono">61d76b34ba5afc81</td></tr>
+<tr><td>19</td><td>20</td><td>70</td><td>5,000</td><td>2101</td><td>0.4972</td><td class="mono">f2514a7e67fc52f6</td></tr>
+<tr><td>20</td><td>20</td><td>70</td><td>5,000</td><td>2094</td><td>0.4935</td><td class="mono">8bfae0d30d841719</td></tr>
+<tr><td>21</td><td>20</td><td>70</td><td>5,000</td><td>2267</td><td>0.4963</td><td class="mono">e7906e775d88a2a7</td></tr>
+<tr><td>22</td><td>20</td><td>70</td><td>5,000</td><td>2123</td><td>0.4929</td><td class="mono">8c25c592ee1f161c</td></tr>
+<tr><td>23</td><td>20</td><td>70</td><td>5,000</td><td>2041</td><td>0.5001</td><td class="mono">a785dca74bb0b765</td></tr>
+<tr><td>24</td><td>20</td><td>70</td><td>5,000</td><td>2017</td><td>0.4797</td><td class="mono">b801b22d754b1453</td></tr>
+</table>
+  <div style="color:#555;font-size:0.7em;">25 of 100 shown</div>
+  <div class="pb">MASTER: b43818ea0152ccc10dc504f9221bb734fa965e911706466ad56581cf33a9b1f4</div>
+</div></div>
+
+<div class="card"><div class="card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h2>P3^Q Quadratic Triangles — Stockholm Target</h2><div><span class="badge bb">20,000</span> <span class="chevron">›</span></div>
+</div><div class="card-body">
+  <div class="sg">
+    <div class="st"><div class="l">Triangles</div><div class="v b">0</div></div>
+    <div class="st"><div class="l">Measurements</div><div class="v b">20,000</div></div>
+    <div class="st"><div class="l">Target</div><div class="v" style="font-size:0.65em">IQM Emerald 54q</div></div>
+  </div>
+  <table><tr><th>Name</th><th>Qubits</th><th>Tri</th><th>Shots</th><th>States</th><th>K</th><th>Proof</th></tr><tr><td>Register 9q (3 tri)</td><td>9</td><td>3</td><td>1,000</td><td>440</td><td>0.5043</td><td class="mono">3f238f33c56c4ff7</td></tr>
+<tr><td>Register 18q (6 tri)</td><td>18</td><td>6</td><td>1,000</td><td>998</td><td>0.4961</td><td class="mono">7ac48eb152dece10</td></tr>
+<tr><td>Triangle 01</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.4860</td><td class="mono">e7fe701906495b30</td></tr>
+<tr><td>Triangle 02</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.4907</td><td class="mono">aaf6ba13dd1010f2</td></tr>
+<tr><td>Triangle 03</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5077</td><td class="mono">68f3f67d32df1d1f</td></tr>
+<tr><td>Triangle 04</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.4863</td><td class="mono">2e3ce69bdd700231</td></tr>
+<tr><td>Triangle 05</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5007</td><td class="mono">f3ffde7f014a9590</td></tr>
+<tr><td>Triangle 06</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.4977</td><td class="mono">f6ec0214bd44df74</td></tr>
+<tr><td>Triangle 07</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.4867</td><td class="mono">37237c7bde51225d</td></tr>
+<tr><td>Triangle 08</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5020</td><td class="mono">95f9da4533102596</td></tr>
+<tr><td>Triangle 09</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5127</td><td class="mono">b4a3018e5eeafea4</td></tr>
+<tr><td>Triangle 10</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.4987</td><td class="mono">13a3749d7d4ca1bc</td></tr>
+<tr><td>Triangle 11</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.4990</td><td class="mono">051e6acdab413b8f</td></tr>
+<tr><td>Triangle 12</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5003</td><td class="mono">404945fc0f2440db</td></tr>
+<tr><td>Triangle 13</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5013</td><td class="mono">9cde21ad9dde6b06</td></tr>
+<tr><td>Triangle 14</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5083</td><td class="mono">1b487658a5661bac</td></tr>
+<tr><td>Triangle 15</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5023</td><td class="mono">be28a5496c169f12</td></tr>
+<tr><td>Triangle 16</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5130</td><td class="mono">9e5a1bccb1f8eb6c</td></tr>
+<tr><td>Triangle 17</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5030</td><td class="mono">a5cb2d3a5d122a35</td></tr>
+<tr><td>Triangle 18</td><td>3</td><td>1</td><td>1,000</td><td>8</td><td>0.5040</td><td class="mono">fa20dad3cd42f585</td></tr>
+</table>
+  <div class="pb">MASTER: 3c92e89017e945e9cb64d05151b631ac27bc9bfe0b666aae663a1d107dec32ee</div>
+</div></div>
+
+<div class="card"><div class="card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h2>Operator Routes</h2><div><span class="badge bg">LIVE</span> <span class="chevron">›</span></div>
+</div><div class="card-body">
+  <div style="columns:2;font-size:0.78em;">
+  <div>/</div><div>/island.html</div><div>/github.html</div><div>/self-heal.html</div><div>/aura115_operator/</div><div>/aura115_operator/github-self-rewrite.html</div><div>/api/chat</div><div>/api/ai-gateway-text</div><div>/api/github-env-check</div><div>/api/github-read</div><div>/api/github-write</div><div>/api/memory</div><div>/api/aura115-github-env</div><div>/api/aura115-github-tree</div><div>/api/aura115-github-read</div><div>/api/aura115-github-write</div><div>/api/aura115-ai-rewrite-proposal</div>
+  </div>
+</div></div>
+
+<footer>
+  P3^Q — Python 3 to the Quantum Power<br>
+  All formulas, circuits, governing constants, and architectural decisions are the sole intellectual property of Joshua Lopez and DCGP.AI LLC.<br>
+  Where there is a gap, there is a gate. · 1 = 1 · 2 = 2
+</footer>
+</div></body></html>
