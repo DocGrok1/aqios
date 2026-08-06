@@ -43,7 +43,7 @@ DEVICE_REGISTRY = {
     "earth":    {"arn": "arn:aws:braket:::device/quantum-simulator/amazon/dm1",    "type": "managed_simulator",  "vendor": "Amazon",  "substrate": "Density Matrix"},
     "moon":     {"arn": "arn:aws:braket:::device/quantum-simulator/amazon/dm1",    "type": "managed_simulator",  "vendor": "Amazon",  "substrate": "Density Matrix"},
     "pluto":    {"arn": "arn:aws:braket:::device/quantum-simulator/amazon/sv1",    "type": "managed_simulator",  "vendor": "Amazon",  "substrate": "State Vector"},
-    "uranus":   {"arn": "arn:aws:braket:eu-north-1::device/qpu/aqt/IBEX_Q1",       "type": "qpu",               "vendor": "AQT",     "substrate": "Trapped Ion"},
+    "uranus":   {"arn": "arn:aws:braket:eu-north-1::device/qpu/aqt/IBEX_Q1",       "type": "qpu",               "vendor": "AQT",     "substrate": "Trapped Ion", "shards": 4, "shard_qubits": 12, "qubits": 48, "parallel": True},
     "bl7":      {"arn": "arn:aws:braket:us-west-1::device/qpu/rigetti/Ankaa-3",    "type": "qpu",               "vendor": "Rigetti", "substrate": "Superconducting"},
     "oricron":  {"arn": None, "type": "local_simulator", "vendor": "Google CIRQ", "substrate": "cirq.Simulator"},
 }
