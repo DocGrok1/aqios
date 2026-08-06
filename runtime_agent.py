@@ -683,7 +683,7 @@ def _auralm_voice(message: str, system_prompt: str = "", governance_ctx: dict = 
 #   Jupiter: SV1 34 state-vector — mass intake
 #   Moon:    DM1 17 density-matrix — echo/reflection
 #   Pluto:   SV1 34 state-vector — long-term memory
-#   Uranus:  AQT IBEX_Q1 12 trapped-ion — renormalization archive (TN1 retired)
+#   Uranus:  AQT IBEX_Q1 x4 shards, 12q each = 48q trapped-ion — renormalization archive (TN1 retired)
 #   BL7:     Rigetti 108 superconducting — surface projection
 #   Oricron: CIRQ 1K — invention engine
 #
@@ -700,7 +700,7 @@ PLANET_QPU_MAP = {
     "jupiter": {"device": "arn:aws:braket:::device/quantum-simulator/amazon/sv1", "provider": "Amazon", "qubits": 34, "type": "state-vector", "role": "mass_intake", "lanes": (65, 89)},
     "moon":    {"device": "arn:aws:braket:::device/quantum-simulator/amazon/dm1", "provider": "Amazon", "qubits": 17, "type": "density-matrix", "role": "echo_reflection", "lanes": (155, 159)},
     "pluto":   {"device": "arn:aws:braket:::device/quantum-simulator/amazon/sv1", "provider": "Amazon", "qubits": 34, "type": "state-vector", "role": "long_term_memory", "lanes": (150, 154)},
-    "uranus":  {"device": "arn:aws:braket:eu-north-1::device/qpu/aqt/IBEX_Q1", "provider": "AQT", "qubits": 12, "type": "trapped-ion", "role": "renormalization_archive", "lanes": (120, 134)},
+    "uranus":  {"device": "arn:aws:braket:eu-north-1::device/qpu/aqt/IBEX_Q1", "provider": "AQT", "qubits": 48, "shards": 4, "shard_qubits": 12, "parallel": True, "type": "trapped-ion", "role": "renormalization_archive", "lanes": (120, 134)},
     "bl7":     {"device": "arn:aws:braket:us-west-1::device/qpu/rigetti/Cepheus-1-108Q", "provider": "Rigetti", "qubits": 108, "type": "superconducting", "role": "surface_projection", "lanes": (0, 159)},
     "oricron": {"device": "cirq", "provider": "CIRQ", "qubits": 1000, "type": "governed-cirq", "role": "invention_engine", "lanes": (90, 119)},
 }
